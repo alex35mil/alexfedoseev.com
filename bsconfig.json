@@ -1,0 +1,22 @@
+{
+  "name": "alexfedoseev.com",
+  "sources": [
+    { "dir": "src", "subdirs": true }
+  ],
+  "bs-dependencies": [
+    "reason-react",
+    "re-classnames",
+    "bs-webapi",
+    "bs-nprogress"
+  ],
+  "refmt": 3,
+  "reason": {
+    "react-jsx": 3
+  },
+  "bsc-flags": ["-open Belt"],
+  "suffix": ".bs.js",
+  "package-specs": {
+    "module": "es6",
+    "in-source": true
+  }
+}
