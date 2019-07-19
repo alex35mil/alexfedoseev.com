@@ -1,11 +1,13 @@
+open ReactRouter;
+
 type t =
   | Main
   | Blog
   | Post(string);
 
-let main = "/";
-let blog = "/blog";
-let post = (~slug) => {j|/blog/$slug|j};
+let main = "/"->Path.pack;
+let blog = "/blog"->Path.pack;
+let post = (~slug: string) => {j|/blog/$slug|j}->Path.pack;
 
 let fromUrl = (url: ReactRouter.url) =>
   switch (url.path) {
