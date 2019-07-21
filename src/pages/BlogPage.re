@@ -9,14 +9,16 @@ let make = () => {
         {Posts.all
          ->Array.map(post =>
              <div key={post.slug}>
-               <Link path={Route.post(~slug=post.slug)}>
+               <TextLink path={Route.post(~slug=post.slug)}>
                  post.title->React.string
-               </Link>
+               </TextLink>
              </div>
            )
          ->React.array}
       </div>
-      <div> <Link path=Route.main> "To Main"->React.string </Link> </div>
+      <div>
+        <TextLink path=Route.main> "To Main"->React.string </TextLink>
+      </div>
     </div>
   </Page>;
 };

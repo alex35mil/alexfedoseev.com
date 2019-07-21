@@ -18,6 +18,7 @@ module.exports = {
     alias: {
       components: path.join(root, "src", "components"),
       styles: path.join(root, "src", "styles"),
+      meta: path.join(root, "src", "meta"),
     },
   },
   devtool: "#cheap-module-eval-source-map",
@@ -60,6 +61,17 @@ module.exports = {
       {
         test: /\.mdx$/,
         use: ["babel-loader", "@mdx-js/loader"],
+      },
+      {
+        test: /\.woff2?$/,
+        use: "file-loader"
+      },
+      {
+        test: /\.(webp|png|jpe?g)$/,
+        use: {
+          loader: "file-loader",
+          options: { name: "[name]-[hash].[ext]" },
+        },
       },
     ],
   },

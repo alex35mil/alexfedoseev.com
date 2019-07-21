@@ -6,6 +6,8 @@ let make = () => {
   | Some(Main) => <MainPage />
   | Some(Blog) => <BlogPage />
   | Some(Post(slug)) => <PostPage slug />
+  | Some(Photo) => <PhotoPage />
+  | Some(Me) => <MePage />
   | None => "404"->React.string // TODO: Error screen
   };
 };

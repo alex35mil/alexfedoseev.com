@@ -5,7 +5,7 @@ let make = (~children) => {
   <Page>
     <div className=Css.post>
       <Markdown> children </Markdown>
-      <Link path=Route.blog> "Back to blog"->React.string </Link>
+      <TextLink path=Route.blog> "Back to blog"->React.string </TextLink>
     </div>
   </Page>;
 };

@@ -4,6 +4,15 @@ import { Color, Font, Layout, ZIndex } from "styles";
 
 export const global = css`
   :global {
+    @font-face {
+      font-family: "Noto Sans";
+      font-style: normal;
+      font-weight: 700;
+      src: local("Noto Sans Bold"), local("NotoSans-Bold"),
+           url("~styles/fonts/noto-sans-v8-latin-700.woff2") format("woff2"),
+           url("~styles/fonts/noto-sans-v8-latin-700.woff") format("woff");
+    }
+
     * {
       box-sizing: border-box;
       transform-origin: 50% 50% 0;
@@ -29,9 +38,10 @@ export const global = css`
     html,
     body,
     #root {
-      display: flex;
-      flex-flow: column nowrap;
+      display: grid;
       position: relative;
+      grid-template-columns: 1fr;
+      grid-template-rows: 1fr;
       margin: 0;
       padding: 0;
     }

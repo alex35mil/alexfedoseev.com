@@ -1,4 +1,5 @@
 export const mono = "Menlo, Consolas, Courier New, monospace";
+export const heading = `Noto Sans, ${mono}`;
 
 export const size = 18;
 export const lineHeight = 1.5;

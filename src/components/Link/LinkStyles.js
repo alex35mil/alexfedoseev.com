@@ -3,15 +3,15 @@ import { css } from "linaria";
 import { Font } from "styles";
 
 export const link = css`
-  position: relative;
+  cursor: pointer;
+`;
+
+export const text = css`
   margin: -1px;
   padding: 1px;
-  background-color: transparent;
-  cursor: pointer;
   border-radius: 1px;
-
   color: ${Font.color};
-
+  background-color: transparent;
   text-decoration: underline;
   text-decoration-skip: ink;
   text-decoration-skip-ink: auto;
@@ -20,5 +20,14 @@ export const link = css`
 
   &:focus {
     background-color: rgba(0, 0, 0, 0.05);
+  }
+`;
+
+export const box = css`
+  text-decoration: none;
+
+  &:focus,
+  &:hover {
+    text-decoration: none;
   }
 `;
