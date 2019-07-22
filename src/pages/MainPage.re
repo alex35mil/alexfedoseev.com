@@ -10,25 +10,27 @@ let make = () => {
         <div className=Css.name> "Alex Fedoseev"->React.string </div>
         <div className=Css.links>
           <div className=Css.nav>
-            <Link path=Route.blog className=Css.link>
+            <Link.Box path=Route.blog className=Css.link>
               "blog"->React.string
-            </Link>
-            <Link path=Route.photo className=Css.link>
+            </Link.Box>
+            <Link.Box path=Route.photo className=Css.link>
               "photo"->React.string
-            </Link>
-            <Link path=Route.me className=Css.link> "me"->React.string </Link>
+            </Link.Box>
+            <Link.Box path=Route.me className=Css.link>
+              "me"->React.string
+            </Link.Box>
           </div>
           <div className=Css.diagonal />
           <div className=Css.social>
-            <Anchor href=Route.twitter target=Blank className=Css.icon>
+            <A.Box href=Route.twitter target=Blank className=Css.icon>
               <TwitterIcon size=SM color=Gray />
-            </Anchor>
-            <Anchor href=Route.github target=Blank className=Css.icon>
+            </A.Box>
+            <A.Box href=Route.github target=Blank className=Css.icon>
               <GithubIcon size=SM color=Gray />
-            </Anchor>
-            <Anchor href=Route.instagram target=Blank className=Css.icon>
+            </A.Box>
+            <A.Box href=Route.instagram target=Blank className=Css.icon>
               <InstagramIcon size=SM color=Gray />
-            </Anchor>
+            </A.Box>
           </div>
         </div>
       </div>

@@ -12,18 +12,34 @@ export const text = css`
   border-radius: 1px;
   color: ${Font.color};
   background-color: transparent;
-  text-decoration: underline;
-  text-decoration-skip: ink;
-  text-decoration-skip-ink: auto;
-  text-decoration-style: solid;
-  -webkit-text-decoration-skip: objects;
 
   &:focus {
     background-color: rgba(0, 0, 0, 0.05);
   }
 `;
 
-export const box = css`
+export const underlineAlways = css`
+  text-decoration: underline;
+  text-decoration-skip: ink;
+  text-decoration-skip-ink: auto;
+  text-decoration-style: solid;
+  -webkit-text-decoration-skip: objects;
+`;
+
+export const underlineWhenInteracted = css`
+  text-decoration: none;
+
+  &:focus,
+  &:hover {
+    text-decoration: underline;
+    text-decoration-skip: ink;
+    text-decoration-skip-ink: auto;
+    text-decoration-style: solid;
+    -webkit-text-decoration-skip: objects;
+  }
+`;
+
+export const underlineNever = css`
   text-decoration: none;
 
   &:focus,
