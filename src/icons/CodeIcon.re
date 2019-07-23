@@ -1,6 +1,5 @@
 [@react.component]
-let make =
-    (~title="Sources", ~size: Icon.size, ~color: Icon.color, ~className=?) => {
+let make = (~title="Code", ~size: Icon.size, ~color: Icon.color, ~className=?) => {
   <Icon title size ?className>
     <path
       fill={color->Icon.colorToString}

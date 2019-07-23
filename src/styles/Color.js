@@ -3,6 +3,7 @@ export const white = "#fff";
 
 export const grayText = "#666";
 export const grayIcon = "#aaa";
+export const grayNote = grayIcon;
 export const grayLine = "#e9e9e9";
 
 export const twitter = "#1da1f2";

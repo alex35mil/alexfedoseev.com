@@ -17,6 +17,36 @@ let colorToString =
 
 let viewBoxSize = "16";
 
+module type Component = {
+  [@bs.obj]
+  external makeProps:
+    (
+      ~title: string=?,
+      ~size: size,
+      ~color: color,
+      ~className: string=?,
+      ~key: string=?,
+      unit
+    ) =>
+    {
+      .
+      "title": option(string),
+      "size": size,
+      "color": color,
+      "className": option(string),
+    } =
+    "";
+  let make:
+    {
+      .
+      "title": option(string),
+      "size": size,
+      "color": color,
+      "className": option(string),
+    } =>
+    React.element;
+};
+
 [@react.component]
 let make = (~title: string, ~size: size, ~className="", ~children) => {
   <Svg

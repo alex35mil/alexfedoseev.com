@@ -17,6 +17,7 @@ module.exports = {
   resolve: {
     alias: {
       components: path.join(root, "src", "components"),
+      markdown: path.join(root, "src", "components", "Markdown", "Markdown.bs.js"),
       styles: path.join(root, "src", "styles"),
       meta: path.join(root, "src", "meta"),
     },

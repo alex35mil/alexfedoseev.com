@@ -34,18 +34,3 @@ export const date = css`
     text-align: center;
   }
 `;
-
-export const post = css`
-  display: grid;
-
-  @media ${Layout.smallScreen} {
-    align-content: start;
-  }
-
-  @media ${Layout.largeScreen} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
-    grid-template-rows: max-content;
-    grid-column-gap: ${Layout.largeScreenColGap}px;
-    align-content: start;
-  }
-`;

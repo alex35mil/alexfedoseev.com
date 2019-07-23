@@ -70,7 +70,7 @@ let make = (~route: Route.inner, ~children) => {
           target=Blank
           underline=WhenInteracted
           className=Css.footerSourcesLink>
-          <SrcIcon size=SM color=Gray />
+          <CodeIcon size=SM color=Gray />
           <span className=Css.footerText> "src"->React.string </span>
         </A>
       </div>
@@ -148,9 +148,20 @@ let make = (~route: Route.inner, ~children) => {
   </div>;
 };
 
-module Sidenote = {
+module PrimarySidenote = {
   [@react.component]
   let make = (~children) => {
-    <span className=Css.sidenote> children </span>;
+    <span className={Cn.make([Css.sidenote, Css.primarySidenote])}>
+      children
+    </span>;
+  };
+};
+
+module SecondarySidenote = {
+  [@react.component]
+  let make = (~children) => {
+    <span className={Cn.make([Css.sidenote, Css.secondarySidenote])}>
+      children
+    </span>;
   };
 };

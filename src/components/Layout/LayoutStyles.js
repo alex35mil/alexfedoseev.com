@@ -336,3 +336,11 @@ export const sidenote = css`
     text-align: right;
   }
 `;
+
+export const primarySidenote = css`
+  color: ${Color.grayText};
+`;
+
+export const secondarySidenote = css`
+  color: ${Color.grayNote};
+`;

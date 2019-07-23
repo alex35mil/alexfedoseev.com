@@ -1,0 +1,159 @@
+<!-- Isomorphic React with Rails -->
+
+import { image as Image, note as Note } from "markdown";
+
+import draftImage from "./images/01-draft.png";
+import corsImage from "./images/02-cors.png";
+import proxyImage from "./images/03-proxy.png";
+
+I’d like to share intermediate results of my work with Universal (aka “Isomorphic”) JavaScript apps, based on [React](http://facebook.github.io/react/) library from Facebook and [Ruby on Rails](http://rubyonrails.org) as a backend.
+
+<Note>
+  Actually, it’s not that much about Rails, but about JSON API. So if you don’t use/like Rails, just take it as an abstract API and keep reading.
+</Note>
+
+If you haven’t heard about isomorphic javascript concept, here is [the link](http://nerds.airbnb.com/isomorphic-javascript-future-web-apps) that explains what it’s all about.
+
+## Planning the application
+I’ve been trying to implement JS server side rendering within Rails app using [react-rails](https://github.com/reactjs/react-rails) gem, but it’s not the way to go. Tools play best in environments, for which they were designed. So I cut the whole front-end stuff out of Rails and moved it to `Node.js`.
+
+Here is the first draft:
+
+<Image src={draftImage} caption="First draft" />
+
+Rails, which became simply JSON API, is responsible for data and React handles UI part using the same javascript codebase on the server and on the client. Worth to note, we can use Rails as API for mobile app and other services interested in our data.
+
+Let’s go deeper. When user hits `http://my-app.com`, request goes to a Node.js server with Express on top. We need data to render initial html and send a response. So we fetch it from Rails API via http request. When data are arrived, React renders a view and Express sends html to the client with JS app, which takes control over the flow. When a user hits some link on the site, app makes an ajax call to fetch new data and updates views on the client.
+
+Front-end app lives on the main domain: `http://my-app.com`. But for API we have options:
+
+1. **my-app.com:3000**
+    <br />
+    We can have it on the same domain, but on a different port. Then we are
+    forced to keep 2 apps on the same server.
+1. **api.my-app.com**
+    <br />
+    I prefer another option—put it on a subdomain (or another domain), so we
+    can scale app in the future without changing a codebase.
+
+Next we need to decide how data will be fetched from API.
+
+### Option 1. Ajax CORS requests
+
+<Image src={corsImage} caption="CORS" />
+
+Because of the [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) we can’t make ajax requests from one location to another (even if a target resource on the same domain but different port). To enable such kind of requests we must apply **Cross-Origin Resource Sharing (CORS)** mechanism.
+
+If you’ll choose to go this way, you need to set special http headers on a Rails side. This way browser is verifying that caller have the rights to send ajax requests to this server.
+
+Keep in mind that by enabling CORS (especially public access) you dig potential **CSRF security hole**. Read [this](https://github.com/pillarjs/understanding-csrf) carefully to mitigate CSRF attacks.
+
+### Option 2. Proxy ajax calls through front-end server
+
+<Image src={proxyImage} caption="Proxy" />
+
+Instead of enabling CORS, we can proxy requests through `nginx` front-end server. Every call goes to the same domain: `my-app.com`. Nginx splits it in two directions:
+
+- **my-app.com/***
+  <br />
+  Almost all of requests are passed to Node.js app.
+- **my-app.com/api/***
+  <br />
+  Except calls to `/api`, which are proxied to Rails API.
+
+This approach is more secure and the whole system looks solid from outside. So we will go this way, but it requires some additional setup on local machine.
+
+## Local setup
+Install `nginx`:
+
+```shell
+brew install nginx
+```
+
+Edit `nginx.conf`:
+
+```shell
+sudo $EDITOR /usr/local/etc/nginx/nginx.conf
+```
+
+Extend `http` block in the config with upstreams:
+
+```nginx
+http {
+  upstream app_proxy {
+    server lvh.me:3500;
+  }
+
+  upstream api_proxy {
+    server api.lvh.me:3000;
+  }
+
+  server {
+    listen 80;
+    server_name lvh.me;
+
+    location / {
+      proxy_set_header Host $http_host;
+      proxy_set_header X-forwarded-for $proxy_add_x_forwarded_for;
+      proxy_set_header X-NginX-Proxy true;
+      proxy_pass http://app_proxy;
+      proxy_redirect off;
+    }
+
+    location /api {
+      proxy_set_header Host api.lvh.me;
+      proxy_set_header X-forwarded-for $proxy_add_x_forwarded_for;
+      proxy_set_header X-NginX-Proxy true;
+      proxy_pass http://api_proxy/;
+      proxy_redirect off;
+    }
+  }
+
+  server {
+    listen 80;
+    server_name api.lvh.me;
+
+    location / {
+      proxy_set_header Host $http_host;
+      proxy_set_header X-forwarded-for $proxy_add_x_forwarded_for;
+      proxy_set_header X-NginX-Proxy true;
+      proxy_pass http://api_proxy;
+      proxy_redirect off;
+    }
+  }
+}
+```
+
+Finally, run nginx:
+
+```shell
+sudo nginx
+```
+
+Now you can visit `http://lvh.me` in your browser. There will be nginx error message. It’s ok, because Node.js app is not yet running.
+
+Stop nginx for now:
+
+```shell
+sudo nginx -s stop
+```
+
+### Hosts
+Also, you may want to add `lvh.me` to `hosts` file to avoid unnecessary roundtrips:
+
+```shell
+sudo $EDITOR /private/etc/hosts
+```
+
+And add:
+
+```
+fe80::1%lo0   lvh.me
+fe80::1%lo0   api.lvh.me
+
+127.0.0.1     lvh.me
+127.0.0.1     api.lvh.me
+```
+
+## Follow up
+You can find other posts of this series on [my medium](https://medium.com/@alexfedoseev) but they are pretty much out of date at this point.

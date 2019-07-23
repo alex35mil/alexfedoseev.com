@@ -6,13 +6,13 @@ let make = (~title, ~year, ~date, ~children) => {
     <div className=Css.container>
       <div className=Css.title>
         <div className=Css.date>
-          <Layout.Sidenote>
+          <Layout.PrimarySidenote>
             {j|$(date), $(year)|j}->React.string
-          </Layout.Sidenote>
+          </Layout.PrimarySidenote>
         </div>
         <Markdown.H1> title->React.string </Markdown.H1>
       </div>
-      <div className=Css.post> <div /> <Markdown> children </Markdown> </div>
+      <Markdown> children </Markdown>
     </div>
   </Page>;
 };

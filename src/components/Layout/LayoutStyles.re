@@ -77,3 +77,9 @@ let footerLinkedInIcon = footerLinkedInIcon;
 
 [@bs.module "./LayoutStyles.js"] external sidenote: string = "sidenote";
 let sidenote = sidenote;
+
+[@bs.module "./LayoutStyles.js"] external primarySidenote: string = "primarySidenote";
+let primarySidenote = primarySidenote;
+
+[@bs.module "./LayoutStyles.js"] external secondarySidenote: string = "secondarySidenote";
+let secondarySidenote = secondarySidenote;

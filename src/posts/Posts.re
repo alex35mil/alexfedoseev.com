@@ -35,7 +35,23 @@ let from2018 = [|
   },
 |];
 
-let byYear = [|("2019", from2019), ("2018", from2018)|];
+let from2015 = [|
+  {
+    slug: "isomorphic-react-with-rails",
+    title: "Isomorphic React with Rails",
+    date: "Sep 12",
+    loader: () =>
+      Module.import(
+        "./2015/IsomorphicReactWithRails/Post__IsomorphicReactWithRails.mdx",
+      ),
+  },
+|];
+
+let byYear = [|
+  ("2019", from2019),
+  ("2018", from2018),
+  ("2015", from2015),
+|];
 
 let all =
   byYear->Array.reduce([||], (acc, (_, posts)) => acc->Array.concat(posts));
