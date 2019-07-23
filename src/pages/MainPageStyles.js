@@ -2,17 +2,31 @@ import { css } from "linaria";
 
 import { Color, Font, Transition } from "styles";
 
+const largeScreen = "(min-width: 801px)";
+const smallScreen = "(max-width: 800px)";
+
 const photoSize = 100;
 
 export const container = css`
   display: grid;
-  grid-template-rows: max-content;
-  grid-template-columns: max-content max-content max-content;
-  grid-column-gap: 30px;
   align-content: center;
   align-items: center;
   justify-content: center;
+  justify-items: center;
   padding-bottom: 7%;
+
+  @media ${smallScreen} {
+    grid-template-rows: max-content max-content max-content;
+    grid-template-columns: max-content;
+    grid-column-gap: 0;
+    grid-row-gap: 20px;
+  }
+
+  @media ${largeScreen} {
+    grid-template-rows: max-content;
+    grid-template-columns: max-content max-content max-content;
+    grid-column-gap: 30px;
+  }
 `;
 
 export const photo = css`
@@ -28,16 +42,26 @@ export const photo = css`
 `;
 
 export const line = css`
-  display: flex;
-  height: 120px;
-  width: 1px;
-  background-color: ${Color.grayLine};
+  @media ${smallScreen} {
+    display: none;
+  }
+
+  @media ${largeScreen} {
+    display: flex;
+    height: 120px;
+    width: 1px;
+    background-color: ${Color.grayLine};
+  }
 `;
 
 export const headline = css`
   display: grid;
   grid-template-rows: max-content max-content;
-  grid-row-gap: 5px;
+  grid-row-gap: 20px;
+
+  @media ${smallScreen} {
+    justify-items: center;
+  }
 `;
 
 export const name = css`
@@ -51,10 +75,18 @@ const linkHPad = 8;
 
 export const links = css`
   display: grid;
-  grid-template-columns: max-content max-content max-content;
-  grid-column-gap: 10px;
-  align-items: center;
-  margin: 0 -${linkHPad}px;
+
+  @media ${smallScreen} {
+    grid-template-rows: max-content max-content;
+    grid-row-gap: 20px;
+  }
+
+  @media ${largeScreen} {
+    grid-template-columns: max-content max-content max-content;
+    grid-column-gap: 10px;
+    align-items: center;
+    margin: 0 -${linkHPad}px;
+  }
 `;
 
 export const nav = css`
@@ -83,19 +115,35 @@ export const link = css`
 `;
 
 export const diagonal = css`
-  display: flex;
-  height: 30px;
-  width: 1px;
-  background-color: ${Color.grayLine};
-  transform: rotate(15deg);
+  @media ${smallScreen} {
+    display: none;
+  }
+
+  @media ${largeScreen} {
+    display: flex;
+    height: 30px;
+    width: 1px;
+    background-color: ${Color.grayLine};
+    transform: rotate(15deg);
+  }
 `;
 
 export const social = css`
   display: grid;
-  grid-auto-flow: column;
-  grid-template-columns: max-content;
-  grid-column-gap: 8px;
-  margin-left: ${linkHPad}px;
+
+  @media ${smallScreen} {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    grid-column-gap: 12px;
+    justify-content: center;
+  }
+
+  @media ${largeScreen} {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    grid-column-gap: 8px;
+    margin-left: ${linkHPad}px;
+  }
 `;
 
 export const icon = css`
