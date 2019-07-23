@@ -1,30 +1,64 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition } from "styles";
-
-import * as Layout from "../components/Layout/LayoutStyles";
+import { Color, Font, Transition, Layout } from "styles";
 
 export const years = css`
   display: grid;
   grid-auto-flow: row;
   grid-template-rows: max-content;
-  grid-row-gap: ${Layout.rowGap}px;
+
+  @media ${Layout.smallScreen} {
+    grid-row-gap: ${Layout.smallScreenRowGap}px;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-row-gap: ${Layout.largeScreenRowGap}px;
+  }
 `;
 
 export const yearContainer = css`
   display: grid;
   grid-auto-flow: row;
-  grid-template-rows: max-content;
+  grid-auto-rows: max-content;
   grid-row-gap: 3px;
+
+  @media ${Layout.smallScreen} {
+    grid-auto-rows: max-content;
+    justify-content: center;
+    justify-items: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-auto-rows: max-content;
+  }
 `;
 
 export const post = css`
   display: grid;
-  grid-template-columns: ${Layout.leftColWidth}px 1fr;
-  grid-template-rows: max-content;
-  grid-column-gap: ${Layout.colGap}px;
-  align-content: center;
-  align-items: center;
+
+  @media ${Layout.smallScreen} {
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-rows: max-content;
+    grid-column-gap: ${Layout.largeScreenColGap}px;
+    align-content: center;
+    align-items: center;
+  }
+`;
+
+export const year = css`
+  @media ${Layout.smallScreen} {
+    margin-bottom: 10px;
+  }
+
+  @media ${Layout.largeScreen} {
+    margin-bottom: 0;
+  }
 `;
 
 export const link = css`

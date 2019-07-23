@@ -1,54 +1,97 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition } from "styles";
-
-export const contentWidth = 840;
-export const leftColWidth = 150;
-export const rowGap = 28;
-export const colGap = 20;
+import { Color, Font, Transition, Layout } from "styles";
 
 export const container = css`
   display: grid;
-  grid-template-rows: max-content max-content 1fr;
-  grid-row-gap: ${rowGap}px;
-  justify-self: center;
-  width: ${contentWidth}px;
-  padding: 40px 0 30px;
+
+  @media ${Layout.smallScreen} {
+    grid-template-columns: minmax(auto, 700px);
+    grid-template-rows: max-content max-content 1fr;
+    grid-row-gap: ${Layout.smallScreenRowGap}px;
+    justify-self: center;
+    justify-content: center;
+    width: 100%;
+    padding: 30px ${Layout.smallScreenVPad}px;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-rows: max-content max-content 1fr;
+    grid-row-gap: ${Layout.largeScreenRowGap}px;
+    justify-self: center;
+    width: ${Layout.largeScreenContentWidth}px;
+    padding: 40px 0 30px;
+  }
 `;
 
 export const header = css`
   display: grid;
-  grid-template-columns: ${leftColWidth}px 1fr;
-  grid-column-gap: ${colGap}px;
+
+  @media ${Layout.smallScreen} {
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 14px;
+    justify-content: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-column-gap: ${Layout.largeScreenColGap}px;
+  }
 `;
 
 export const logo = css`
   display: flex;
-  flex-flow: row nowrap;
-  align-items: center;
-  justify-content: flex-end;
+
+  @media ${Layout.smallScreen} {
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    flex-flow: row nowrap;
+    align-items: center;
+    justify-content: flex-end;
+  }
 `;
 
 export const logoLink = css`
   font-family: ${Font.heading};
-  font-size: 21px;
   font-weight: ${Font.bold};
   white-space: nowrap;
   user-select: none;
+
+  @media ${Layout.smallScreen} {
+    font-size: 18px;
+  }
+
+  @media ${Layout.largeScreen} {
+    font-size: 21px;
+  }
 `;
 
 export const navigation = css`
   display: grid;
-  grid-template-columns: max-content max-content 1fr;
-  grid-column-gap: 28px;
-  align-items: center;
+
+  @media ${Layout.smallScreen} {
+    grid-template-columns: max-content max-content max-content;
+    grid-column-gap: 14px;
+    align-items: center;
+    justify-content: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: max-content max-content 1fr;
+    grid-column-gap: 28px;
+    align-items: center;
+  }
 `;
 
-const navLinkHPad = 8;
+const largeScreenNavLinkHPad = 8;
+const smallScreenNavLinkHPad = 4;
 
 export const navLink = css`
   display: inline-block;
-  padding: 6px ${navLinkHPad}px;
   transition-property: background-color color font-size transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
@@ -61,12 +104,27 @@ export const navLink = css`
     background-color: ${Color.blue};
     transform: rotate(-3deg) scale(1.1);
   }
+
+  @media ${Layout.smallScreen} {
+    padding: 4px ${smallScreenNavLinkHPad}px;
+  }
+
+  @media ${Layout.largeScreen} {
+    padding: 6px ${largeScreenNavLinkHPad}px;
+  }
 `;
 
 export const navLinkActive = css`
-  font-size: 1em;
   color: ${Color.white};
   background-color: ${Color.blue};
+
+  @media ${Layout.smallScreen} {
+    font-size: 0.8em;
+  }
+
+  @media ${Layout.largeScreen} {
+    font-size: 1em;
+  }
 `;
 
 export const navLinkInactive = css`
@@ -88,25 +146,49 @@ export const restNavLinks = css`
   grid-auto-columns: max-content;
   grid-column-gap: 10px;
   align-items: center;
-  margin-left: -${navLinkHPad}px;
+
+  @media ${Layout.smallScreen} {
+    margin-left: -${smallScreenNavLinkHPad}px;
+  }
+
+  @media ${Layout.largeScreen} {
+    margin-left: -${largeScreenNavLinkHPad}px;
+  }
 `;
 
 export const footer = css`
   display: grid;
-  grid-template-columns: ${leftColWidth}px 1fr;
-  grid-template-rows: max-content;
-  grid-column-gap: ${colGap}px;
-  align-content: end;
-  justify-content: space-between;
-  margin: 15px 0;
-  user-select: none;
+
+  @media ${Layout.smallScreen} {
+    grid-template-rows: max-content max-content;
+    grid-row-gap: 20px;
+    align-content: end;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-rows: max-content;
+    grid-column-gap: ${Layout.largeScreenColGap}px;
+    align-content: end;
+    justify-content: space-between;
+    margin: 15px 0;
+    user-select: none;
+  }
 `;
 
 export const footerSources = css`
   display: grid;
-  grid-template-columns: max-content;
-  align-items: center;
-  justify-content: start;
+
+  @media ${Layout.smallScreen} {
+    order: 2;
+    justify-content: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: max-content;
+    align-items: center;
+    justify-content: start;
+  }
 `;
 
 export const footerSourcesLink = css`
@@ -120,18 +202,38 @@ export const footerSourcesLink = css`
 
 export const footerMainCol = css`
   display: grid;
-  grid-template-columns: max-content max-content max-content;
-  grid-column-gap: 8px;
-  align-items: center;
-  justify-content: space-between;
+
+  @media ${Layout.smallScreen} {
+    order: 1;
+    grid-template-rows: max-content max-content max-content;
+    grid-row-gap: 20px;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: max-content max-content max-content;
+    grid-column-gap: 8px;
+    align-items: center;
+    justify-content: space-between;
+  }
 `;
 
 export const footerNav = css`
   display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
-  grid-column-gap: 12px;
-  align-items: center;
+
+  @media ${Layout.smallScreen} {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    grid-column-gap: 12px;
+    justify-content: center;
+    align-items: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-auto-flow: column;
+    grid-auto-columns: max-content;
+    grid-column-gap: 12px;
+    align-items: center;
+  }
 `;
 
 export const footerCopy = css`
@@ -220,10 +322,17 @@ export const footerLinkedInIcon = css`
 export const sidenote = css`
   display: flex;
   align-items: center;
-  justify-content: flex-end;
-  font-size: .65em;
   color: ${Color.grayText};
-  text-align: right;
   line-height: 1;
   user-select: none;
+
+  @media ${Layout.smallScreen} {
+    font-size: 0.9em;
+  }
+
+  @media ${Layout.largeScreen} {
+    font-size: .65em;
+    justify-content: flex-end;
+    text-align: right;
+  }
 `;

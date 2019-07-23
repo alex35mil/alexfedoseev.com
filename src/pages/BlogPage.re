@@ -10,12 +10,14 @@ let make = () => {
              {posts
               ->Array.mapWithIndex((idx, post) =>
                   <div key={post.slug} className=Css.post>
-                    <Layout.Sidenote>
-                      {switch (idx) {
-                       | 0 => year->React.string
-                       | _ => React.null
-                       }}
-                    </Layout.Sidenote>
+                    <div className=Css.year>
+                      <Layout.Sidenote>
+                        {switch (idx) {
+                         | 0 => year->React.string
+                         | _ => React.null
+                         }}
+                      </Layout.Sidenote>
+                    </div>
                     <div className=Css.link>
                       <Link
                         path={Route.post(~slug=post.slug)}

@@ -151,6 +151,6 @@ let make = (~route: Route.inner, ~children) => {
 module Sidenote = {
   [@react.component]
   let make = (~children) => {
-    <div className=Css.sidenote> children </div>;
+    <span className=Css.sidenote> children </span>;
   };
 };

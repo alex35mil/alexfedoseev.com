@@ -1,17 +1,5 @@
 /* === GENERATED CONTENT === */
 
-[@bs.module "./LayoutStyles.js"] external contentWidth: int = "contentWidth";
-let contentWidth = contentWidth;
-
-[@bs.module "./LayoutStyles.js"] external leftColWidth: int = "leftColWidth";
-let leftColWidth = leftColWidth;
-
-[@bs.module "./LayoutStyles.js"] external rowGap: int = "rowGap";
-let rowGap = rowGap;
-
-[@bs.module "./LayoutStyles.js"] external colGap: int = "colGap";
-let colGap = colGap;
-
 [@bs.module "./LayoutStyles.js"] external container: string = "container";
 let container = container;
 

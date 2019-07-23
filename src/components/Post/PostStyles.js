@@ -1,8 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition } from "styles";
-
-import * as Layout from "../Layout/LayoutStyles";
+import { Color, Font, Transition, Layout } from "styles";
 
 export const container = css`
   display: grid;
@@ -12,17 +10,42 @@ export const container = css`
 
 export const title = css`
   display: grid;
-  grid-template-columns: ${Layout.leftColWidth}px 1fr;
-  grid-template-rows: max-content;
-  grid-column-gap: ${Layout.colGap}px;
-  align-content: center;
-  align-items: baseline;
+
+  @media ${Layout.smallScreen} {
+    grid-template-rows: max-content max-content;
+    grid-row-gap: 16px;
+    justify-content: center;
+    justify-items: center;
+    text-align: center;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-rows: max-content;
+    grid-column-gap: ${Layout.largeScreenColGap}px;
+    align-content: center;
+    align-items: baseline;
+  }
+`;
+
+export const date = css`
+  @media ${Layout.smallScreen} {
+    order: 1;
+    text-align: center;
+  }
 `;
 
 export const post = css`
   display: grid;
-  grid-template-columns: ${Layout.leftColWidth}px 1fr;
-  grid-template-rows: max-content;
-  grid-column-gap: ${Layout.colGap}px;
-  align-content: start;
+
+  @media ${Layout.smallScreen} {
+    align-content: start;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-rows: max-content;
+    grid-column-gap: ${Layout.largeScreenColGap}px;
+    align-content: start;
+  }
 `;
