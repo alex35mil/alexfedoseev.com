@@ -21,7 +21,15 @@ const extract = files => {
   files
     .map(file => {
       const source = fs.readFileSync(file, "utf8");
-      const ast = babel.parse(source, { sourceType: "module" });
+
+      let ast;
+      try {
+        ast = babel.parse(source, { sourceType: "module" });
+      } catch (error) {
+        console.error(`❌ ${file}:`, error);
+        return null;
+      }
+
       const externals = ast.program.body.reduce((acc, node) => {
         const decl =
           node.declaration &&
@@ -74,6 +82,8 @@ const extract = files => {
       return { file, externals };
     })
     .forEach(css => {
+      if (!css) return;
+
       const dir = path.dirname(css.file);
       const mod = path.basename(css.file, ".js");
       const file = `${dir}/${mod}.re`;
