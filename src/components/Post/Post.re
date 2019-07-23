@@ -1,13 +1,16 @@
 module Css = PostStyles;
 
 [@react.component]
-let make = (~children) => {
+let make = (~title, ~year, ~date, ~children) => {
   <Page>
-    <div className=Css.post>
-      <Markdown> children </Markdown>
-      <Link path=Route.blog underline=Always>
-        "Back to blog"->React.string
-      </Link>
+    <div className=Css.container>
+      <div className=Css.title>
+        <Layout.Sidenote>
+          {j|$(date), $(year)|j}->React.string
+        </Layout.Sidenote>
+        <Markdown.H1> title->React.string </Markdown.H1>
+      </div>
+      <div className=Css.post> <div /> <Markdown> children </Markdown> </div>
     </div>
   </Page>;
 };

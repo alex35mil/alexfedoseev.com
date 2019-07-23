@@ -4,10 +4,15 @@ let make = () => {
 
   switch (route) {
   | Some(Main) => <MainPage />
-  | Some(Blog) => <BlogPage />
-  | Some(Post(slug)) => <PostPage slug />
-  | Some(Photo) => <PhotoPage />
-  | Some(Me) => <MePage />
+  | Some(Inner(route)) =>
+    <Layout route>
+      {switch (route) {
+       | Blog(`Index) => <BlogPage />
+       | Blog(`Post(slug)) => <PostPage slug />
+       | Photo => <PhotoPage />
+       | Me => <MePage />
+       }}
+    </Layout>
   | None => "404"->React.string // TODO: Error screen
   };
 };

@@ -32,3 +32,12 @@ let social = social;
 
 [@bs.module "./MainPageStyles.js"] external icon: string = "icon";
 let icon = icon;
+
+[@bs.module "./MainPageStyles.js"] external twitterIcon: string = "twitterIcon";
+let twitterIcon = twitterIcon;
+
+[@bs.module "./MainPageStyles.js"] external githubIcon: string = "githubIcon";
+let githubIcon = githubIcon;
+
+[@bs.module "./MainPageStyles.js"] external instagramIcon: string = "instagramIcon";
+let instagramIcon = instagramIcon;

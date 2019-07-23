@@ -109,10 +109,31 @@ export const icon = css`
   &:focus,
   &:hover {
     background-color: ${Color.blue};
-    transform: rotate(7deg) scale(1.1);
+    transform: rotate(-7deg) scale(1.1);
 
     & path {
       fill: #fff;
     }
+  }
+`;
+
+export const twitterIcon = css`
+  &:focus,
+  &:hover {
+    background-color: ${Color.twitter};
+  }
+`;
+
+export const githubIcon = css`
+  &:focus,
+  &:hover {
+    background-color: ${Color.github};
+  }
+`;
+
+export const instagramIcon = css`
+  &:focus,
+  &:hover {
+    background-color: ${Color.instagram};
   }
 `;

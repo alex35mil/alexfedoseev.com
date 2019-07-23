@@ -1,12 +1,24 @@
 [@react.component]
 let make = (~slug: string) => {
-  let post =
-    Posts.all |> Js.Array.find((post: Posts.entry) => post.slug == slug);
+  let entry =
+    Posts.byYear->BeltExt.Array.findAndThen(((year, posts)) => {
+      let post =
+        posts |> Js.Array.find((post: Posts.entry) => post.slug == slug);
+      switch (post) {
+      | Some(post) => `Return((year, post))
+      | None => `Skip
+      };
+    });
 
-  switch (post) {
-  | Some(post) =>
+  switch (entry) {
+  | Some((year, post)) =>
     <PostLoader load={post.loader}>
-      (((module Content)) => <Post> <Content title={post.title} /> </Post>)
+      (
+        ((module Content)) =>
+          <Post title={post.title} year date={post.date}>
+            <Content title={post.title} />
+          </Post>
+      )
     </PostLoader>
   | None => "404"->React.string // TODO: Error screen
   };

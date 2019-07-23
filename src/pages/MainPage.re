@@ -22,14 +22,23 @@ let make = () => {
           </div>
           <div className=Css.diagonal />
           <div className=Css.social>
-            <A.Box href=Route.twitter target=Blank className=Css.icon>
-              <TwitterIcon size=SM color=Gray />
+            <A.Box
+              href=Route.twitter
+              target=Blank
+              className={Cn.make([Css.icon, Css.twitterIcon])}>
+              <TwitterIcon size=MD color=Gray />
             </A.Box>
-            <A.Box href=Route.github target=Blank className=Css.icon>
-              <GithubIcon size=SM color=Gray />
+            <A.Box
+              href=Route.github
+              target=Blank
+              className={Cn.make([Css.icon, Css.githubIcon])}>
+              <GithubIcon size=MD color=Gray />
             </A.Box>
-            <A.Box href=Route.instagram target=Blank className=Css.icon>
-              <InstagramIcon size=SM color=Gray />
+            <A.Box
+              href=Route.instagram
+              target=Blank
+              className={Cn.make([Css.icon, Css.instagramIcon])}>
+              <InstagramIcon size=MD color=Gray />
             </A.Box>
           </div>
         </div>

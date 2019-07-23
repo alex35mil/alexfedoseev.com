@@ -5,13 +5,14 @@ import { Font } from "styles";
 export const markdown = css`
   display: flex;
   flex-flow: column nowrap;
-  align-items: center;
+  align-items: flex-start;
   justify-content: flex-start;
 `;
 
 export const h1 = css`
   display: flex;
-  font-size: 40px;
+  font-family: ${Font.heading};
+  font-size: 34px;
   font-weight: ${Font.bold};
 `;
 
