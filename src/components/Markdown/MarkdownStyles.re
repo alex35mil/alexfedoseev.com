@@ -69,14 +69,26 @@ let noteRow = noteRow;
 [@bs.module "./MarkdownStyles.js"] external note: string = "note";
 let note = note;
 
-[@bs.module "./MarkdownStyles.js"] external imageRow: string = "imageRow";
-let imageRow = imageRow;
+[@bs.module "./MarkdownStyles.js"] external coverImageRow: string = "coverImageRow";
+let coverImageRow = coverImageRow;
 
-[@bs.module "./MarkdownStyles.js"] external imageFigure: string = "imageFigure";
-let imageFigure = imageFigure;
+[@bs.module "./MarkdownStyles.js"] external coverImageFigure: string = "coverImageFigure";
+let coverImageFigure = coverImageFigure;
 
-[@bs.module "./MarkdownStyles.js"] external image: string = "image";
-let image = image;
+[@bs.module "./MarkdownStyles.js"] external coverImage: string = "coverImage";
+let coverImage = coverImage;
 
-[@bs.module "./MarkdownStyles.js"] external imageCaption: string = "imageCaption";
-let imageCaption = imageCaption;
+[@bs.module "./MarkdownStyles.js"] external coverImageCredit: string = "coverImageCredit";
+let coverImageCredit = coverImageCredit;
+
+[@bs.module "./MarkdownStyles.js"] external inlineImageRow: string = "inlineImageRow";
+let inlineImageRow = inlineImageRow;
+
+[@bs.module "./MarkdownStyles.js"] external inlineImageFigure: string = "inlineImageFigure";
+let inlineImageFigure = inlineImageFigure;
+
+[@bs.module "./MarkdownStyles.js"] external inlineImage: string = "inlineImage";
+let inlineImage = inlineImage;
+
+[@bs.module "./MarkdownStyles.js"] external inlineImageCaption: string = "inlineImageCaption";
+let inlineImageCaption = inlineImageCaption;

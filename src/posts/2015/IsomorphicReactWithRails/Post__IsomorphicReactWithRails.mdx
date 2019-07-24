@@ -1,10 +1,24 @@
 <!-- Isomorphic React with Rails -->
 
-import { image as Image, note as Note } from "markdown";
+import {
+  coverImage as CoverImage,
+  inlineImage as InlineImage,
+  note as Note,
+} from "markdown";
 
+import coverImage from "./images/cover.jpg";
 import draftImage from "./images/01-draft.png";
 import corsImage from "./images/02-cors.png";
 import proxyImage from "./images/03-proxy.png";
+
+<CoverImage
+  src={coverImage}
+  credit={{
+    text: "Blueprint of Victory",
+    url:
+      "https://commons.wikimedia.org/wiki/File:Blueprint_of_Victory_-_NARA_-_534555.jpg",
+  }}
+/>
 
 I’d like to share intermediate results of my work with Universal (aka “Isomorphic”) JavaScript apps, based on [React](http://facebook.github.io/react/) library from Facebook and [Ruby on Rails](http://rubyonrails.org) as a backend.
 
@@ -19,7 +33,7 @@ I’ve been trying to implement JS server side rendering within Rails app using 
 
 Here is the first draft:
 
-<Image src={draftImage} caption="First draft" />
+<InlineImage src={draftImage} caption="First draft" />
 
 Rails, which became simply JSON API, is responsible for data and React handles UI part using the same javascript codebase on the server and on the client. Worth to note, we can use Rails as API for mobile app and other services interested in our data.
 
@@ -40,7 +54,7 @@ Next we need to decide how data will be fetched from API.
 
 ### Option 1. Ajax CORS requests
 
-<Image src={corsImage} caption="CORS" />
+<InlineImage src={corsImage} caption="CORS" />
 
 Because of the [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) we can’t make ajax requests from one location to another (even if a target resource on the same domain but different port). To enable such kind of requests we must apply **Cross-Origin Resource Sharing (CORS)** mechanism.
 
@@ -50,7 +64,7 @@ Keep in mind that by enabling CORS (especially public access) you dig potential 
 
 ### Option 2. Proxy ajax calls through front-end server
 
-<Image src={proxyImage} caption="Proxy" />
+<InlineImage src={proxyImage} caption="Proxy" />
 
 Instead of enabling CORS, we can proxy requests through `nginx` front-end server. Every call goes to the same domain: `my-app.com`. Nginx splits it in two directions:
 

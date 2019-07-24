@@ -232,7 +232,44 @@ export const note = css`
   font-style: italic;
 `;
 
-export const imageRow = css`
+export const coverImageRow = css`
+  margin: ${gap}px 0;
+`;
+
+export const coverImageFigure = css`
+  display: flex;
+  position: relative;
+  flex-flow: column nowrap;
+  align-items: center;
+`;
+
+export const coverImage = css`
+  object-fit: cover;
+  width: 100%;
+
+  @media ${Layout.smallScreen} {
+    height: 160px;
+  }
+
+  @media ${Layout.largeScreen} {
+    height: 320px;
+  }
+`;
+
+export const coverImageCredit = css`
+  position: absolute;
+  bottom: 8px;
+  font-size: 10px;
+  text-align: center;
+  text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+
+  &,
+  & a {
+    color: #ccc;
+  }
+`;
+
+export const inlineImageRow = css`
   margin: ${gap}px 0;
 
   .${h2Row} + &,
@@ -241,17 +278,17 @@ export const imageRow = css`
   }
 `;
 
-export const imageFigure = css`
+export const inlineImageFigure = css`
   display: flex;
   flex-flow: column nowrap;
   align-items: center;
 `;
 
-export const image = css`
+export const inlineImage = css`
   width: 100%;
 `;
 
-export const imageCaption = css`
+export const inlineImageCaption = css`
   margin: 6px 0;
   color: ${Color.grayText};
   font-size: 0.8em;

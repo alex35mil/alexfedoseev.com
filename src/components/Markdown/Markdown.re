@@ -162,15 +162,34 @@ module Note = {
   };
 };
 
-module Image = {
+module CoverImage = {
+  [@react.component]
+  let make = (~src, ~credit) => {
+    <ExpandedRow className=Css.coverImageRow>
+      <figure className=Css.coverImageFigure>
+        <img src className=Css.coverImage />
+        {switch (credit) {
+         | Some(credit) =>
+           <figcaption className=Css.coverImageCredit>
+             "Artwork: "->React.string
+             <A href={credit##url}> {credit##text->React.string} </A>
+           </figcaption>
+         | None => React.null
+         }}
+      </figure>
+    </ExpandedRow>;
+  };
+};
+
+module InlineImage = {
   [@react.component]
   let make = (~src, ~caption) => {
-    <Row className=Css.imageRow>
-      <figure className=Css.imageFigure>
-        <img src alt=?caption className=Css.image />
+    <Row className=Css.inlineImageRow>
+      <figure className=Css.inlineImageFigure>
+        <img src alt=?caption className=Css.inlineImage />
         {switch (caption) {
          | Some(caption) =>
-           <figcaption className=Css.imageCaption>
+           <figcaption className=Css.inlineImageCaption>
              caption->React.string
            </figcaption>
          | None => React.null
@@ -193,7 +212,8 @@ let pre = Pre.make;
 let code = Code.make;
 let inlineCode = InlineCode.make;
 
-let image = Image.make;
+let coverImage = CoverImage.make;
+let inlineImage = InlineImage.make;
 let note = Note.make;
 
 // MDXProvider components
