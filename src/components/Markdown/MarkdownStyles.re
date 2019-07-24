@@ -63,6 +63,9 @@ let languageRow = languageRow;
 [@bs.module "./MarkdownStyles.js"] external languageLabel: string = "languageLabel";
 let languageLabel = languageLabel;
 
+[@bs.module "./MarkdownStyles.js"] external global: string = "global";
+let global = global;
+
 [@bs.module "./MarkdownStyles.js"] external noteRow: string = "noteRow";
 let noteRow = noteRow;
 

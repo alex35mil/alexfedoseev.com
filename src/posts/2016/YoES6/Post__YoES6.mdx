@@ -1,0 +1,56 @@
+<!-- Yo, ES6 -->
+
+The only thing I officially couldn’t write using ES6 syntax/Babel is [Yeoman generator](http://yeoman.io). Even it’s not something I write too often, this limitation is quite annoying when you actually write it. Here’s the workaround I came up with.
+
+## Build generator
+1. Create your generator project directory (you can use [generator-generator](https://github.com/yeoman/generator-generator) for this).
+1. Create generator file within `generators/*` folder with any name, but not `index.js`. I usually call it `index.es6`.
+1. Write your generator in ES6 (see notes below how to make it more ES6’ish).
+1. Setup your Babel environment as usual (install modules, configure `.babelrc` etc.).
+1. Build your generator:
+
+```shell
+babel --out-file generators/app/index.js generators/app/index.es6
+```
+
+That’s it. You can use your generator written in ES6.
+
+## Make generator more ES6’ish
+Use `class` syntax to create your Yeoman generator:
+
+- Use `constructor` instead of `initializing` method to attach your stuff to the instance.
+- Use class methods to define generator methods.
+- Use ES6 class `getters` to define generator properties.
+
+```js
+import Yeoman from 'yeoman-generator';
+
+class MyGenerator extends Yeoman.Base {
+  // Using constructor() instead of initializing()
+  constructor(...args) {
+    super(...args);
+    this.myStuff = ...;
+  }
+
+  // Using class methods
+  prompting() {
+    const done = this.async();
+    this.log(yosay('Welcome to the ... generator!'));
+    // ...
+  }
+
+  // Using ES6 class getter to define class property
+  get writing() {
+    return {
+      app() { ... },
+    };
+  }
+
+  // ...
+}
+
+// Exporting generator to Node as CommonJS module
+module.exports = MyGenerator;
+```
+
+Here is an example of generator written in ES6 and published as npm module: [generator-react-sandbox-server](https://github.com/alexfedoseev/generator-react-sandbox-server)

@@ -35,6 +35,15 @@ let from2018 = [|
   },
 |];
 
+let from2016 = [|
+  {
+    slug: "yeoman-generator-es6",
+    title: "Yo, ES6",
+    date: "Jan 11",
+    loader: () => Module.import("./2016/YoES6/Post__YoES6.mdx"),
+  },
+|];
+
 let from2015 = [|
   {
     slug: "isomorphic-react-with-rails",
@@ -50,6 +59,7 @@ let from2015 = [|
 let byYear = [|
   ("2019", from2019),
   ("2018", from2018),
+  ("2016", from2016),
   ("2015", from2015),
 |];
 

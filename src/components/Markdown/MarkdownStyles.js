@@ -223,6 +223,18 @@ export const languageLabel = css`
   }
 `;
 
+export const global = css`
+  :global {
+    .token.operator,
+    .token.entity,
+    .token.url,
+    .language-css .token.string,
+    .style .token.string {
+      background: none !important;
+    }
+  }
+`;
+
 export const noteRow = css`
   margin: ${gap}px 0;
 `;
