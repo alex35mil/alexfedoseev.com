@@ -19,13 +19,15 @@ export const row = css`
     grid-template-rows: auto;
     grid-template-columns: max-content auto;
     align-content: start;
+    padding: 0 ${Layout.smallScreenHPad}px;
   }
 
   @media ${Layout.largeScreen} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: auto;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: start;
+    justify-content: center;
   }
 `;
 
@@ -34,6 +36,23 @@ export const rowWithSidenote = css`
 
   @media ${Layout.smallScreen} {
     grid-column-gap: 10px;
+  }
+`;
+
+export const expandedRow = css`
+  display: grid;
+
+  @media ${Layout.smallScreen} {
+    grid-template-rows: auto;
+    grid-template-columns: 1fr;
+    align-content: start;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-template-columns: minmax(100vw, 2000px);
+    grid-template-rows: auto;
+    align-content: start;
+    justify-content: center;
   }
 `;
 
@@ -85,7 +104,7 @@ export const listRow = css`
 
 export const list = css`
   @media ${Layout.smallScreen} {
-    margin-left: calc(1em + ${Layout.smallScreenVPad}px);
+    margin-left: calc(1em + ${Layout.smallScreenHPad}px);
   }
 `;
 
@@ -131,16 +150,77 @@ export const codeRow = css`
   margin: ${gap}px 0;
 `;
 
+const largeScreenCodeVPad = 20;
+const smallScreenCodeVPad = 20;
+
 export const pre = css`
-  padding: 20px 30px;
+  display: flex;
+  position: relative;
+  flex-flow: column nowrap;
+  align-items: center;
   background-color: #f5f2f0;
-  border-radius: 3px;
+
+  @media ${Layout.smallScreen} {
+    padding: ${smallScreenCodeVPad}px ${Layout.smallScreenHPad}px;
+    overflow-x: auto;
+  }
+
+  @media ${Layout.largeScreen} {
+    padding: ${largeScreenCodeVPad}px 0;
+  }
 `;
 
 export const code = css`
   font-family: ${Font.mono};
   font-size: 16px;
   line-height: 1.8;
+
+  @media ${Layout.smallScreen} {
+    width: 100%;
+    padding-right: ${Layout.smallScreenHPad}px;
+  }
+
+  @media ${Layout.largeScreen} {
+    width: ${Layout.largeScreenContentWidth}px;
+    padding-left: ${Layout.largeScreenLeftColWidth + Layout.largeScreenColGap}px;
+    overflow: visible;
+  }
+`;
+
+export const languageRow = css`
+  position: relative;
+  overflow: visible;
+
+  @media ${Layout.smallScreen} {
+    width: 100%;
+    height: 1em;
+  }
+
+  @media ${Layout.largeScreen} {
+    width: ${Layout.largeScreenContentWidth}px;
+    height: 0;
+  }
+`;
+
+const languageLabelHPad = 7;
+
+export const languageLabel = css`
+  display: flex;
+  position: absolute;
+  top: -${largeScreenCodeVPad}px;
+  background-color: #e7e7e7;
+  padding: 1px ${languageLabelHPad}px;
+  font-size: 0.7em;
+  text-transform: uppercase;
+
+  @media ${Layout.smallScreen} {
+    left: -${languageLabelHPad}px;
+  }
+
+  @media ${Layout.largeScreen} {
+    left: ${Layout.largeScreenLeftColWidth}px;
+    transform: translateX(-100%);
+  }
 `;
 
 export const noteRow = css`
@@ -169,7 +249,6 @@ export const imageFigure = css`
 
 export const image = css`
   width: 100%;
-  max-height: 100%;
 `;
 
 export const imageCaption = css`

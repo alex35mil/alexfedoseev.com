@@ -19,11 +19,13 @@ let make = () => {
                       </Layout.PrimarySidenote>
                     </div>
                     <div className=Css.link>
-                      <Link
-                        path={Route.post(~slug=post.slug)}
-                        underline=WhenInteracted>
-                        post.title->React.string
-                      </Link>
+                      <Text.Ellipsis>
+                        <Link
+                          path={Route.post(~slug=post.slug)}
+                          underline=WhenInteracted>
+                          post.title->React.string
+                        </Link>
+                      </Text.Ellipsis>
                     </div>
                   </div>
                 )

@@ -9,6 +9,9 @@ let row = row;
 [@bs.module "./MarkdownStyles.js"] external rowWithSidenote: string = "rowWithSidenote";
 let rowWithSidenote = rowWithSidenote;
 
+[@bs.module "./MarkdownStyles.js"] external expandedRow: string = "expandedRow";
+let expandedRow = expandedRow;
+
 [@bs.module "./MarkdownStyles.js"] external h1: string = "h1";
 let h1 = h1;
 
@@ -53,6 +56,12 @@ let pre = pre;
 
 [@bs.module "./MarkdownStyles.js"] external code: string = "code";
 let code = code;
+
+[@bs.module "./MarkdownStyles.js"] external languageRow: string = "languageRow";
+let languageRow = languageRow;
+
+[@bs.module "./MarkdownStyles.js"] external languageLabel: string = "languageLabel";
+let languageLabel = languageLabel;
 
 [@bs.module "./MarkdownStyles.js"] external noteRow: string = "noteRow";
 let noteRow = noteRow;

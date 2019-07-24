@@ -12,6 +12,13 @@ module Row = {
   };
 };
 
+module ExpandedRow = {
+  [@react.component]
+  let make = (~className, ~children) => {
+    <div className={Cn.make([Css.expandedRow, className])}> children </div>;
+  };
+};
+
 module RowWithSidenoteText = {
   [@react.component]
   let make = (~text, ~className, ~children) => {
@@ -102,14 +109,40 @@ module Li = {
 module Pre = {
   [@react.component]
   let make = (~children) => {
-    <Row className=Css.codeRow> <pre className=Css.pre> children </pre> </Row>;
+    <ExpandedRow className=Css.codeRow>
+      <pre className=Css.pre> children </pre>
+    </ExpandedRow>;
   };
 };
 
 module Code = {
+  let languageRegExp = [%bs.re "/language-/"];
+
   [@react.component]
-  let make = (~children) => {
-    <code className=Css.code> children </code>;
+  let make = (~className, ~children as source) => {
+    let language =
+      React.useMemo0(() =>
+        className->Option.map(Js.String.replaceByRe(languageRegExp, ""))
+      );
+    let code =
+      React.useMemo0(() =>
+        switch (language) {
+        | Some(language) =>
+          Prism.(source->highlight(language->Language.get, language))
+        | None => source
+        }
+      );
+
+    <>
+      {switch (language) {
+       | Some(language) =>
+         <div className=Css.languageRow>
+           <div className=Css.languageLabel> language->React.string </div>
+         </div>
+       | None => React.null
+       }}
+      <code className=Css.code dangerouslySetInnerHTML={"__html": code} />
+    </>;
   };
 };
 

@@ -4,6 +4,7 @@ import { Color, Font, Transition, Layout } from "styles";
 
 export const container = css`
   display: grid;
+  width: 100%;
 
   @media ${Layout.smallScreen} {
     grid-template-columns: minmax(auto, 700px);
@@ -11,15 +12,16 @@ export const container = css`
     grid-row-gap: ${Layout.smallScreenRowGap}px;
     justify-self: center;
     justify-content: center;
-    width: 100%;
-    padding: 30px ${Layout.smallScreenVPad}px;
+    padding: 30px 0;
   }
 
   @media ${Layout.largeScreen} {
     grid-template-rows: max-content max-content 1fr;
+    grid-template-columns: 100vw;
     grid-row-gap: ${Layout.largeScreenRowGap}px;
     justify-self: center;
-    width: ${Layout.largeScreenContentWidth}px;
+    justify-content: center;
+    justify-items: center;
     padding: 40px 0 30px;
   }
 `;
@@ -31,10 +33,11 @@ export const header = css`
     grid-template-columns: max-content max-content;
     grid-column-gap: 14px;
     justify-content: center;
+    padding: 0 ${Layout.smallScreenHPad}px;
   }
 
   @media ${Layout.largeScreen} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-column-gap: ${Layout.largeScreenColGap}px;
   }
 `;
@@ -163,15 +166,16 @@ export const footer = css`
     grid-template-rows: max-content max-content;
     grid-row-gap: 20px;
     align-content: end;
+    padding: 0 ${Layout.smallScreenHPad}px;
   }
 
   @media ${Layout.largeScreen} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: end;
     justify-content: space-between;
-    margin: 15px 0;
+    margin: 15px 0 0;
     user-select: none;
   }
 `;

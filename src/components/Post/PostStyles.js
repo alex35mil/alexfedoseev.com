@@ -6,6 +6,8 @@ export const container = css`
   display: grid;
   grid-template-rows: max-content 1fr;
   grid-row-gap: 10px;
+  justify-content: center;
+  justify-items: center;
 `;
 
 export const title = css`
@@ -16,11 +18,12 @@ export const title = css`
     grid-row-gap: 16px;
     justify-content: center;
     justify-items: center;
+    padding: 0 ${Layout.smallScreenHPad}px;
     text-align: center;
   }
 
   @media ${Layout.largeScreen} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: center;

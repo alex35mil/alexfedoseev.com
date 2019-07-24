@@ -9,9 +9,11 @@ export const years = css`
 
   @media ${Layout.smallScreen} {
     grid-row-gap: ${Layout.smallScreenRowGap}px;
+    padding: 0 ${Layout.smallScreenHPad}px;
   }
 
   @media ${Layout.largeScreen} {
+    grid-template-columns: ${Layout.largeScreenContentWidth}px;
     grid-row-gap: ${Layout.largeScreenRowGap}px;
   }
 `;
@@ -43,7 +45,7 @@ export const post = css`
   }
 
   @media ${Layout.largeScreen} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px 1fr;
+    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: center;
@@ -63,4 +65,9 @@ export const year = css`
 
 export const link = css`
   font-size: 0.9em;
+
+  @media ${Layout.smallScreen} {
+    /* text-overflow: ellipsis requires non-relative width to be set */
+    max-width: calc(100vw - ${Layout.smallScreenHPad * 2}px);
+  }
 `;
