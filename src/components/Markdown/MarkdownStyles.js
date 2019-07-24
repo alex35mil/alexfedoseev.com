@@ -274,6 +274,7 @@ export const coverImageCredit = css`
   font-size: 10px;
   text-align: center;
   text-shadow: 0 0 2px rgba(0, 0, 0, 0.3);
+  white-space: nowrap;
 
   &,
   & a {
