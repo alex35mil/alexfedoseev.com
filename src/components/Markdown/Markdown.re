@@ -273,12 +273,42 @@ module CoverImage = {
   };
 };
 
+module InlineImagePlacement = {
+  // In fact, not used since mdx serves strings
+  type placement =
+    | Center
+    | Fill
+    | Bleed;
+
+  let className = (placement, ~src) =>
+    switch (placement) {
+    | "center" => Css.inlineImagePlacementCenter
+    | "fill" => Css.inlineImagePlacementFill
+    | "bleed" => Css.inlineImagePlacementBleed
+    | _ as placement =>
+      Js.Console.warn(
+        {j|[WARNING] Invalid InlineImage placement: `$placement` for image "$src"|j},
+      );
+      Css.inlineImagePlacementFill;
+    };
+};
+
 module InlineImage = {
   [@react.component]
-  let make = (~src, ~caption) => {
+  let make = (~src, ~placement, ~caption=?) => {
+    let placementClassName =
+      React.useMemo1(
+        () => placement->InlineImagePlacement.className(~src),
+        [|placement|],
+      );
+
     <Row className=Css.inlineImageRow>
       <figure className=Css.inlineImageFigure>
-        <img src alt=?caption className=Css.inlineImage />
+        <img
+          src
+          alt=?caption
+          className={Cn.make([Css.inlineImage, placementClassName])}
+        />
         {switch (caption) {
          | Some(caption) =>
            <figcaption className=Css.inlineImageCaption>
@@ -293,10 +323,20 @@ module InlineImage = {
 
 module AnimatedGif = {
   [@react.component]
-  let make = (~src, ~caption) => {
+  let make = (~src, ~placement, ~caption) => {
+    let placementClassName =
+      React.useMemo1(
+        () => placement->InlineImagePlacement.className(~src),
+        [|placement|],
+      );
+
     <Row className=Css.inlineImageRow>
       <figure className=Css.inlineImageFigure>
-        <img src alt=?caption className=Css.inlineImage />
+        <img
+          src
+          alt=?caption
+          className={Cn.make([Css.inlineImage, placementClassName])}
+        />
         {switch (caption) {
          | Some(caption) =>
            <figcaption className=Css.inlineImageCaption>

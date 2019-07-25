@@ -129,6 +129,15 @@ let inlineImage = inlineImage;
 [@bs.module "./MarkdownStyles.js"] external inlineImageCaption: string = "inlineImageCaption";
 let inlineImageCaption = inlineImageCaption;
 
+[@bs.module "./MarkdownStyles.js"] external inlineImagePlacementCenter: string = "inlineImagePlacementCenter";
+let inlineImagePlacementCenter = inlineImagePlacementCenter;
+
+[@bs.module "./MarkdownStyles.js"] external inlineImagePlacementFill: string = "inlineImagePlacementFill";
+let inlineImagePlacementFill = inlineImagePlacementFill;
+
+[@bs.module "./MarkdownStyles.js"] external inlineImagePlacementBleed: string = "inlineImagePlacementBleed";
+let inlineImagePlacementBleed = inlineImagePlacementBleed;
+
 [@bs.module "./MarkdownStyles.js"] external expandableRow: string = "expandableRow";
 let expandableRow = expandableRow;
 

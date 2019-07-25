@@ -339,7 +339,7 @@ export const coverImageCredit = css`
 `;
 
 export const inlineImageRow = css`
-  margin: ${gap}px 0;
+  margin: ${gap * 2}px 0;
 
   .${h2Row} + &,
   .${h3Row} + & {
@@ -358,10 +358,35 @@ export const inlineImage = css`
 `;
 
 export const inlineImageCaption = css`
-  margin: 14px 0;
+  margin: 14px 0 0;
   color: ${Color.grayText};
   font-size: 0.8em;
   text-align: center;
+`;
+
+export const inlineImagePlacementCenter = css`
+  @media ${Layout.smallScreen} {
+    width: 100%;
+  }
+
+  @media ${Layout.largeScreen} {
+    width: auto;
+    max-width: 90%;
+  }
+`;
+
+export const inlineImagePlacementFill = css`
+  width: 100%;
+`;
+
+export const inlineImagePlacementBleed = css`
+  @media ${Layout.smallScreen} {
+    width: 100%;
+  }
+
+  @media ${Layout.largeScreen} {
+    width: calc(100% + 210px);
+  }
 `;
 
 export const expandableRow = css`

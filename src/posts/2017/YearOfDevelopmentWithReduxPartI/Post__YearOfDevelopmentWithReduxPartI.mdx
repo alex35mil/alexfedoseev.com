@@ -42,13 +42,19 @@ In a vanilla React app when 2 UI components are located in different parts of UI
 
 Similar pattern was used to implement Listings UI, but using Redux. We had a number of stores like `listingsStore`, `photosStore` etc. (To clarify: we have one redux store, but we call slices of the state, that are being transformed by reducers, each a store). Every store contained entities, form state for each entity, statuses (e.g. `isProcessing`) etc. From the store, data is combined via selectors and passed down to components — right from the top of the render tree. Like this:
 
-<InlineImage src={topDownImage} />
+<InlineImage
+  src={topDownImage}
+  placement="bleed"
+/>
 
 Oh my, that was a bad idea! The render tree was nailed by data props and action creators. Every keystroke in the form field was causing re-render of the whole tree. In addition to that, there were debounced updates to persist input data on the server. The waterfalls of props and re-rendering resulted in a huge performance issue.
 
 To solve this we reconsidered the vanilla React pattern and used features of Redux. Instead of connecting view layer to the state at the top of the UI render tree, we removed top level containers and connected each interactive element (e.g. text input, publish button) or element, that needs data, to Redux state on its own. Thus most of the containers appeared at the tips of the render tree. Like this:
 
-<InlineImage src={sideImage} />
+<InlineImage
+  src={sideImage}
+  placement="fill"
+/>
 
 We split our stores on 2 types:
 - Data stores

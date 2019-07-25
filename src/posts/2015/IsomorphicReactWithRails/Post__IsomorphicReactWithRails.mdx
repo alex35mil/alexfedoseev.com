@@ -33,7 +33,11 @@ I’ve been trying to implement JS server side rendering within Rails app using 
 
 Here is the first draft:
 
-<InlineImage src={draftImage} caption="First draft" />
+<InlineImage
+  src={draftImage}
+  placement="fill"
+  caption="First draft"
+/>
 
 Rails, which became simply JSON API, is responsible for data and React handles UI part using the same javascript codebase on the server and on the client. Worth to note, we can use Rails as API for mobile app and other services interested in our data.
 
@@ -54,7 +58,11 @@ Next we need to decide how data will be fetched from API.
 
 ### Option 1. Ajax CORS requests
 
-<InlineImage src={corsImage} caption="CORS" />
+<InlineImage
+  src={corsImage}
+  placement="bleed"
+  caption="CORS"
+/>
 
 Because of the [same-origin policy](https://developer.mozilla.org/en-US/docs/Web/Security/Same-origin_policy) we can’t make ajax requests from one location to another (even if a target resource on the same domain but different port). To enable such kind of requests we must apply **Cross-Origin Resource Sharing (CORS)** mechanism.
 
@@ -64,7 +72,11 @@ Keep in mind that by enabling CORS (especially public access) you dig potential 
 
 ### Option 2. Proxy ajax calls through front-end server
 
-<InlineImage src={proxyImage} caption="Proxy" />
+<InlineImage
+  src={proxyImage}
+  placement="bleed"
+  caption="Proxy"
+/>
 
 Instead of enabling CORS, we can proxy requests through `nginx` front-end server. Every call goes to the same domain: `my-app.com`. Nginx splits it in two directions:
 

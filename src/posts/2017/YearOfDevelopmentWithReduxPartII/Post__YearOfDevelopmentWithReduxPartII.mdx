@@ -47,13 +47,21 @@ It means we are moving our components back and forth all the time. This continuo
 However, `Component` for most of the developers means markup and css. But the main thing I like about `Component` is that it’s not limited
 to two of those, but it has a power to encapsulate all related parts: visual representation and `behavior`. If you feel frustrated using classic Redux file structure, try to restructure your modules around UI elements. In my case, this was a major productivity boost.
 
-<InlineImage src={uiUnitImage} caption="UI Unit" />
+<InlineImage
+  src={uiUnitImage}
+  placement="fill"
+  caption="UI Unit"
+/>
 
 **UI unit** is only element of the user interface, like a modal, or a widget, or a form. In the project tree it encapsulates all its related parts inside a single folder. UI units can be nested, but they are not coupled to each other (thanks to Redux). You can move them around like blocks. Easy to manage, easy to remove, and easy to reason about. Every time you work with the UI element, it’s like focus mode: you’re always in the context of what you’re doing and everything you need is right here at your fingertips.
 
 Let’s take a look at the example. In **Listing Edit Screen** host can edit the location of his property: he clicks on the address line and a modal with the form shows up:
 
-<InlineImage src={formImage} caption="Location form" />
+<InlineImage
+  src={formImage}
+  placement="fill"
+  caption="Location form"
+/>
 
 This modal is a UI unit. Here is how it looks like in the project tree:
 
