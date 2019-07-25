@@ -5,9 +5,16 @@ import { Color, Font, Transition, Layout } from "styles";
 export const container = css`
   display: grid;
   grid-template-rows: max-content 1fr;
-  grid-row-gap: 10px;
   justify-content: center;
   justify-items: center;
+
+  @media ${Layout.smallScreen} {
+    grid-row-gap: 16px;
+  }
+
+  @media ${Layout.largeScreen} {
+    grid-row-gap: 10px;
+  }
 `;
 
 export const title = css`

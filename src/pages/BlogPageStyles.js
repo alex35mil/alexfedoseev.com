@@ -67,7 +67,12 @@ export const link = css`
   font-size: 0.9em;
 
   @media ${Layout.smallScreen} {
+    font-size: 0.8em;
     /* text-overflow: ellipsis requires non-relative width to be set */
     max-width: calc(100vw - ${Layout.smallScreenHPad * 2}px);
+  }
+
+  @media ${Layout.largeScreen} {
+    font-size: 0.9em;
   }
 `;

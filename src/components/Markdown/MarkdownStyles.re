@@ -27,6 +27,12 @@ let h3Row = h3Row;
 [@bs.module "./MarkdownStyles.js"] external h3: string = "h3";
 let h3 = h3;
 
+[@bs.module "./MarkdownStyles.js"] external h4Row: string = "h4Row";
+let h4Row = h4Row;
+
+[@bs.module "./MarkdownStyles.js"] external h4: string = "h4";
+let h4 = h4;
+
 [@bs.module "./MarkdownStyles.js"] external pRow: string = "pRow";
 let pRow = pRow;
 
@@ -45,6 +51,15 @@ let ol = ol;
 [@bs.module "./MarkdownStyles.js"] external ul: string = "ul";
 let ul = ul;
 
+[@bs.module "./MarkdownStyles.js"] external li: string = "li";
+let li = li;
+
+[@bs.module "./MarkdownStyles.js"] external hrRow: string = "hrRow";
+let hrRow = hrRow;
+
+[@bs.module "./MarkdownStyles.js"] external hr: string = "hr";
+let hr = hr;
+
 [@bs.module "./MarkdownStyles.js"] external inlineCode: string = "inlineCode";
 let inlineCode = inlineCode;
 
@@ -57,11 +72,23 @@ let pre = pre;
 [@bs.module "./MarkdownStyles.js"] external code: string = "code";
 let code = code;
 
-[@bs.module "./MarkdownStyles.js"] external languageRow: string = "languageRow";
-let languageRow = languageRow;
+[@bs.module "./MarkdownStyles.js"] external codeLabelsRow: string = "codeLabelsRow";
+let codeLabelsRow = codeLabelsRow;
+
+[@bs.module "./MarkdownStyles.js"] external codeLabelsRowWithFile: string = "codeLabelsRowWithFile";
+let codeLabelsRowWithFile = codeLabelsRowWithFile;
+
+[@bs.module "./MarkdownStyles.js"] external codeLabelsRowWithoutFile: string = "codeLabelsRowWithoutFile";
+let codeLabelsRowWithoutFile = codeLabelsRowWithoutFile;
+
+[@bs.module "./MarkdownStyles.js"] external codeLabel: string = "codeLabel";
+let codeLabel = codeLabel;
 
 [@bs.module "./MarkdownStyles.js"] external languageLabel: string = "languageLabel";
 let languageLabel = languageLabel;
+
+[@bs.module "./MarkdownStyles.js"] external fileLabel: string = "fileLabel";
+let fileLabel = fileLabel;
 
 [@bs.module "./MarkdownStyles.js"] external global: string = "global";
 let global = global;
@@ -71,6 +98,12 @@ let noteRow = noteRow;
 
 [@bs.module "./MarkdownStyles.js"] external note: string = "note";
 let note = note;
+
+[@bs.module "./MarkdownStyles.js"] external highlightRow: string = "highlightRow";
+let highlightRow = highlightRow;
+
+[@bs.module "./MarkdownStyles.js"] external highlight: string = "highlight";
+let highlight = highlight;
 
 [@bs.module "./MarkdownStyles.js"] external coverImageRow: string = "coverImageRow";
 let coverImageRow = coverImageRow;
@@ -95,3 +128,21 @@ let inlineImage = inlineImage;
 
 [@bs.module "./MarkdownStyles.js"] external inlineImageCaption: string = "inlineImageCaption";
 let inlineImageCaption = inlineImageCaption;
+
+[@bs.module "./MarkdownStyles.js"] external expandableRow: string = "expandableRow";
+let expandableRow = expandableRow;
+
+[@bs.module "./MarkdownStyles.js"] external expandableTrigger: string = "expandableTrigger";
+let expandableTrigger = expandableTrigger;
+
+[@bs.module "./MarkdownStyles.js"] external expandableTriggerText: string = "expandableTriggerText";
+let expandableTriggerText = expandableTriggerText;
+
+[@bs.module "./MarkdownStyles.js"] external expandableTriggerIcon: string = "expandableTriggerIcon";
+let expandableTriggerIcon = expandableTriggerIcon;
+
+[@bs.module "./MarkdownStyles.js"] external expandableTriggerIconCollapsed: string = "expandableTriggerIconCollapsed";
+let expandableTriggerIconCollapsed = expandableTriggerIconCollapsed;
+
+[@bs.module "./MarkdownStyles.js"] external expandableTriggerIconExpanded: string = "expandableTriggerIconExpanded";
+let expandableTriggerIconExpanded = expandableTriggerIconExpanded;

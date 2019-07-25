@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Layout } from "styles";
+import { Color, Font, Transition, Layout } from "styles";
 
 const gap = 14;
 
@@ -85,6 +85,17 @@ export const h3 = css`
   color: ${Color.grayText};
 `;
 
+export const h4Row = css`
+  margin: ${gap}px 0 0;
+`;
+
+export const h4 = css`
+  display: flex;
+  font-family: ${Font.mono};
+  font-size: 20px;
+  color: ${Color.grayText};
+`;
+
 export const pRow = css`
   margin: ${gap}px 0;
 
@@ -140,6 +151,20 @@ export const ul = css`
   }
 `;
 
+export const li = css`
+  margin-bottom: 4px;
+`;
+
+export const hrRow = css`
+  margin: ${gap}px 0;
+`;
+
+export const hr = css`
+  display: flex;
+  border-width: 0;
+  border-top: 1px solid ${Color.grayLine};
+`;
+
 export const inlineCode = css`
   font-family: ${Font.mono};
   font-style: italic;
@@ -187,39 +212,57 @@ export const code = css`
   }
 `;
 
-export const languageRow = css`
+export const codeLabelsRow = css`
   position: relative;
   overflow: visible;
 
   @media ${Layout.smallScreen} {
     width: 100%;
-    height: 1em;
   }
 
   @media ${Layout.largeScreen} {
     width: ${Layout.largeScreenContentWidth}px;
-    height: 0;
   }
+`;
+
+export const codeLabelsRowWithFile = css`
+  height: 1em;
+`;
+
+export const codeLabelsRowWithoutFile = css`
+  height: 0;
 `;
 
 const languageLabelHPad = 7;
 
-export const languageLabel = css`
+export const codeLabel = css`
   display: flex;
   position: absolute;
   top: -${largeScreenCodeVPad}px;
   background-color: #e7e7e7;
   padding: 1px ${languageLabelHPad}px;
-  font-size: 0.7em;
-  text-transform: uppercase;
 
+  @media ${Layout.smallScreen} {
+    font-size: 0.65em;
+  }
+
+  @media ${Layout.largeScreen} {
+    font-size: 0.7em;
+  }
+`;
+
+export const languageLabel = css`
+  text-transform: uppercase;
+  right: -${languageLabelHPad}px;
+`;
+
+export const fileLabel = css`
   @media ${Layout.smallScreen} {
     left: -${languageLabelHPad}px;
   }
 
   @media ${Layout.largeScreen} {
-    left: ${Layout.largeScreenLeftColWidth}px;
-    transform: translateX(-100%);
+    left: ${Layout.largeScreenLeftColWidth + Layout.largeScreenColGap - languageLabelHPad}px;
   }
 `;
 
@@ -240,8 +283,21 @@ export const noteRow = css`
 `;
 
 export const note = css`
-  color: ${Color.grayText};
+  &,
+  & a {
+    color: ${Color.grayText};
+  }
+`;
+
+export const highlightRow = css`
+  margin: ${gap * 2}px 0;
+`;
+
+export const highlight = css`
+  font-size: 1.5em;
   font-style: italic;
+  color: ${Color.grayText};
+  text-align: center;
 `;
 
 export const coverImageRow = css`
@@ -302,8 +358,36 @@ export const inlineImage = css`
 `;
 
 export const inlineImageCaption = css`
-  margin: 6px 0;
+  margin: 14px 0;
   color: ${Color.grayText};
   font-size: 0.8em;
   text-align: center;
+`;
+
+export const expandableRow = css`
+  margin: ${gap}px 0;
+`;
+
+export const expandableTrigger = css`
+  display: grid;
+  grid-template-columns: max-content max-content;
+  grid-column-gap: 10px;
+  align-items: center;
+`;
+
+export const expandableTriggerText = css`
+  display: inline-block;
+  border-bottom: 1px dotted ${Color.grayText};
+`;
+
+export const expandableTriggerIcon = css`
+  transition: transform ${Transition.fast} ${Transition.timingFunction};
+`;
+
+export const expandableTriggerIconCollapsed = css`
+  transform: rotate(0deg);
+`;
+
+export const expandableTriggerIconExpanded = css`
+  transform: rotate(180deg);
 `;

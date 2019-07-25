@@ -331,7 +331,7 @@ export const sidenote = css`
   user-select: none;
 
   @media ${Layout.smallScreen} {
-    font-size: 0.9em;
+    font-size: 0.8em;
   }
 
   @media ${Layout.largeScreen} {

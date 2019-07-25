@@ -17,7 +17,13 @@ module.exports = {
   resolve: {
     alias: {
       components: path.join(root, "src", "components"),
-      markdown: path.join(root, "src", "components", "Markdown", "Markdown.bs.js"),
+      markdown: path.join(
+        root,
+        "src",
+        "components",
+        "Markdown",
+        "Markdown.bs.js",
+      ),
       styles: path.join(root, "src", "styles"),
       meta: path.join(root, "src", "meta"),
     },
@@ -34,6 +40,7 @@ module.exports = {
     new HtmlPlugin({
       template: "./src/index.html",
       inject: true,
+      chunksSortMode: "none", // due to weird bug somewhere in html-webpack-plugin
     }),
   ],
   module: {
@@ -65,10 +72,17 @@ module.exports = {
       },
       {
         test: /\.woff2?$/,
-        use: "file-loader"
+        use: "file-loader",
       },
       {
         test: /\.(webp|png|jpe?g)$/,
+        use: {
+          loader: "file-loader",
+          options: { name: "[name]-[hash].[ext]" },
+        },
+      },
+      {
+        test: /\.gif$/,
         use: {
           loader: "file-loader",
           options: { name: "[name]-[hash].[ext]" },

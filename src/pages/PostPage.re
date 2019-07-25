@@ -12,7 +12,7 @@ let make = (~slug: string) => {
 
   switch (entry) {
   | Some((year, post)) =>
-    <PostLoader load={post.loader}>
+    <PostLoader key=slug load={post.loader}>
       (
         ((module Content)) =>
           <Post title={post.title} year date={post.date}>
