@@ -28,6 +28,15 @@ module.exports = {
       meta: path.join(root, "src", "meta"),
     },
   },
+  resolveLoader: {
+    alias: {
+      "responsive-image-loader": path.join(
+        __dirname,
+        "loaders",
+        "responsive-image-loader.js",
+      ),
+    },
+  },
   devtool: "#cheap-module-eval-source-map",
   devServer: {
     hot: true,
@@ -76,10 +85,29 @@ module.exports = {
       },
       {
         test: /\.(webp|png|jpe?g)$/,
-        use: {
-          loader: "file-loader",
-          options: { name: "[name]-[hash].[ext]" },
-        },
+        use: [
+          {
+            loader: "responsive-image-loader",
+            options: {
+              presets: {
+                cover: {
+                  type: "fluid",
+                  sizes: [840, 1024, 1366, 1920, 2560],
+                  fallback: 1024,
+                },
+                inline: {
+                  type: "fixed",
+                  sizes: [880],
+                  fallback: 880,
+                },
+              },
+            },
+          },
+          {
+            loader: "file-loader",
+            options: { name: "[name]-[hash].[ext]" },
+          },
+        ],
       },
       {
         test: /\.gif$/,

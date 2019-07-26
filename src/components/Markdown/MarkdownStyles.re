@@ -1,8 +1,5 @@
 /* === GENERATED CONTENT === */
 
-[@bs.module "./MarkdownStyles.js"] external markdown: string = "markdown";
-let markdown = markdown;
-
 [@bs.module "./MarkdownStyles.js"] external row: string = "row";
 let row = row;
 
@@ -105,11 +102,23 @@ let highlightRow = highlightRow;
 [@bs.module "./MarkdownStyles.js"] external highlight: string = "highlight";
 let highlight = highlight;
 
+[@bs.module "./MarkdownStyles.js"] external image: string = "image";
+let image = image;
+
+[@bs.module "./MarkdownStyles.js"] external loadingImage: string = "loadingImage";
+let loadingImage = loadingImage;
+
+[@bs.module "./MarkdownStyles.js"] external loadedImage: string = "loadedImage";
+let loadedImage = loadedImage;
+
 [@bs.module "./MarkdownStyles.js"] external coverImageRow: string = "coverImageRow";
 let coverImageRow = coverImageRow;
 
 [@bs.module "./MarkdownStyles.js"] external coverImageFigure: string = "coverImageFigure";
 let coverImageFigure = coverImageFigure;
+
+[@bs.module "./MarkdownStyles.js"] external coverImageOverlay: string = "coverImageOverlay";
+let coverImageOverlay = coverImageOverlay;
 
 [@bs.module "./MarkdownStyles.js"] external coverImage: string = "coverImage";
 let coverImage = coverImage;

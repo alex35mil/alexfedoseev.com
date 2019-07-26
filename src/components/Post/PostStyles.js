@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Layout } from "styles";
+import { Color, Font, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
@@ -8,11 +8,11 @@ export const container = css`
   justify-content: center;
   justify-items: center;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-row-gap: 16px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-row-gap: 10px;
   }
 `;
@@ -20,7 +20,7 @@ export const container = css`
 export const title = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-template-rows: max-content max-content;
     grid-row-gap: 16px;
     justify-content: center;
@@ -29,7 +29,7 @@ export const title = css`
     text-align: center;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
@@ -39,8 +39,16 @@ export const title = css`
 `;
 
 export const date = css`
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     order: 1;
     text-align: center;
   }
+`;
+
+export const content = css`
+  display: grid;
+  grid-auto-flow: row;
+  grid-auto-rows: auto;
+  align-content: start;
+  justify-content: start;
 `;

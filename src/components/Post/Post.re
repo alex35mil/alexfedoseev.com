@@ -12,7 +12,7 @@ let make = (~title, ~year, ~date, ~children) => {
         </div>
         <Markdown.H1> title->React.string </Markdown.H1>
       </div>
-      <Markdown> children </Markdown>
+      <div className=Css.content> children </div>
     </div>
   </Page>;
 };

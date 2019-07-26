@@ -1,28 +1,20 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Layout } from "styles";
+import { Color, Font, Transition, Screen, Layout } from "styles";
 
 const gap = 14;
-
-export const markdown = css`
-  display: grid;
-  grid-auto-flow: row;
-  grid-auto-rows: auto;
-  align-content: start;
-  justify-content: start;
-`;
 
 export const row = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-template-rows: auto;
     grid-template-columns: max-content auto;
     align-content: start;
     padding: 0 ${Layout.smallScreenHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: auto;
     grid-column-gap: ${Layout.largeScreenColGap}px;
@@ -34,7 +26,7 @@ export const row = css`
 export const rowWithSidenote = css`
   align-items: baseline;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-column-gap: 10px;
   }
 `;
@@ -42,13 +34,13 @@ export const rowWithSidenote = css`
 export const expandedRow = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-template-rows: auto;
-    grid-template-columns: 1fr;
+    grid-template-columns: 100vw;
     align-content: start;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: minmax(100vw, 2000px);
     grid-template-rows: auto;
     align-content: start;
@@ -114,7 +106,7 @@ export const listRow = css`
 `;
 
 export const list = css`
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     margin-left: calc(1em + ${Layout.smallScreenHPad}px);
   }
 `;
@@ -185,12 +177,12 @@ export const pre = css`
   align-items: center;
   background-color: #f5f2f0;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     padding: ${smallScreenCodeVPad}px ${Layout.smallScreenHPad}px;
     overflow-x: auto;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     padding: ${largeScreenCodeVPad}px 0;
   }
 `;
@@ -200,12 +192,12 @@ export const code = css`
   font-size: 16px;
   line-height: 1.8;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     width: 100%;
     padding-right: ${Layout.smallScreenHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     width: ${Layout.largeScreenContentWidth}px;
     padding-left: ${Layout.largeScreenLeftColWidth + Layout.largeScreenColGap}px;
     overflow: visible;
@@ -216,11 +208,11 @@ export const codeLabelsRow = css`
   position: relative;
   overflow: visible;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     width: 100%;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     width: ${Layout.largeScreenContentWidth}px;
   }
 `;
@@ -242,11 +234,11 @@ export const codeLabel = css`
   background-color: #e7e7e7;
   padding: 1px ${languageLabelHPad}px;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     font-size: 0.65em;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     font-size: 0.7em;
   }
 `;
@@ -257,11 +249,11 @@ export const languageLabel = css`
 `;
 
 export const fileLabel = css`
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     left: -${languageLabelHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     left: ${Layout.largeScreenLeftColWidth + Layout.largeScreenColGap - languageLabelHPad}px;
   }
 `;
@@ -294,10 +286,35 @@ export const highlightRow = css`
 `;
 
 export const highlight = css`
-  font-size: 1.5em;
-  font-style: italic;
   color: ${Color.grayText};
+  font-style: italic;
   text-align: center;
+
+  @media ${Screen.small} {
+    font-size: 1.3em;
+    word-break: break-all;
+  }
+
+  @media ${Screen.large} {
+    font-size: 1.5em;
+  }
+`;
+
+export const image = css`
+  /* NOTE: Do not add transform to this list since it's used in inline style */
+  transition-property: filter, opacity;
+  transition-duration: 0.2s;
+  transition-timing-function: linear;
+`;
+
+export const loadingImage = css`
+  filter: blur(5px);
+  opacity: 0;
+`;
+
+export const loadedImage = css`
+  filter: blur(0);
+  opacity: 1;
 `;
 
 export const coverImageRow = css`
@@ -309,19 +326,33 @@ export const coverImageFigure = css`
   position: relative;
   flex-flow: column nowrap;
   align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  @media ${Screen.small} {
+    height: 220px;
+  }
+
+  @media ${Screen.large} {
+    height: 320px;
+  }
+`;
+
+export const coverImageOverlay = css`
+  display: flex;
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  background-color: rgba(0, 0, 0, 0.2);
+  box-shadow: inset 0 0 8em #000;
 `;
 
 export const coverImage = css`
   object-fit: cover;
   width: 100%;
-
-  @media ${Layout.smallScreen} {
-    height: 160px;
-  }
-
-  @media ${Layout.largeScreen} {
-    height: 320px;
-  }
 `;
 
 export const coverImageCredit = css`
@@ -334,7 +365,7 @@ export const coverImageCredit = css`
 
   &,
   & a {
-    color: #ccc;
+    color: #666;
   }
 `;
 
@@ -349,12 +380,13 @@ export const inlineImageRow = css`
 
 export const inlineImageFigure = css`
   display: flex;
+  position: relative;
   flex-flow: column nowrap;
   align-items: center;
 `;
 
 export const inlineImage = css`
-  width: 100%;
+  position: relative;
 `;
 
 export const inlineImageCaption = css`
@@ -365,11 +397,11 @@ export const inlineImageCaption = css`
 `;
 
 export const inlineImagePlacementCenter = css`
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     width: 100%;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     width: auto;
     max-width: 90%;
   }
@@ -380,11 +412,11 @@ export const inlineImagePlacementFill = css`
 `;
 
 export const inlineImagePlacementBleed = css`
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     width: 100%;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     width: calc(100% + 210px);
   }
 `;

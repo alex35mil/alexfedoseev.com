@@ -1,10 +1,5 @@
 module Css = MarkdownStyles;
 
-[@react.component]
-let make = (~children) => {
-  <div className=Css.markdown> children </div>;
-};
-
 module Row = {
   [@react.component]
   let make = (~className, ~children) => {
@@ -255,11 +250,116 @@ module Highlight = {
 };
 
 module CoverImage = {
+  type status =
+    | Loading
+    | Loaded;
+
+  type state = {
+    status,
+    parallaxFactor: float,
+  };
+
+  type action =
+    | ShowImage
+    | UpdateParallaxFactor(float);
+
+  let reducer = (state, action) =>
+    switch (action) {
+    | ShowImage =>
+      switch (state.status) {
+      | Loading => {...state, status: Loaded}
+      | Loaded => state
+      }
+    | UpdateParallaxFactor(parallaxFactor) => {...state, parallaxFactor}
+    };
+
+  module Src = {
+    type t;
+
+    [@bs.get] external srcset: t => string = "srcset";
+    [@bs.get] external fallback: t => string = "fallback";
+    [@bs.get] external placeholder: t => string = "placeholder";
+  };
+
+  external htmlImageElementFromElement:
+    Dom.element => Web.Dom.HtmlImageElement.t =
+    "%identity";
+
   [@react.component]
   let make = (~src, ~credit) => {
+    let screen = React.useContext(ScreenSize.Context.x);
+    let image = React.useRef(Js.Nullable.null);
+    let placeholder = src->Src.placeholder;
+
+    let (state, dispatch) =
+      reducer->React.useReducer({status: Loading, parallaxFactor: 0.});
+
+    React.useEffect0(() => {
+      switch (image->React.Ref.current->Js.Nullable.toOption) {
+      | Some(image)
+          when
+            Web.Dom.(
+              image->htmlImageElementFromElement->HtmlImageElement.complete
+            ) =>
+        ShowImage->dispatch
+      | Some(_)
+      | None => ()
+      };
+      None;
+    });
+
+    React.useEffect2(
+      () =>
+        switch (screen) {
+        | Small => None
+        | Large =>
+          Subscription.onScroll(_ =>
+            switch (state.status) {
+            | Loading => ()
+            | Loaded =>
+              let scrolled = Web.Dom.(window->Window.pageYOffset);
+              if (scrolled > 0. && scrolled < 1500.) {
+                UpdateParallaxFactor(scrolled /. 3.)->dispatch;
+              };
+            }
+          )
+        },
+      (state.status, screen),
+    );
+
     <ExpandedRow className=Css.coverImageRow>
-      <figure className=Css.coverImageFigure>
-        <img src className=Css.coverImage />
+      <figure
+        className=Css.coverImageFigure
+        style={ReactDom.Style.make(
+          ~backgroundImage={j|url("$placeholder")|j},
+          ~backgroundSize="cover",
+          ~backgroundRepeat="no-repeat",
+          ~backgroundPosition="50% 50%",
+          (),
+        )}>
+        <img
+          sizes="100vw"
+          ref={image->ReactDom.Ref.domRef}
+          src={src->Src.fallback}
+          srcSet={src->Src.srcset}
+          className={Cn.make([
+            Css.image,
+            Css.coverImage,
+            switch (state.status) {
+            | Loading => Css.loadingImage
+            | Loaded => Css.loadedImage
+            },
+          ])}
+          style={ReactDom.Style.make(
+            ~transform=
+              "translate3d(0px, "
+              ++ state.parallaxFactor->Int.fromFloat->Int.toString
+              ++ "px, 0px)",
+            (),
+          )}
+          onLoad={_ => ShowImage->dispatch}
+        />
+        <div className=Css.coverImageOverlay />
         {switch (credit) {
          | Some(credit) =>
            <figcaption className=Css.coverImageCredit>
@@ -275,7 +375,7 @@ module CoverImage = {
 
 module InlineImagePlacement = {
   // In fact, not used since mdx serves strings
-  type placement =
+  type t =
     | Center
     | Fill
     | Bleed;
@@ -294,6 +394,16 @@ module InlineImagePlacement = {
 };
 
 module InlineImage = {
+  module Src = {
+    type t;
+    type srcset;
+
+    [@bs.get] external srcset: t => srcset = "srcset";
+    [@bs.get] external srcs: srcset => string = "880";
+    [@bs.get] external fallback: t => string = "fallback";
+    [@bs.get] external placeholder: t => string = "placeholder";
+  };
+
   [@react.component]
   let make = (~src, ~placement, ~caption=?) => {
     let placementClassName =
@@ -305,7 +415,8 @@ module InlineImage = {
     <Row className=Css.inlineImageRow>
       <figure className=Css.inlineImageFigure>
         <img
-          src
+          src={src->Src.fallback}
+          srcSet={src->Src.srcset->Src.srcs}
           alt=?caption
           className={Cn.make([Css.inlineImage, placementClassName])}
         />

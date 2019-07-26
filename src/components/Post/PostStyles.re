@@ -8,3 +8,6 @@ let title = title;
 
 [@bs.module "./PostStyles.js"] external date: string = "date";
 let date = date;
+
+[@bs.module "./PostStyles.js"] external content: string = "content";
+let content = content;

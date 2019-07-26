@@ -1,12 +1,12 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Layout } from "styles";
+import { Color, Font, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
   width: 100%;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-template-columns: minmax(auto, 700px);
     grid-template-rows: max-content max-content 1fr;
     grid-row-gap: ${Layout.smallScreenRowGap}px;
@@ -15,7 +15,7 @@ export const container = css`
     padding: 30px 0;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-rows: max-content max-content 1fr;
     grid-template-columns: 100vw;
     grid-row-gap: ${Layout.largeScreenRowGap}px;
@@ -29,14 +29,14 @@ export const container = css`
 export const header = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-template-columns: max-content max-content;
     grid-column-gap: 14px;
     justify-content: center;
     padding: 0 ${Layout.smallScreenHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-column-gap: ${Layout.largeScreenColGap}px;
   }
@@ -45,13 +45,13 @@ export const header = css`
 export const logo = css`
   display: flex;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     flex-flow: row nowrap;
     align-items: center;
     justify-content: center;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     flex-flow: row nowrap;
     align-items: center;
     justify-content: flex-end;
@@ -64,11 +64,11 @@ export const logoLink = css`
   white-space: nowrap;
   user-select: none;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     font-size: 18px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     font-size: 21px;
   }
 `;
@@ -76,14 +76,14 @@ export const logoLink = css`
 export const navigation = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-template-columns: max-content max-content max-content;
     grid-column-gap: 14px;
     align-items: center;
     justify-content: center;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: max-content max-content 1fr;
     grid-column-gap: 28px;
     align-items: center;
@@ -108,11 +108,11 @@ export const navLink = css`
     transform: rotate(-3deg) scale(1.1);
   }
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     padding: 4px ${smallScreenNavLinkHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     padding: 6px ${largeScreenNavLinkHPad}px;
   }
 `;
@@ -121,11 +121,11 @@ export const navLinkActive = css`
   color: ${Color.white};
   background-color: ${Color.blue};
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     font-size: 0.8em;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     font-size: 1em;
   }
 `;
@@ -150,11 +150,11 @@ export const restNavLinks = css`
   grid-column-gap: 10px;
   align-items: center;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     margin-left: -${smallScreenNavLinkHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     margin-left: -${largeScreenNavLinkHPad}px;
   }
 `;
@@ -162,14 +162,14 @@ export const restNavLinks = css`
 export const footer = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-template-rows: max-content max-content;
     grid-row-gap: 20px;
     align-content: end;
     padding: 0 ${Layout.smallScreenHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
@@ -183,12 +183,12 @@ export const footer = css`
 export const footerSources = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     order: 2;
     justify-content: center;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: max-content;
     align-items: center;
     justify-content: start;
@@ -207,13 +207,13 @@ export const footerSourcesLink = css`
 export const footerMainCol = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     order: 1;
     grid-template-rows: max-content max-content max-content;
     grid-row-gap: 20px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: max-content max-content max-content;
     grid-column-gap: 8px;
     align-items: center;
@@ -224,7 +224,7 @@ export const footerMainCol = css`
 export const footerNav = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-auto-flow: column;
     grid-auto-columns: max-content;
     grid-column-gap: 12px;
@@ -232,7 +232,7 @@ export const footerNav = css`
     align-items: center;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-auto-flow: column;
     grid-auto-columns: max-content;
     grid-column-gap: 12px;
@@ -330,11 +330,11 @@ export const sidenote = css`
   line-height: 1;
   user-select: none;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     font-size: 0.8em;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     font-size: .65em;
     justify-content: flex-end;
     text-align: right;

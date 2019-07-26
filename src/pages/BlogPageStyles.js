@@ -1,18 +1,18 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Layout } from "styles";
+import { Color, Font, Transition, Screen, Layout } from "styles";
 
 export const years = css`
   display: grid;
   grid-auto-flow: row;
   grid-template-rows: max-content;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-row-gap: ${Layout.smallScreenRowGap}px;
     padding: 0 ${Layout.smallScreenHPad}px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: ${Layout.largeScreenContentWidth}px;
     grid-row-gap: ${Layout.largeScreenRowGap}px;
   }
@@ -24,13 +24,13 @@ export const yearContainer = css`
   grid-auto-rows: max-content;
   grid-row-gap: 3px;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     grid-auto-rows: max-content;
     justify-content: center;
     justify-items: center;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-auto-rows: max-content;
   }
 `;
@@ -38,13 +38,13 @@ export const yearContainer = css`
 export const post = css`
   display: grid;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     justify-content: center;
     justify-items: center;
     text-align: center;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
@@ -54,11 +54,11 @@ export const post = css`
 `;
 
 export const year = css`
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     margin-bottom: 10px;
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     margin-bottom: 0;
   }
 `;
@@ -66,13 +66,13 @@ export const year = css`
 export const link = css`
   font-size: 0.9em;
 
-  @media ${Layout.smallScreen} {
+  @media ${Screen.small} {
     font-size: 0.8em;
     /* text-overflow: ellipsis requires non-relative width to be set */
     max-width: calc(100vw - ${Layout.smallScreenHPad * 2}px);
   }
 
-  @media ${Layout.largeScreen} {
+  @media ${Screen.large} {
     font-size: 0.9em;
   }
 `;

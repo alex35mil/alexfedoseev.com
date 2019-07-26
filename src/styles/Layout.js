@@ -1,6 +1,3 @@
-export const largeScreen = "(min-width: 1001px)";
-export const smallScreen = "(max-width: 1000px)";
-
 export const bgColor = "#fff";
 
 export const largeScreenRowGap = 28;
