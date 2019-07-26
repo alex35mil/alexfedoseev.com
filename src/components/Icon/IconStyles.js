@@ -4,6 +4,7 @@ import { Color, Transition } from "styles";
 
 export const sm = 12;
 export const md = 16;
+export const lg = 24;
 
 export const icon = css`
   transition-duration: ${Transition.fast};
@@ -18,4 +19,9 @@ export const smSize = css`
 export const mdSize = css`
   width: ${md}px;
   height: ${md}px;
+`;
+
+export const lgSize = css`
+  width: ${lg}px;
+  height: ${lg}px;
 `;

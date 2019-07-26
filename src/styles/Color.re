@@ -3,6 +3,9 @@
 [@bs.module "./Color.js"] external blue: string = "blue";
 let blue = blue;
 
+[@bs.module "./Color.js"] external beige: string = "beige";
+let beige = beige;
+
 [@bs.module "./Color.js"] external white: string = "white";
 let white = white;
 

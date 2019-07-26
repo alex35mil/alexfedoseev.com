@@ -2,7 +2,8 @@ module Css = IconStyles;
 
 type size =
   | SM
-  | MD;
+  | MD
+  | LG;
 
 type color =
   | Blue
@@ -58,6 +59,7 @@ let make = (~title: string, ~size: size, ~className="", ~children) => {
       switch (size) {
       | SM => Css.smSize
       | MD => Css.mdSize
+      | LG => Css.lgSize
       },
       className,
     ])}>

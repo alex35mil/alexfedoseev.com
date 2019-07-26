@@ -12,14 +12,26 @@ let make = (~slug: string) => {
 
   switch (entry) {
   | Some((year, post)) =>
+    let index =
+      Posts.all->Array.getIndexBy(entry => entry.slug == slug)->Option.getExn;
+
     <PostLoader key=slug load={post.loader}>
       (
         ((module Content)) =>
-          <Post title={post.title} year date={post.date}>
+          <Post
+            title={post.title}
+            year
+            date={post.date}
+            prevPost={
+              Posts.all->Array.get(index + 1)->Option.map(post => post.slug)
+            }
+            nextPost={
+              Posts.all->Array.get(index - 1)->Option.map(post => post.slug)
+            }>
             <Content title={post.title} />
           </Post>
       )
-    </PostLoader>
+    </PostLoader>;
   | None => "404"->React.string // TODO: Error screen
   };
 };

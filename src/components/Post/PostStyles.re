@@ -176,3 +176,36 @@ let expandableTriggerIconCollapsed = expandableTriggerIconCollapsed;
 
 [@bs.module "./PostStyles.js"] external expandableTriggerIconExpanded: string = "expandableTriggerIconExpanded";
 let expandableTriggerIconExpanded = expandableTriggerIconExpanded;
+
+[@bs.module "./PostStyles.js"] external socialSharingContainer: string = "socialSharingContainer";
+let socialSharingContainer = socialSharingContainer;
+
+[@bs.module "./PostStyles.js"] external footerRow: string = "footerRow";
+let footerRow = footerRow;
+
+[@bs.module "./PostStyles.js"] external footerRowInner: string = "footerRowInner";
+let footerRowInner = footerRowInner;
+
+[@bs.module "./PostStyles.js"] external footerLink: string = "footerLink";
+let footerLink = footerLink;
+
+[@bs.module "./PostStyles.js"] external prevPost: string = "prevPost";
+let prevPost = prevPost;
+
+[@bs.module "./PostStyles.js"] external nextPost: string = "nextPost";
+let nextPost = nextPost;
+
+[@bs.module "./PostStyles.js"] external socialSharing: string = "socialSharing";
+let socialSharing = socialSharing;
+
+[@bs.module "./PostStyles.js"] external socialSharingButton: string = "socialSharingButton";
+let socialSharingButton = socialSharingButton;
+
+[@bs.module "./PostStyles.js"] external socialSharingButtonTwitter: string = "socialSharingButtonTwitter";
+let socialSharingButtonTwitter = socialSharingButtonTwitter;
+
+[@bs.module "./PostStyles.js"] external socialSharingButtonFacebook: string = "socialSharingButtonFacebook";
+let socialSharingButtonFacebook = socialSharingButtonFacebook;
+
+[@bs.module "./PostStyles.js"] external socialSharingIcon: string = "socialSharingIcon";
+let socialSharingIcon = socialSharingIcon;

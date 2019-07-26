@@ -503,8 +503,96 @@ module Expandable = {
   };
 };
 
+module Footer = {
+  [@bs.val]
+  external encodeURIComponent: string => string = "encodeURIComponent";
+
+  [@react.component]
+  let make = (~title, ~prevPost, ~nextPost) => {
+    let shareOnTwitter =
+      React.useCallback0(() => {
+        let username = Env.twitterHandle;
+        let title = encodeURIComponent({j|"$title"|j});
+        let url =
+          encodeURIComponent(
+            Web.Dom.(window->Window.location->Location.href),
+          );
+        Browser.openWindow(
+          ~url=
+            {j|https://twitter.com/intent/tweet?text=$(title)&url=$(url)&via=$(username)|j},
+          ~name="Share on Twitter",
+          ~width=600,
+          ~height=600,
+        );
+      });
+
+    let shareOnFacebook =
+      React.useCallback0(() => {
+        let facebookAppId = Env.facebookAppId;
+        let url =
+          encodeURIComponent(
+            Web.Dom.(window->Window.location->Location.href),
+          );
+        Browser.openWindow(
+          ~url=
+            {j|https://www.facebook.com/dialog/share?app_id=$(facebookAppId)&display=popup&href=$(url)|j},
+          ~name="Share on Facebook",
+          ~width=600,
+          ~height=600,
+        );
+      });
+
+    <div className=Css.footerRow>
+      <div className=Css.footerRowInner>
+        <div className=Css.prevPost>
+          {switch (prevPost) {
+           | Some(slug) =>
+             <Link.Box path={Route.post(~slug)} className=Css.footerLink>
+               <ChevronLeftIcon size=LG color=Gray />
+             </Link.Box>
+           | None => React.null
+           }}
+        </div>
+        <div className=Css.socialSharing>
+          <Control
+            className={Cn.make([
+              Css.socialSharingButton,
+              Css.socialSharingButtonTwitter,
+            ])}
+            onClick={_ => shareOnTwitter()}>
+            <TwitterShareIcon
+              title="Share on Twitter"
+              className=Css.socialSharingIcon
+            />
+          </Control>
+          <Control
+            className={Cn.make([
+              Css.socialSharingButton,
+              Css.socialSharingButtonFacebook,
+            ])}
+            onClick={_ => shareOnFacebook()}>
+            <FacebookShareIcon
+              title="Share on Facebook"
+              className=Css.socialSharingIcon
+            />
+          </Control>
+        </div>
+        <div className=Css.nextPost>
+          {switch (nextPost) {
+           | Some(slug) =>
+             <Link.Box path={Route.post(~slug)} className=Css.footerLink>
+               <ChevronRightIcon size=LG color=Gray />
+             </Link.Box>
+           | None => React.null
+           }}
+        </div>
+      </div>
+    </div>;
+  };
+};
+
 [@react.component]
-let make = (~title, ~year, ~date, ~children) => {
+let make = (~title, ~year, ~date, ~prevPost, ~nextPost, ~children) => {
   <Page>
     <div className=Css.container>
       <div className=Css.title>
@@ -516,6 +604,7 @@ let make = (~title, ~year, ~date, ~children) => {
         <H1> title->React.string </H1>
       </div>
       <div className=Css.content> children </div>
+      <Footer title prevPost nextPost />
     </div>
   </Page>;
 };

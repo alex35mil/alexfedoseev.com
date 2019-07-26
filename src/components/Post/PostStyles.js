@@ -226,7 +226,7 @@ export const pre = css`
   position: relative;
   flex-flow: column nowrap;
   align-items: center;
-  background-color: #f5f2f0;
+  background-color: ${Color.beige};
 
   @media ${Screen.small} {
     padding: ${smallScreenCodeVPad}px ${Layout.smallScreenHPad}px;
@@ -498,4 +498,158 @@ export const expandableTriggerIconCollapsed = css`
 
 export const expandableTriggerIconExpanded = css`
   transform: rotate(180deg);
+`;
+
+export const socialSharingContainer = css`
+  display: grid;
+
+  @media ${Screen.large} {
+    position: fixed;
+    top: 100px;
+    left: 50%;
+    transform: translateX(-${Layout.largeScreenContentWidth / 2}px);
+    grid-template-columns: max-content;
+    grid-template-rows: max-content max-content max-content;
+    grid-row-gap: 20px;
+    justify-items: center;
+  }
+`;
+
+export const footerRow = css`
+  display: grid;
+  align-items: center;
+  justify-content: center;
+
+  @media ${Screen.small} {
+    width: 100vw;
+    grid-template-columns: 1fr;
+    margin: 10px 0 0;
+  }
+
+  @media ${Screen.large} {
+    width: ${Layout.largeScreenRightColWidth}px;
+    transform: translateX(${(Layout.largeScreenLeftColWidth + Layout.largeScreenColGap) / 2}px);
+    grid-template-columns: ${Layout.largeScreenRightColWidth}px;
+    margin: 30px 0 0;
+  }
+`;
+
+export const footerRowInner = css`
+  display: grid;
+
+  @media ${Screen.small} {
+    grid-template-columns: 1fr max-content 1fr;
+    grid-template-rows: max-content;
+    grid-column-gap: 10px;
+    align-items: center;
+  }
+
+  @media ${Screen.large} {
+    grid-template-columns: 1fr max-content 1fr;
+    grid-template-rows: max-content;
+    grid-column-gap: 10px;
+    align-items: center;
+  }
+`;
+
+const footerLinkSmallScreenHPad = 30;
+const footerLinkLargeScreenHPad = 50;
+
+export const footerLink = css`
+  display: grid;
+  grid-template-columns: max-content;
+  grid-column-gap: 7px;
+  align-items: center;
+  transition: background-color ${Transition.fast} ${Transition.timingFunction};
+  background-color: transparent;
+  border-radius: 6px;
+
+  &:hover {
+    background-color: rgba(0, 0, 0, 0.02);
+  }
+
+  @media ${Screen.small} {
+    padding: 18px ${footerLinkSmallScreenHPad}px;
+  }
+
+  @media ${Screen.large} {
+    padding: 14px ${footerLinkLargeScreenHPad}px;
+  }
+`;
+
+export const prevPost = css`
+  display: grid;
+  align-items: center;
+  justify-content: start;
+
+  @media ${Screen.large} {
+    transform: translateX(-${footerLinkLargeScreenHPad}px);
+  }
+`;
+
+export const nextPost = css`
+  display: grid;
+  align-items: center;
+  justify-content: end;
+
+  @media ${Screen.large} {
+    transform: translateX(${footerLinkLargeScreenHPad}px);
+  }
+`;
+
+export const socialSharing = css`
+  display: grid;
+
+  @media ${Screen.small} {
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 10px;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+  }
+
+  @media ${Screen.large} {
+    grid-template-columns: max-content max-content;
+    grid-column-gap: 16px;
+    align-items: center;
+    justify-content: center;
+    justify-items: center;
+  }
+`;
+
+export const socialSharingButton = css`
+  display: flex;
+  padding: 6px;
+  transition-property: background-color transform;
+  transition-duration: ${Transition.fast};
+  transition-timing-function: ${Transition.timingFunction};
+  background-color: transparent;
+  border-radius: 50%;
+  transform: scale(1);
+
+  &:hover {
+    transform: scale(1.1);
+
+    & path {
+      fill: #fff !important;
+    }
+  }
+`;
+
+export const socialSharingButtonTwitter = css`
+  &:hover {
+    background-color: ${Color.twitter};
+  }
+`;
+
+export const socialSharingButtonFacebook = css`
+  &:hover {
+    background-color: ${Color.facebook};
+  }
+`;
+
+export const socialSharingIcon = css`
+  display: flex;
+  width: 32px;
+  height: 32px;
 `;

@@ -22,7 +22,7 @@ export const container = css`
     justify-self: center;
     justify-content: center;
     justify-items: center;
-    padding: 40px 0 30px;
+    padding: 40px 0 0;
   }
 `;
 
@@ -175,7 +175,7 @@ export const footer = css`
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: end;
     justify-content: space-between;
-    margin: 15px 0 0;
+    margin: 20px 0 30px;
     user-select: none;
   }
 `;

@@ -6,6 +6,9 @@ let sm = sm;
 [@bs.module "./IconStyles.js"] external md: int = "md";
 let md = md;
 
+[@bs.module "./IconStyles.js"] external lg: int = "lg";
+let lg = lg;
+
 [@bs.module "./IconStyles.js"] external icon: string = "icon";
 let icon = icon;
 
@@ -14,3 +17,6 @@ let smSize = smSize;
 
 [@bs.module "./IconStyles.js"] external mdSize: string = "mdSize";
 let mdSize = mdSize;
+
+[@bs.module "./IconStyles.js"] external lgSize: string = "lgSize";
+let lgSize = lgSize;
