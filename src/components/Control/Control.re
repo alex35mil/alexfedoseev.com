@@ -5,6 +5,7 @@ let make =
   React.forwardRef(
     (
       ~className="",
+      ~style=?,
       ~disabled=false,
       ~onClick=?,
       ~onMouseDown=?,
@@ -19,6 +20,7 @@ let make =
       ref=?{theRef->Js.Nullable.toOption->Option.map(ReactDom.Ref.domRef)}
       disabled
       className={Cn.make([Css.control, className])}
+      ?style
       ?onClick
       ?onMouseDown
       ?onKeyDown

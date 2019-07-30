@@ -281,10 +281,6 @@ module CoverImage = {
     [@bs.get] external placeholder: t => string = "placeholder";
   };
 
-  external htmlImageElementFromElement:
-    Dom.element => Web.Dom.HtmlImageElement.t =
-    "%identity";
-
   [@react.component]
   let make = (~src, ~credit) => {
     let screen = React.useContext(ScreenSize.Context.x);

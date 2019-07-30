@@ -12,8 +12,8 @@ let line = line;
 [@bs.module "./MainPageStyles.js"] external headline: string = "headline";
 let headline = headline;
 
-[@bs.module "./MainPageStyles.js"] external name: string = "name";
-let name = name;
+[@bs.module "./MainPageStyles.js"] external logo: string = "logo";
+let logo = logo;
 
 [@bs.module "./MainPageStyles.js"] external links: string = "links";
 let links = links;

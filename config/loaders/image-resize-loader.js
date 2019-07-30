@@ -6,10 +6,25 @@ module.exports = function(source) {
 
   const next = this.async();
   const options = loaderUtils.getOptions(this);
-  const width = parseInt(options.size, 10);
+  const size = options.size;
+
+  const value = parseInt(size.substring(0, size.length - 1), 10);
+  const suffix = size.substring(size.length - 1);
+
+  let dimension;
+  switch (suffix) {
+    case "w":
+      dimension = { width: value };
+      break;
+    case "h":
+      dimension = { height: value };
+      break;
+    default:
+      throw new Error(`[image-resize-loader] Invalid size value: ${size}`);
+  }
 
   sharp(source)
-    .resize({ width, withoutEnlargement: true })
+    .resize({ ...dimension, withoutEnlargement: true })
     .toBuffer()
     .then(image => next(null, image), error => next(error));
 };

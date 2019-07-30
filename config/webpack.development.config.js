@@ -100,6 +100,21 @@ module.exports = {
                   sizes: [880],
                   fallback: 880,
                 },
+                thumb: {
+                  type: "fixed",
+                  sizes: [{ label: "thumb", width: 350, height: 290 }],
+                  fallback: "thumb",
+                },
+                photo: {
+                  type: "raw",
+                  sizes: [
+                    { label: "sm", width: 830 },
+                    { label: "md", width: 1024 },
+                    { label: "lg", width: 1500 },
+                    { label: "xl", width: 2500 },
+                  ],
+                  fallback: "md",
+                },
               },
             },
           },
@@ -114,6 +129,13 @@ module.exports = {
         use: {
           loader: "file-loader",
           options: { name: "[name]-[hash].[ext]" },
+        },
+      },
+      {
+        test: /\photoswipe\/dist\/default-skin\/default-skin\.svg$/,
+        use: {
+          loader: "url-loader",
+          options: { limit: false },
         },
       },
     ],

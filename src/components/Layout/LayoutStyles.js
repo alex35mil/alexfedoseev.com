@@ -12,6 +12,7 @@ export const container = css`
     grid-row-gap: ${Layout.smallScreenRowGap}px;
     justify-self: center;
     justify-content: center;
+    justify-items: center;
     padding: 30px 0;
   }
 
@@ -61,6 +62,7 @@ export const logo = css`
 export const logoLink = css`
   font-family: ${Font.heading};
   font-weight: ${Font.bold};
+  line-height: 0;
   white-space: nowrap;
   user-select: none;
 

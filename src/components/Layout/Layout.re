@@ -1,13 +1,17 @@
 module Css = LayoutStyles;
 
+[@bs.module "styles/Layout.js"]
+external largeScreenContentWidth: int = "largeScreenContentWidth";
+
+[@bs.module "styles/Layout.js"]
+external smallScreenHPad: int = "smallScreenHPad";
+
 [@react.component]
 let make = (~route: Route.inner, ~children) => {
   <div className=Css.container>
     <div className=Css.header>
       <div className=Css.logo>
-        <Link path=Route.main underline=Never className=Css.logoLink>
-          "Alex Fedoseev"->React.string
-        </Link>
+        <Link.Box path=Route.main className=Css.logoLink> <Logo /> </Link.Box>
       </div>
       <div className=Css.navigation>
         {switch (route) {

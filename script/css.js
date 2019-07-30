@@ -8,10 +8,8 @@ const sources = require("../css.json");
 
 const root = process.cwd();
 
-const shouldWatch = () => {
-  const flag = process.argv[2];
-  return flag === "-w" || flag === "--watch";
-};
+const shouldWatch = () =>
+  process.argv.includes("--watch") || process.argv.includes("-w");
 
 const extract = files => {
   const STRING = "string";
@@ -42,12 +40,14 @@ const extract = files => {
           node.declaration.type === "VariableDeclaration" &&
           [
             "StringLiteral",
+            "TemplateLiteral",
             "NumericLiteral",
             "TaggedTemplateExpression",
           ].includes(decl.init.type)
         ) {
           switch (decl.init.type) {
             case "StringLiteral":
+            case "TemplateLiteral":
               return acc.concat({
                 id: decl.id.name,
                 type: STRING,

@@ -57,17 +57,16 @@ export const line = css`
 export const headline = css`
   display: grid;
   grid-template-rows: max-content max-content;
-  grid-row-gap: 20px;
+  grid-row-gap: 14px;
 
   @media ${smallScreen} {
     justify-items: center;
   }
 `;
 
-export const name = css`
-  font-family: ${Font.heading};
-  font-size: 21px;
-  font-weight: ${Font.bold};
+export const logo = css`
+  display: flex;
+  align-items: center;
   user-select: none;
 `;
 
@@ -93,7 +92,7 @@ export const nav = css`
   display: grid;
   grid-auto-flow: column;
   grid-template-columns: max-content;
-  grid-column-gap: 4px;
+  grid-column-gap: 6px;
 `;
 
 export const link = css`
