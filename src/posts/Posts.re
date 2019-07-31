@@ -8,7 +8,7 @@ type entry = {
 let from2019 = [|
   {
     slug: "minima",
-    title: "minima",
+    title: "Minima",
     date: "Jun 10",
     loader: () => Module.import("./2019/Minima/Post__Minima.mdx"),
   },

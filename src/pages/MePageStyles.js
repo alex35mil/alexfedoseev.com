@@ -8,7 +8,7 @@ export const container = css`
   grid-template-rows: max-content;
 
   @media ${Screen.small} {
-    grid-row-gap: 50px;
+    grid-row-gap: 70px;
     padding: 0 ${Layout.smallScreenHPad}px;
   }
 
@@ -203,7 +203,7 @@ export const links = css`
 
   @media ${Screen.small} {
     grid-row-gap: 20px;
-    margin: 14px;
+    margin: 14px 0 50px;
   }
 
   @media ${Screen.large} {
