@@ -154,8 +154,8 @@ let make = (~route: Route.inner, ~children) => {
 
 module PrimarySidenote = {
   [@react.component]
-  let make = (~children) => {
-    <span className={Cn.make([Css.sidenote, Css.primarySidenote])}>
+  let make = (~className="", ~children) => {
+    <span className={Cn.make([Css.sidenote, Css.primarySidenote, className])}>
       children
     </span>;
   };
