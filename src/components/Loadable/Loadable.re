@@ -57,7 +57,7 @@ module Make = (Component: Component) => {
     | LoadingModule(`WithoutSpinner) => React.null
     | LoadingModule(`WithSpinner) => "Loading..."->React.string // TODO: Loading screen
     | Ok(component) => component->children
-    | Error => "Oooops"->React.string // TODO: Error screen
+    | Error => <ErrorPage error=Unknown />
     };
   };
 };

@@ -15,6 +15,6 @@ let make = () => {
          }}
       </Layout>
     </ScreenSize>
-  | None => "404"->React.string // TODO: Error screen
+  | None => <ErrorPage error=NotFound />
   };
 };

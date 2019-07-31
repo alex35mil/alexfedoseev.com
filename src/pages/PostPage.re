@@ -32,6 +32,6 @@ let make = (~slug: string) => {
           </Post>
       )
     </PostLoader>;
-  | None => "404"->React.string // TODO: Error screen
+  | None => <ErrorPage error=NotFound />
   };
 };

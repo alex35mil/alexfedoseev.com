@@ -5,7 +5,7 @@ import { Color, Font, Transition, Screen, Layout } from "styles";
 export const years = css`
   display: grid;
   grid-auto-flow: row;
-  grid-template-rows: max-content;
+  grid-auto-rows: max-content;
 
   @media ${Screen.small} {
     grid-row-gap: ${Layout.smallScreenRowGap}px;

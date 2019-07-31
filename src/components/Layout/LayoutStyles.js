@@ -8,7 +8,7 @@ export const container = css`
 
   @media ${Screen.small} {
     grid-template-columns: minmax(auto, 700px);
-    grid-template-rows: max-content max-content 1fr;
+    grid-template-rows: max-content 1fr max-content;
     grid-row-gap: ${Layout.smallScreenRowGap}px;
     justify-self: center;
     justify-content: center;
@@ -17,7 +17,7 @@ export const container = css`
   }
 
   @media ${Screen.large} {
-    grid-template-rows: max-content max-content 1fr;
+    grid-template-rows: max-content 1fr max-content;
     grid-template-columns: 100vw;
     grid-row-gap: ${Layout.largeScreenRowGap}px;
     justify-self: center;
