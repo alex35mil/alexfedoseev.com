@@ -55,7 +55,8 @@ module Make = (Component: Component) => {
 
     switch (state) {
     | LoadingModule(`WithoutSpinner) => React.null
-    | LoadingModule(`WithSpinner) => "Loading..."->React.string // TODO: Loading screen
+    | LoadingModule(`WithSpinner) =>
+      <Spinner size=LG color=Blue spread=true />
     | Ok(component) => component->children
     | Error => <ErrorPage error=Unknown />
     };
