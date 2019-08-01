@@ -8,6 +8,5 @@ log/
 .bsb.lock
 *.bs.js
 .linaria-cache
-.netlify
 
 src/photos/files/*.jpg

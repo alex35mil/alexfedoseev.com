@@ -20,8 +20,8 @@
     "prewebpack:build": "yarn run clean && yarn run css:generate && yarn run photo:generate && yarn run bsb:build",
     "prewebpack:build:preview": "yarn run clean && yarn run css:generate && yarn run photo:generate 11 && yarn run bsb:build",
     "prewebpack:build:analyze": "yarn run clean && yarn run css:generate && yarn run photo:generate 3 && yarn run bsb:build",
-    "deploy": "netlify deploy --prod",
-    "deploy:preview": "netlify deploy",
+    "deploy": "now deploy --target production",
+    "deploy:preview": "now deploy --target staging",
     "predeploy": "yarn run webpack:build",
     "predeploy:preview": "yarn run webpack:build:preview",
     "clean": "rm -rf build"
