@@ -4,6 +4,7 @@ type photo;
 type options;
 type thumbBounds;
 type viewportSize;
+type shareButton;
 
 module type Photo = {type t;};
 
@@ -49,6 +50,7 @@ module Make = (Photo: Photo) => {
       ~focus: bool=?,
       ~isClickableElement: Dom.element => bool=?,
       ~modal: bool=?,
+      ~shareButtons: array(shareButton)=?,
       unit
     ) =>
     options =
@@ -109,6 +111,14 @@ module ViewportSize = {
 module ThumbBounds = {
   [@bs.obj]
   external make: (~x: float, ~y: float, ~w: float) => thumbBounds = "";
+};
+
+module ShareButton = {
+  [@bs.obj]
+  external make:
+    (~id: string, ~label: string, ~url: string, ~download: bool=?, unit) =>
+    shareButton =
+    "";
 };
 
 module Dom = {

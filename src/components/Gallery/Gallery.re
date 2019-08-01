@@ -78,6 +78,9 @@ let sizeFromViewport = viewportWidth =>
     Photo.SM;
   };
 
+let twitterHandle = Env.twitterHandle;
+let facebookAppId = Env.facebookAppId;
+
 let useGallery = (items: array(Photo.t)): gallery => {
   let init =
     React.useCallback1(
@@ -112,6 +115,36 @@ let useGallery = (items: array(Photo.t)): gallery => {
                     } else {
                       0.3;
                     },
+                ~shareButtons=[|
+                  PhotoSwipe.ShareButton.make(
+                    ~id="twitter",
+                    ~label="Tweet",
+                    ~url=
+                      {j|https://twitter.com/intent/tweet?text={{text}}&url={{url}}&via=$(twitterHandle)|j},
+                    (),
+                  ),
+                  PhotoSwipe.ShareButton.make(
+                    ~id="facebook",
+                    ~label="Share on Facebook",
+                    ~url=
+                      {j|https://www.facebook.com/dialog/share?app_id=$(facebookAppId)&display=popup&href={{url}}|j},
+                    (),
+                  ),
+                  PhotoSwipe.ShareButton.make(
+                    ~id="pinterest",
+                    ~label="Pin it",
+                    ~url=
+                      {j|http://www.pinterest.com/pin/create/button/?url={{url}}&media={{image_url}}&description={{text}}|j},
+                    (),
+                  ),
+                  PhotoSwipe.ShareButton.make(
+                    ~id="download",
+                    ~label="Download photo",
+                    ~url={j|{{raw_image_url}}|j},
+                    ~download=true,
+                    (),
+                  ),
+                |],
                 (),
               ),
           );
