@@ -4,5 +4,7 @@ ProgressBar.init();
 
 [@react.component]
 let default = () => {
-  <Mdx.Provider components=Markdown.components> <Shell /> </Mdx.Provider>;
+  <ErrorBoundary error=Unknown>
+    <Mdx.Provider components=Markdown.components> <Shell /> </Mdx.Provider>
+  </ErrorBoundary>;
 };
