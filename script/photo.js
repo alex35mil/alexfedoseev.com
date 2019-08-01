@@ -61,7 +61,7 @@ const write = () => {
     .join("\n");
 
   fs.writeFileSync(PhotosRe, mod(requires, entries), "utf8");
-  console.log(`✅ written`);
+  console.log(`✅ Photos.re is written`);
 };
 
 const watch = () => {

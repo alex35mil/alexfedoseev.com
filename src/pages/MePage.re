@@ -145,7 +145,7 @@ let make = () =>
               target=Blank
               underline=Always
               className={Cn.make([Css.link, Css.githubLink])}>
-              <GithubIcon size=SM color=Gray />
+              <GithubIcon size=SM color=Gray className=Css.linkIcon />
               "Github"->React.string
             </A>
           </div>
@@ -155,7 +155,7 @@ let make = () =>
               target=Blank
               underline=Always
               className={Cn.make([Css.link, Css.twitterLink])}>
-              <TwitterIcon size=SM color=Gray />
+              <TwitterIcon size=SM color=Gray className=Css.linkIcon />
               "Twitter"->React.string
             </A>
           </div>
@@ -165,7 +165,7 @@ let make = () =>
               target=Blank
               underline=Always
               className={Cn.make([Css.link, Css.instagramLink])}>
-              <InstagramIcon size=SM color=Gray />
+              <InstagramIcon size=SM color=Gray className=Css.linkIcon />
               "Instagram"->React.string
             </A>
           </div>
@@ -175,7 +175,7 @@ let make = () =>
               target=Blank
               underline=Always
               className={Cn.make([Css.link, Css.facebookLink])}>
-              <FacebookIcon size=SM color=Gray />
+              <FacebookIcon size=SM color=Gray className=Css.linkIcon />
               "Facebook"->React.string
             </A>
           </div>
@@ -185,7 +185,7 @@ let make = () =>
               target=Blank
               underline=Always
               className={Cn.make([Css.link, Css.linkedinLink])}>
-              <LinkedInIcon size=SM color=Gray />
+              <LinkedInIcon size=SM color=Gray className=Css.linkIcon />
               "LinkedIn"->React.string
             </A>
           </div>

@@ -4,6 +4,7 @@ import { Color, Font, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
+  position: relative;
   width: 100%;
 
   @media ${Screen.small} {
@@ -65,14 +66,6 @@ export const logoLink = css`
   line-height: 0;
   white-space: nowrap;
   user-select: none;
-
-  @media ${Screen.small} {
-    font-size: 18px;
-  }
-
-  @media ${Screen.large} {
-    font-size: 21px;
-  }
 `;
 
 export const navigation = css`

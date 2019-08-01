@@ -1,22 +1,21 @@
 {
   "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "plugins": [
+    "@babel/plugin-syntax-dynamic-import",
+    [
+      "babel-plugin-prismjs",
+      {
+        "languages": ["reason", "js", "jsx", "shell", "nginx"],
+        "theme": "default",
+        "css": true
+      }
+    ]
+  ],
   "env": {
     "development": {
       "plugins": [
-        "react-hot-loader/babel",
-        "@babel/plugin-syntax-dynamic-import",
-        [
-          "babel-plugin-prismjs",
-          {
-            "languages": ["reason", "js", "jsx", "shell", "nginx"],
-            "theme": "default",
-            "css": true
-          }
-        ]
+        "react-hot-loader/babel"
       ]
-    },
-    "production": {
-      "plugins": ["@babel/plugin-syntax-dynamic-import"]
     }
   }
 }

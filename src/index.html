@@ -1,10 +1,20 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
     <base href="/" />
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>Alex Fedoseev</title>
+    <meta name="description" content="Personal site">
+    <meta property="og:title" content="Alex Fedoseev">
+    <meta property="og:type" content="profile">
+    <meta property="og:site_name" content="alexfedoseev.com">
+    <meta property="og:url" content="https://alexfedoseev.com/">
+    <meta property="og:description" content="Personal site">
+    <meta property="og:image" content="<%= require('meta/me.png') %>">
+    <meta property="fb:app_id" content="<%= process.env.FACEBOOK_APP_ID %>" />
+    <meta property="article:author" content="https://www.facebook.com/alex.fedoseev">
+    <meta name="twitter:creator" content="@<%= process.env.TWITTER_HANDLE %>">
   </head>
   <body>
     <div id="root"></div>

@@ -240,6 +240,12 @@ export const link = css`
   }
 `;
 
+export const linkIcon = css`
+  @media ${Screen.large} {
+    align-self: center;
+  }
+`;
+
 export const githubLink = css`
   &:hover path {
     fill: ${Color.github} !important;

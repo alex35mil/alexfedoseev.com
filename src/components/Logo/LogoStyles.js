@@ -6,7 +6,7 @@ const largeScreenWidth = Layout.largeScreenLeftColWidth;
 const largeScreenHeight = 19;
 
 const smallScreenWidth = 110;
-const smallScreenHeight = smallScreenWidth * largeScreenHeight / largeScreenWidth;
+const smallScreenHeight = Math.ceil(smallScreenWidth * largeScreenHeight / largeScreenWidth);
 
 export const logo = css`
   @media ${Screen.small} {

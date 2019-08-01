@@ -105,7 +105,7 @@ let useGallery = (items: array(Photo.t)): gallery => {
                 ~closeOnVerticalDrag=true,
                 ~showHideOpacity=false,
                 ~getDoubleTapZoom=
-                  (isMouseClick, photo) =>
+                  (_isMouseClick, photo) =>
                     if (photo->PhotoSwipe.Photo.width
                         > photo->PhotoSwipe.Photo.height) {
                       0.5;

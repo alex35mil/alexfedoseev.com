@@ -57,6 +57,9 @@ let linkRow = linkRow;
 [@bs.module "./MePageStyles.js"] external link: string = "link";
 let link = link;
 
+[@bs.module "./MePageStyles.js"] external linkIcon: string = "linkIcon";
+let linkIcon = linkIcon;
+
 [@bs.module "./MePageStyles.js"] external githubLink: string = "githubLink";
 let githubLink = githubLink;
 

@@ -8,7 +8,8 @@ external smallScreenHPad: int = "smallScreenHPad";
 
 [@react.component]
 let make = (~route: Route.inner, ~children) => {
-  <div className=Css.container>
+  // Make click outside work in Safari on iOS
+  <div className=Css.container onClick=ignore>
     <div className=Css.header>
       <div className=Css.logo>
         <Link.Box path=Route.main className=Css.logoLink> <Logo /> </Link.Box>
