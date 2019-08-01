@@ -87,6 +87,14 @@ let useGallery = (items: array(Photo.t)): gallery => {
       (index, container, getThumbBoundsFn) => {
         let size: ref(option(Photo.size)) = None->ref;
 
+        let focusTarget =
+          Web.Dom.(
+            document
+            ->Document.asHtmlDocument
+            ->Option.flatMap(HtmlDocument.activeElement)
+            ->Option.map(Web.Dom.Element.unsafeAsHtmlElement)
+          );
+
         let gallery =
           Gallery.make(
             ~container,
@@ -227,6 +235,17 @@ let useGallery = (items: array(Photo.t)): gallery => {
                 Photo.(photo->setWidth(photo->lg->x2->width));
                 Photo.(photo->setHeight(photo->lg->x2->height));
               },
+          ),
+        );
+
+        gallery->Gallery.listen(
+          `destroy(
+            () =>
+              Web.Dom.(
+                focusTarget
+                ->Option.map(HtmlElement.focus)
+                ->Option.getWithDefault()
+              ),
           ),
         );
 

@@ -66,6 +66,7 @@ module Make = (Photo: Photo) => {
       [@bs.string] [
         | `beforeResize(unit => unit)
         | `gettingData((int, Photo.t) => unit)
+        | `destroy(unit => unit)
       ]
     ) =>
     unit =
