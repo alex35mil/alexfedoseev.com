@@ -24,13 +24,13 @@ let src = "https://github.com/alexfedoseev/alexfedoseev.com"->Path.pack;
 
 let minima = "https://minima.app"->Path.pack;
 
-let reFormality = "https://github.com/minima-app/re-formality"->Path.pack;
-let reDnd = "https://github.com/minima-app/re-dnd"->Path.pack;
-let reCss = "https://github.com/minima-app/re-css"->Path.pack;
-let reClassnames = "https://github.com/minima-app/re-classnames"->Path.pack;
-let reDebouncer = "https://github.com/minima-app/re-debouncer"->Path.pack;
-let bsLog = "https://github.com/minima-app/bs-log"->Path.pack;
-let conform = "https://github.com/minima-app/conform"->Path.pack;
+let reFormality = "https://github.com/MinimaHQ/re-formality"->Path.pack;
+let reDnd = "https://github.com/MinimaHQ/re-dnd"->Path.pack;
+let reCss = "https://github.com/MinimaHQ/re-css"->Path.pack;
+let reClassnames = "https://github.com/MinimaHQ/re-classnames"->Path.pack;
+let reDebouncer = "https://github.com/MinimaHQ/re-debouncer"->Path.pack;
+let bsLog = "https://github.com/MinimaHQ/bs-log"->Path.pack;
+let conform = "https://github.com/MinimaHQ/conform"->Path.pack;
 
 let fromUrl = (url: ReactRouter.url) =>
   switch (url.path) {
