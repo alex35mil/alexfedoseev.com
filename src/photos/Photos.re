@@ -94,6 +94,8 @@ let dsc3588: Photo.src = [%bs.raw "require('./files/DSC_3588.jpg?preset=photo')"
 let dsc3588Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_3588.jpg?preset=thumb')"];
 let dsc3631: Photo.src = [%bs.raw "require('./files/DSC_3631.jpg?preset=photo')"];
 let dsc3631Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_3631.jpg?preset=thumb')"];
+let dsc3799: Photo.src = [%bs.raw "require('./files/DSC_3799.jpg?preset=photo')"];
+let dsc3799Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_3799.jpg?preset=thumb')"];
 let img1527: Photo.src = [%bs.raw "require('./files/IMG_1527.jpg?preset=photo')"];
 let img1527Thumb: Photo.thumb = [%bs.raw "require('./files/IMG_1527.jpg?preset=thumb')"];
 
@@ -145,5 +147,6 @@ let all = [|
   ("dsc3535", dsc3535, dsc3535Thumb),
   ("dsc3588", dsc3588, dsc3588Thumb),
   ("dsc3631", dsc3631, dsc3631Thumb),
+  ("dsc3799", dsc3799, dsc3799Thumb),
   ("img1527", img1527, img1527Thumb),
 |];
