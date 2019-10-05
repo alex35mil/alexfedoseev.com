@@ -2,10 +2,12 @@ import { css } from "linaria";
 
 import { Color, Font, Transition } from "styles";
 
+import * as Logo from "components/Logo/LogoStyles.js";
+
 const largeScreen = "(min-width: 801px)";
 const smallScreen = "(max-width: 800px)";
 
-const photoSize = 100;
+const photoSize = 130;
 
 export const container = css`
   display: grid;
@@ -31,9 +33,11 @@ export const container = css`
 
 export const photo = css`
   display: flex;
+  box-sizing: content-box;
+  border: 4px solid #fff;
+  border-radius: 50%;
   width: ${photoSize}px;
   height: ${photoSize}px;
-  border-radius: 50%;
   background-color: #efefef;
   background-image: url("~meta/me.png");
   background-repeat: no-repeat;
@@ -64,10 +68,18 @@ export const headline = css`
   }
 `;
 
+const logoWidth = 140;
+const logoHeight = Math.ceil(logoWidth * Logo.height / Logo.width);
+
 export const logo = css`
   display: flex;
   align-items: center;
   user-select: none;
+`;
+
+export const logoSvg = css`
+  width: ${logoWidth}px;
+  height: ${logoHeight}px;
 `;
 
 const linkHPad = 8;

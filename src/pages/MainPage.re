@@ -7,7 +7,7 @@ let make = () => {
       <div className=Css.photo />
       <div className=Css.line />
       <div className=Css.headline>
-        <div className=Css.logo> <Logo /> </div>
+        <div className=Css.logo> <Logo className=Css.logoSvg /> </div>
         <div className=Css.links>
           <div className=Css.nav>
             <Link.Box path=Route.blog className=Css.link>

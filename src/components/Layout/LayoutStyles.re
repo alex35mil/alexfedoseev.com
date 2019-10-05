@@ -12,6 +12,9 @@ let logo = logo;
 [@bs.module "./LayoutStyles.js"] external logoLink: string = "logoLink";
 let logoLink = logoLink;
 
+[@bs.module "./LayoutStyles.js"] external logoSvg: string = "logoSvg";
+let logoSvg = logoSvg;
+
 [@bs.module "./LayoutStyles.js"] external navigation: string = "navigation";
 let navigation = navigation;
 

@@ -15,6 +15,9 @@ let headline = headline;
 [@bs.module "./MainPageStyles.js"] external logo: string = "logo";
 let logo = logo;
 
+[@bs.module "./MainPageStyles.js"] external logoSvg: string = "logoSvg";
+let logoSvg = logoSvg;
+
 [@bs.module "./MainPageStyles.js"] external links: string = "links";
 let links = links;
 

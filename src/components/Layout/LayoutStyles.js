@@ -2,6 +2,8 @@ import { css } from "linaria";
 
 import { Color, Font, Transition, Screen, Layout } from "styles";
 
+import * as Logo from "components/Logo/LogoStyles.js";
+
 export const container = css`
   display: grid;
   position: relative;
@@ -44,6 +46,11 @@ export const header = css`
   }
 `;
 
+const logoLargeScreenWidth = Layout.largeScreenLeftColWidth;
+const logoLargeScreenHeight = Logo.height;
+const logoSmallScreenWidth = 110;
+const logoSmallScreenHeight = Math.ceil(logoSmallScreenWidth * Logo.height / Logo.width);
+
 export const logo = css`
   display: flex;
 
@@ -68,6 +75,18 @@ export const logoLink = css`
   user-select: none;
 `;
 
+export const logoSvg = css`
+  @media ${Screen.small} {
+    width: ${logoSmallScreenWidth}px;
+    height: ${logoSmallScreenHeight}px;
+  }
+
+  @media ${Screen.large} {
+    width: ${logoLargeScreenWidth}px;
+    height: ${logoLargeScreenHeight}px;
+  }
+`;
+
 export const navigation = css`
   display: grid;
 
@@ -85,7 +104,7 @@ export const navigation = css`
   }
 `;
 
-const largeScreenNavLinkHPad = 8;
+const largeScreenNavLinkHPad = 7;
 const smallScreenNavLinkHPad = 4;
 
 export const navLink = css`
@@ -108,21 +127,14 @@ export const navLink = css`
   }
 
   @media ${Screen.large} {
-    padding: 6px ${largeScreenNavLinkHPad}px;
+    padding: 5px ${largeScreenNavLinkHPad}px;
   }
 `;
 
 export const navLinkActive = css`
   color: ${Color.white};
   background-color: ${Color.blue};
-
-  @media ${Screen.small} {
-    font-size: 0.8em;
-  }
-
-  @media ${Screen.large} {
-    font-size: 1em;
-  }
+  font-size: 0.8em;
 `;
 
 export const navLinkInactive = css`
@@ -230,7 +242,7 @@ export const footerNav = css`
   @media ${Screen.large} {
     grid-auto-flow: column;
     grid-auto-columns: max-content;
-    grid-column-gap: 12px;
+    grid-column-gap: 28px;
     align-items: center;
   }
 `;

@@ -43,6 +43,8 @@ export const about = css`
 
 export const photo = css`
   display: flex;
+  box-sizing: content-box;
+  border: 4px solid #fff;
   border-radius: 50%;
   background-color: #efefef;
   background-image: url("~meta/me.png");
@@ -57,9 +59,10 @@ export const photo = css`
   }
 
   @media ${Screen.large} {
-    justify-self: flex-end;
+    justify-self: center;
     width: ${largeScreenPhotoSize}px;
     height: ${largeScreenPhotoSize}px;
+    transform: translateY(-10px);
   }
 `;
 
