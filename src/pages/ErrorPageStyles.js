@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Screen, Layout } from "styles";
+import { Color, Font, Theme, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
@@ -51,6 +51,9 @@ export const line = css`
     display: flex;
     height: 120px;
     width: 1px;
-    background-color: ${Color.grayLine};
+    background-color: ${Theme.lineColor};
+    transition-property: background-color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
   }
 `;

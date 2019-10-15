@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Screen, Layout } from "styles";
+import { Color, Font, Theme, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
@@ -104,6 +104,10 @@ export const h1 = css`
   font-family: ${Font.heading};
   font-size: 34px;
   font-weight: ${Font.bold};
+  color: ${Theme.textColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const h2Row = css`
@@ -115,6 +119,10 @@ export const h2 = css`
   font-family: ${Font.heading};
   font-size: 24px;
   font-weight: ${Font.bold};
+  color: ${Theme.textColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const h3Row = css`
@@ -125,7 +133,10 @@ export const h3 = css`
   display: flex;
   font-family: ${Font.heading};
   font-size: 20px;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const h4Row = css`
@@ -136,7 +147,10 @@ export const h4 = css`
   display: flex;
   font-family: ${Font.mono};
   font-size: 20px;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const pRow = css`
@@ -150,6 +164,10 @@ export const pRow = css`
 
 export const p = css`
   margin: 0;
+  color: ${Theme.textColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const listRow = css`
@@ -175,7 +193,10 @@ export const ol = css`
       max-width: 0px;
       max-height: 0px;
       left: -1.7em;
-      color: ${Color.grayText};
+      color: ${Theme.fadedTextColor};
+      transition-property: color;
+      transition-duration: ${Transition.moderate};
+      transition-timing-function: ${Transition.timingFunction};
     }
   }
 `;
@@ -190,12 +211,19 @@ export const ul = css`
     max-width: 0px;
     max-height: 0px;
     left: -1.7em;
-    color: ${Color.grayText};
+    color: ${Theme.fadedTextColor};
+    transition-property: color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
   }
 `;
 
 export const li = css`
   margin-bottom: 4px;
+  color: ${Theme.textColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const hrRow = css`
@@ -205,13 +233,19 @@ export const hrRow = css`
 export const hr = css`
   display: flex;
   border-width: 0;
-  border-top: 1px solid ${Color.grayLine};
+  border-top: 1px solid ${Theme.lineColor};
+  transition-property: border-top-color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const inlineCode = css`
   font-family: ${Font.mono};
   font-style: italic;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const codeRow = css`
@@ -226,7 +260,10 @@ export const pre = css`
   position: relative;
   flex-flow: column nowrap;
   align-items: center;
-  background-color: ${Color.beige};
+  background-color: ${Theme.codeBgColor};
+  transition-property: background-color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 
   @media ${Screen.small} {
     padding: ${smallScreenCodeVPad}px ${Layout.smallScreenHPad}px;
@@ -241,6 +278,10 @@ export const pre = css`
 export const code = css`
   font-family: ${Font.mono};
   font-size: 16px;
+  color: ${Theme.codeColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   line-height: 1.8;
 
   @media ${Screen.small} {
@@ -282,7 +323,10 @@ export const codeLabel = css`
   display: flex;
   position: absolute;
   top: -${largeScreenCodeVPad}px;
-  background-color: #e7e7e7;
+  background-color: ${Theme.codeLabelBgColor};
+  transition-property: background-color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   padding: 1px ${languageLabelHPad}px;
 
   @media ${Screen.small} {
@@ -310,14 +354,149 @@ export const fileLabel = css`
 `;
 
 export const global = css`
-  :global {
-    .token.operator,
-    .token.entity,
-    .token.url,
-    .language-css .token.string,
-    .style .token.string {
-      background: none !important;
+  :global code[class*="language-"],
+  :global pre[class*="language-"] {
+    color: black;
+    background: none;
+    text-shadow: 0 1px white;
+    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-size: 1em;
+    text-align: left;
+    white-space: pre;
+    word-spacing: normal;
+    word-break: normal;
+    word-wrap: normal;
+    line-height: 1.5;
+
+    -moz-tab-size: 4;
+    -o-tab-size: 4;
+    tab-size: 4;
+
+    -webkit-hyphens: none;
+    -moz-hyphens: none;
+    -ms-hyphens: none;
+    hyphens: none;
+  }
+
+  :global pre[class*="language-"]::-moz-selection,
+  :global pre[class*="language-"] ::-moz-selection,
+  :global code[class*="language-"]::-moz-selection,
+  :global code[class*="language-"] ::-moz-selection {
+    text-shadow: none;
+    background: #b3d4fc;
+  }
+
+  :global pre[class*="language-"]::selection,
+  :global pre[class*="language-"] ::selection,
+  :global code[class*="language-"]::selection,
+  :global code[class*="language-"] ::selection {
+    text-shadow: none;
+    background: #b3d4fc;
+  }
+
+  @media print {
+    :global code[class*="language-"],
+    :global pre[class*="language-"] {
+      text-shadow: none;
     }
+  }
+
+  /* Code blocks */
+  :global pre[class*="language-"] {
+    padding: 1em;
+    margin: .5em 0;
+    overflow: auto;
+  }
+
+  :global :not(pre) > code[class*="language-"],
+  :global pre[class*="language-"] {
+    background: #f5f2f0;
+  }
+
+  /* Inline code */
+  :global :not(pre) > code[class*="language-"] {
+    padding: .1em;
+    border-radius: .3em;
+    white-space: normal;
+  }
+
+  :global .token.comment,
+  :global .token.prolog,
+  :global .token.doctype,
+  :global .token.cdata {
+    color: slategray;
+  }
+
+  :global .token.punctuation {
+    color: #999;
+  }
+
+  :global .namespace {
+    opacity: .7;
+  }
+
+  :global .token.property,
+  :global .token.tag,
+  :global .token.boolean,
+  :global .token.number,
+  :global .token.constant,
+  :global .token.symbol,
+  :global .token.deleted {
+    color: ${Theme.codeTokenConstantColor};
+    transition-property: color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
+  }
+
+  :global .token.selector,
+  :global .token.attr-name,
+  :global .token.string,
+  :global .token.char,
+  :global .token.builtin,
+  :global .token.inserted {
+    color: #690;
+  }
+
+  :global .token.operator,
+  :global .token.entity,
+  :global .token.url,
+  :global .language-css .token.string,
+  :global .style .token.string {
+    color: #9a6e3a;
+    background: none;
+  }
+
+  :global .token.atrule,
+  :global .token.attr-value,
+  :global .token.keyword {
+    color: ${Theme.codeTokenKeywordColor};
+    transition-property: color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
+  }
+
+  :global .token.function,
+  :global .token.class-name {
+    color: #DD4A68;
+  }
+
+  :global .token.regex,
+  :global .token.important,
+  :global .token.variable {
+    color: #e90;
+  }
+
+  :global .token.important,
+  :global .token.bold {
+    font-weight: bold;
+  }
+
+  :global .token.italic {
+    font-style: italic;
+  }
+
+  :global .token.entity {
+    cursor: help;
   }
 `;
 
@@ -328,7 +507,10 @@ export const noteRow = css`
 export const note = css`
   &,
   & a {
-    color: ${Color.grayText};
+    color: ${Theme.fadedTextColor};
+    transition-property: color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
   }
 `;
 
@@ -337,7 +519,10 @@ export const highlightRow = css`
 `;
 
 export const highlight = css`
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   font-style: italic;
   text-align: center;
 
@@ -442,7 +627,10 @@ export const inlineImage = css`
 
 export const inlineImageCaption = css`
   margin: 14px 0 0;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   font-size: 0.8em;
   text-align: center;
 `;
@@ -485,7 +673,11 @@ export const expandableTrigger = css`
 
 export const expandableTriggerText = css`
   display: inline-block;
-  border-bottom: 1px dotted ${Color.grayText};
+  color: ${Theme.textColor};
+  border-bottom: 1px dotted ${Theme.fadedTextColor};
+  transition-property: color, border-bottom-color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const expandableTriggerIcon = css`
@@ -565,7 +757,7 @@ export const footerLink = css`
   border-radius: 6px;
 
   &:hover {
-    background-color: rgba(0, 0, 0, 0.02);
+    background-color: ${Theme.postFooterNavLinkHoverBgColor};
   }
 
   @media ${Screen.small} {
@@ -620,7 +812,7 @@ export const socialSharing = css`
 export const socialSharingButton = css`
   display: flex;
   padding: 6px;
-  transition-property: background-color transform;
+  transition-property: background-color, transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
   background-color: transparent;

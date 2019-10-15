@@ -1,3 +1,6 @@
+module Url = Webapi.Url;
+module Storage = Dom.Storage2;
+
 module Dom = {
   include Webapi.Dom;
 
@@ -6,5 +9,3 @@ module Dom = {
   external htmlImageElementFromElement: Dom.element => HtmlImageElement.t =
     "%identity";
 };
-
-module Url = Webapi.Url;

@@ -6,8 +6,7 @@
       "babel-plugin-prismjs",
       {
         "languages": ["reason", "js", "jsx", "shell", "nginx"],
-        "theme": "default",
-        "css": true
+        "css": false
       }
     ]
   ],

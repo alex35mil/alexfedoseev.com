@@ -3,6 +3,12 @@
 [@bs.module "./MainPageStyles.js"] external container: string = "container";
 let container = container;
 
+[@bs.module "./MainPageStyles.js"] external content: string = "content";
+let content = content;
+
+[@bs.module "./MainPageStyles.js"] external push: string = "push";
+let push = push;
+
 [@bs.module "./MainPageStyles.js"] external photo: string = "photo";
 let photo = photo;
 
@@ -44,3 +50,6 @@ let githubIcon = githubIcon;
 
 [@bs.module "./MainPageStyles.js"] external instagramIcon: string = "instagramIcon";
 let instagramIcon = instagramIcon;
+
+[@bs.module "./MainPageStyles.js"] external themeSwitch: string = "themeSwitch";
+let themeSwitch = themeSwitch;

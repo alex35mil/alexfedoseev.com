@@ -9,15 +9,6 @@ let beige = beige;
 [@bs.module "./Color.js"] external white: string = "white";
 let white = white;
 
-[@bs.module "./Color.js"] external grayText: string = "grayText";
-let grayText = grayText;
-
-[@bs.module "./Color.js"] external grayIcon: string = "grayIcon";
-let grayIcon = grayIcon;
-
-[@bs.module "./Color.js"] external grayLine: string = "grayLine";
-let grayLine = grayLine;
-
 [@bs.module "./Color.js"] external twitter: string = "twitter";
 let twitter = twitter;
 
