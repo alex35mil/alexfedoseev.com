@@ -30,7 +30,7 @@ module RowWithSidenoteIcon = {
     let (module Icon) = icon;
     <div className={Cn.make([Css.row, Css.rowWithSidenote, className])}>
       <Layout.SecondarySidenote>
-        <Icon size=MD color=Gray />
+        <Icon size=MD color=Faded />
       </Layout.SecondarySidenote>
       children
     </div>;
@@ -479,7 +479,7 @@ module Expandable = {
             </span>
             <CaretIcon
               size=MD
-              color=Gray
+              color=Faded
               className={Cn.make([
                 Css.expandableTriggerIcon,
                 switch (state) {
@@ -544,7 +544,7 @@ module Footer = {
           {switch (prevPost) {
            | Some(slug) =>
              <Link.Box path={Route.post(~slug)} className=Css.footerLink>
-               <ChevronLeftIcon size=LG color=Gray />
+               <ChevronLeftIcon size=LG color=Faded />
              </Link.Box>
            | None => React.null
            }}
@@ -577,7 +577,7 @@ module Footer = {
           {switch (nextPost) {
            | Some(slug) =>
              <Link.Box path={Route.post(~slug)} className=Css.footerLink>
-               <ChevronRightIcon size=LG color=Gray />
+               <ChevronRightIcon size=LG color=Faded />
              </Link.Box>
            | None => React.null
            }}

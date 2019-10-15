@@ -15,6 +15,9 @@ let logoLink = logoLink;
 [@bs.module "./LayoutStyles.js"] external logoSvg: string = "logoSvg";
 let logoSvg = logoSvg;
 
+[@bs.module "./LayoutStyles.js"] external mainCol: string = "mainCol";
+let mainCol = mainCol;
+
 [@bs.module "./LayoutStyles.js"] external navigation: string = "navigation";
 let navigation = navigation;
 
@@ -32,6 +35,12 @@ let navSep = navSep;
 
 [@bs.module "./LayoutStyles.js"] external restNavLinks: string = "restNavLinks";
 let restNavLinks = restNavLinks;
+
+[@bs.module "./LayoutStyles.js"] external themeSwitchHeader: string = "themeSwitchHeader";
+let themeSwitchHeader = themeSwitchHeader;
+
+[@bs.module "./LayoutStyles.js"] external themeSwitchFooter: string = "themeSwitchFooter";
+let themeSwitchFooter = themeSwitchFooter;
 
 [@bs.module "./LayoutStyles.js"] external footer: string = "footer";
 let footer = footer;

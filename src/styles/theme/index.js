@@ -1,0 +1,15 @@
+export const bgColor = "var(--bg-color)";
+export const textColor = "var(--text-color)";
+export const fadedTextColor = "var(--faded-text-color)";
+export const fadedIconColor = "var(--faded-icon-color)";
+export const lineColor = "var(--line-color)";
+export const logoColor = "var(--logo-color)";
+export const avatarBorderColor = "var(--avatar-border-color)";
+export const githubHoverColor = "var(--github-hover-color)";
+export const postSidenoteColor = "var(--post-sidenote-color)";
+export const postFooterNavLinkHoverBgColor = "var(--post-footer-nav-link-hover-bg-color)";
+export const codeColor = "var(--code-color)";
+export const codeBgColor = "var(--code-bg-color)";
+export const codeLabelBgColor = "var(--code-label-bg-color)";
+export const codeTokenKeywordColor = "var(--code-token-keyword-color)";
+export const codeTokenConstantColor = "var(--code-token-constant-color)";

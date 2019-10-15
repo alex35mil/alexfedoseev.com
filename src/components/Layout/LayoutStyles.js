@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Screen, Layout } from "styles";
+import { Color, Font, Theme, Transition, Screen, Layout } from "styles";
 
 import * as Logo from "components/Logo/LogoStyles.js";
 
@@ -87,6 +87,22 @@ export const logoSvg = css`
   }
 `;
 
+export const mainCol = css`
+  display: grid;
+
+  @media ${Screen.small} {
+    grid-template-columns: max-content;
+    align-items: center;
+  }
+
+  @media ${Screen.large} {
+    grid-template-columns: 1fr max-content;
+    grid-column-gap: 14px;
+    align-items: center;
+    justify-content: space-between;
+  }
+`;
+
 export const navigation = css`
   display: grid;
 
@@ -94,7 +110,7 @@ export const navigation = css`
     grid-template-columns: max-content max-content max-content;
     grid-column-gap: 14px;
     align-items: center;
-    justify-content: center;
+    justify-content: start;
   }
 
   @media ${Screen.large} {
@@ -109,7 +125,7 @@ const smallScreenNavLinkHPad = 4;
 
 export const navLink = css`
   display: inline-block;
-  transition-property: background-color color font-size transform;
+  transition-property: background-color, color, transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
   line-height: 1;
@@ -139,7 +155,7 @@ export const navLinkActive = css`
 
 export const navLinkInactive = css`
   font-size: 0.8em;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
   background-color: transparent;
 `;
 
@@ -147,7 +163,10 @@ export const navSep = css`
   display: flex;
   height: 30px;
   width: 1px;
-  background-color: ${Color.grayLine};
+  background-color: ${Theme.lineColor};
+  transition-property: background-color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const restNavLinks = css`
@@ -163,6 +182,30 @@ export const restNavLinks = css`
 
   @media ${Screen.large} {
     margin-left: -${largeScreenNavLinkHPad}px;
+  }
+`;
+
+export const themeSwitchHeader = css`
+  @media ${Screen.small} {
+    display: none;
+  }
+
+  @media ${Screen.large} {
+    display: flex;
+    position: relative;
+    justify-content: flex-end;
+  }
+`;
+
+export const themeSwitchFooter = css`
+  @media ${Screen.small} {
+    display: flex;
+    position: relative;
+    justify-content: center;
+  }
+
+  @media ${Screen.large} {
+    display: none;
   }
 `;
 
@@ -208,7 +251,10 @@ export const footerSourcesLink = css`
   grid-column-gap: 8px;
   align-items: center;
   justify-content: start;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const footerMainCol = css`
@@ -216,7 +262,7 @@ export const footerMainCol = css`
 
   @media ${Screen.small} {
     order: 1;
-    grid-template-rows: max-content max-content max-content;
+    grid-template-rows: max-content max-content max-content max-content;
     grid-row-gap: 20px;
   }
 
@@ -257,7 +303,10 @@ export const footerCopy = css`
 export const footerText = css`
   font-size: .6em;
   padding: 6px 0;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   line-height: 1;
 `;
 
@@ -280,7 +329,7 @@ export const footerIconLink = css`
   display: flex;
   padding: 6px;
   border-radius: 50%;
-  transition-property: background-color color transform;
+  transition-property: background-color, color, transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
   transform: scale(1);
@@ -305,7 +354,7 @@ export const footerTwitterIcon = css`
 export const footerGithubIcon = css`
   &:focus,
   &:hover {
-    background-color: ${Color.github};
+    background-color: ${Theme.githubHoverColor};
   }
 `;
 
@@ -333,7 +382,10 @@ export const footerLinkedInIcon = css`
 export const sidenote = css`
   display: flex;
   align-items: center;
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   line-height: 1;
   user-select: none;
 
@@ -349,9 +401,15 @@ export const sidenote = css`
 `;
 
 export const primarySidenote = css`
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;
 
 export const secondarySidenote = css`
-  color: ${Color.grayNote};
+  color: ${Theme.postSidenoteColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 `;

@@ -7,14 +7,15 @@ type size =
 
 type color =
   | Blue
-  | Gray
-  | White;
+  | Faded;
 
-let colorToString =
-  fun
+let color = (color: color, ~theme: (module Theme.Colors)) => {
+  let (module Theme) = theme;
+  switch (color) {
   | Blue => Color.blue
-  | Gray => Color.grayIcon
-  | White => Color.white;
+  | Faded => Theme.fadedIconColor
+  };
+};
 
 let viewBoxSize = "16";
 

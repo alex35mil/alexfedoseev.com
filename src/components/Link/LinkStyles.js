@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Font } from "styles";
+import { Theme, Transition } from "styles";
 
 export const link = css`
   cursor: pointer;
@@ -10,8 +10,11 @@ export const text = css`
   margin: -1px;
   padding: 1px;
   border-radius: 1px;
-  color: ${Font.color};
+  color: ${Theme.textColor};
   background-color: transparent;
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 
   &:focus {
     background-color: rgba(0, 0, 0, 0.05);

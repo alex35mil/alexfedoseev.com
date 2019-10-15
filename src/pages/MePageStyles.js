@@ -1,11 +1,15 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Screen, Layout } from "styles";
+import { Color, Font, Theme, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
   grid-auto-flow: row;
   grid-template-rows: max-content;
+  color: ${Theme.textColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
 
   @media ${Screen.small} {
     grid-row-gap: 70px;
@@ -44,7 +48,10 @@ export const about = css`
 export const photo = css`
   display: flex;
   box-sizing: content-box;
-  border: 4px solid #fff;
+  border: 4px solid ${Theme.avatarBorderColor};
+  transition-property: border-color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   border-radius: 50%;
   background-color: #efefef;
   background-image: url("~meta/me.png");
@@ -139,19 +146,28 @@ export const ul = css`
       max-width: 0px;
       max-height: 0px;
       left: -1.7em;
-      color: ${Color.grayText};
+      color: ${Theme.fadedTextColor};
+      transition-property: color;
+      transition-duration: ${Transition.moderate};
+      transition-timing-function: ${Transition.timingFunction};
     }
   }
 `;
 
 export const meh = css`
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   font-style: italic;
   text-decoration: line-through;
 `;
 
 export const note = css`
-  color: ${Color.grayText};
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   font-size: 0.8em;
   font-style: italic;
 `;
@@ -251,7 +267,7 @@ export const linkIcon = css`
 
 export const githubLink = css`
   &:hover path {
-    fill: ${Color.github} !important;
+    fill: ${Theme.githubHoverColor} !important;
   }
 `;
 

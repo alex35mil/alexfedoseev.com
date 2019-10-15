@@ -8,6 +8,8 @@ external smallScreenHPad: int = "smallScreenHPad";
 
 [@react.component]
 let make = (~route: Route.inner, ~children) => {
+  let {Theme.current: theme} = React.useContext(Theme.Context.x);
+
   // Make click outside work in Safari on iOS
   <div className=Css.container onClick=ignore>
     <div className=Css.header>
@@ -16,57 +18,60 @@ let make = (~route: Route.inner, ~children) => {
           <Logo className=Css.logoSvg />
         </Link.Box>
       </div>
-      <div className=Css.navigation>
-        {switch (route) {
-         | Blog(_) =>
-           <Link.Box
-             path=Route.blog
-             className={Cn.make([Css.navLink, Css.navLinkActive])}>
-             "blog"->React.string
-           </Link.Box>
-         | Photo =>
-           <Link.Box
-             path=Route.photo
-             className={Cn.make([Css.navLink, Css.navLinkActive])}>
-             "photo"->React.string
-           </Link.Box>
-         | Me =>
-           <Link.Box
-             path=Route.me
-             className={Cn.make([Css.navLink, Css.navLinkActive])}>
-             "me"->React.string
-           </Link.Box>
-         }}
-        <div className=Css.navSep />
-        <div className=Css.restNavLinks>
+      <div className=Css.mainCol>
+        <div className=Css.navigation>
           {switch (route) {
-           | Blog(_) => React.null
-           | _ =>
+           | Blog(_) =>
              <Link.Box
                path=Route.blog
-               className={Cn.make([Css.navLink, Css.navLinkInactive])}>
+               className={Cn.make([Css.navLink, Css.navLinkActive])}>
                "blog"->React.string
              </Link.Box>
-           }}
-          {switch (route) {
-           | Photo => React.null
-           | _ =>
+           | Photo =>
              <Link.Box
                path=Route.photo
-               className={Cn.make([Css.navLink, Css.navLinkInactive])}>
+               className={Cn.make([Css.navLink, Css.navLinkActive])}>
                "photo"->React.string
              </Link.Box>
-           }}
-          {switch (route) {
-           | Me => React.null
-           | _ =>
+           | Me =>
              <Link.Box
                path=Route.me
-               className={Cn.make([Css.navLink, Css.navLinkInactive])}>
+               className={Cn.make([Css.navLink, Css.navLinkActive])}>
                "me"->React.string
              </Link.Box>
            }}
+          <div className=Css.navSep />
+          <div className=Css.restNavLinks>
+            {switch (route) {
+             | Blog(_) => React.null
+             | _ =>
+               <Link.Box
+                 path=Route.blog
+                 className={Cn.make([Css.navLink, Css.navLinkInactive])}>
+                 "blog"->React.string
+               </Link.Box>
+             }}
+            {switch (route) {
+             | Photo => React.null
+             | _ =>
+               <Link.Box
+                 path=Route.photo
+                 className={Cn.make([Css.navLink, Css.navLinkInactive])}>
+                 "photo"->React.string
+               </Link.Box>
+             }}
+            {switch (route) {
+             | Me => React.null
+             | _ =>
+               <Link.Box
+                 path=Route.me
+                 className={Cn.make([Css.navLink, Css.navLinkInactive])}>
+                 "me"->React.string
+               </Link.Box>
+             }}
+          </div>
         </div>
+        <ThemeSwitch className=Css.themeSwitchHeader />
       </div>
     </div>
     children
@@ -77,17 +82,25 @@ let make = (~route: Route.inner, ~children) => {
           target=Blank
           underline=WhenInteracted
           className=Css.footerSourcesLink>
-          <CodeIcon size=SM color=Gray />
+          <CodeIcon size=SM color=Faded />
           <span className=Css.footerText> "src"->React.string </span>
         </A>
       </div>
       <div className=Css.footerMainCol>
         <div className=Css.footerCopy>
           <span className=Css.footerText> {j|©|j}->React.string </span>
-          <img
-            src=[%bs.raw "require('meta/sign.png')"]
-            className=Css.copySignature
-          />
+          {switch (theme) {
+           | Light =>
+             <img
+               src=[%bs.raw "require('meta/sign-light.png')"]
+               className=Css.copySignature
+             />
+           | Dark =>
+             <img
+               src=[%bs.raw "require('meta/sign-dark.png')"]
+               className=Css.copySignature
+             />
+           }}
           <span className=Css.footerText>
             {
               let start =
@@ -123,33 +136,34 @@ let make = (~route: Route.inner, ~children) => {
             href=Route.twitter
             target=Blank
             className={Cn.make([Css.footerIconLink, Css.footerTwitterIcon])}>
-            <TwitterIcon size=SM color=Gray />
+            <TwitterIcon size=SM color=Faded />
           </A.Box>
           <A.Box
             href=Route.github
             target=Blank
             className={Cn.make([Css.footerIconLink, Css.footerGithubIcon])}>
-            <GithubIcon size=SM color=Gray />
+            <GithubIcon size=SM color=Faded />
           </A.Box>
           <A.Box
             href=Route.instagram
             target=Blank
             className={Cn.make([Css.footerIconLink, Css.footerInstagramIcon])}>
-            <InstagramIcon size=SM color=Gray />
+            <InstagramIcon size=SM color=Faded />
           </A.Box>
           <A.Box
             href=Route.facebook
             target=Blank
             className={Cn.make([Css.footerIconLink, Css.footerFacebookIcon])}>
-            <FacebookIcon size=SM color=Gray />
+            <FacebookIcon size=SM color=Faded />
           </A.Box>
           <A.Box
             href=Route.linkedin
             target=Blank
             className={Cn.make([Css.footerIconLink, Css.footerLinkedInIcon])}>
-            <LinkedInIcon size=SM color=Gray />
+            <LinkedInIcon size=SM color=Faded />
           </A.Box>
         </div>
+        <ThemeSwitch className=Css.themeSwitchFooter />
       </div>
     </div>
   </div>;

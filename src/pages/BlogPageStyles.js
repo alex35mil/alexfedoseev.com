@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition, Screen, Layout } from "styles";
+import { Color, Font, Transition, Screen, Theme, Layout } from "styles";
 
 export const years = css`
   display: grid;
@@ -65,6 +65,7 @@ export const year = css`
 
 export const link = css`
   font-size: 0.9em;
+  color: ${Theme.textColor};
 
   @media ${Screen.small} {
     font-size: 0.8em;

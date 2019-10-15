@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Transition } from "styles";
+import { Color, Font, Theme, Transition } from "styles";
 
 import * as Logo from "components/Logo/LogoStyles.js";
 
@@ -11,14 +11,23 @@ const photoSize = 130;
 
 export const container = css`
   display: grid;
+  grid-template-rows: 1fr max-content 1fr;
+  grid-template-columns: max-content;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 0;
+`;
+
+export const content = css`
+  display: grid;
   align-content: center;
   align-items: center;
   justify-content: center;
   justify-items: center;
-  padding-bottom: 7%;
+  padding-bottom: 20%;
 
   @media ${smallScreen} {
-    grid-template-rows: max-content max-content max-content;
+    grid-template-rows: max-content max-content;
     grid-template-columns: max-content;
     grid-column-gap: 0;
     grid-row-gap: 20px;
@@ -31,10 +40,17 @@ export const container = css`
   }
 `;
 
+export const push = css`
+  display: flex;
+`;
+
 export const photo = css`
   display: flex;
   box-sizing: content-box;
-  border: 4px solid #fff;
+  border: 4px solid ${Theme.avatarBorderColor};
+  transition-property: border-color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
   border-radius: 50%;
   width: ${photoSize}px;
   height: ${photoSize}px;
@@ -54,7 +70,10 @@ export const line = css`
     display: flex;
     height: 120px;
     width: 1px;
-    background-color: ${Color.grayLine};
+    background-color: ${Theme.lineColor};
+    transition-property: background-color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
   }
 `;
 
@@ -110,9 +129,9 @@ export const nav = css`
 export const link = css`
   display: flex;
   padding: 2px ${linkHPad}px;
-  color: ${Font.color};
+  color: ${Theme.textColor};
   font-size: 0.9em;
-  transition-property: background-color color transform;
+  transition-property: background-color, color, transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
   user-select: none;
@@ -134,7 +153,10 @@ export const diagonal = css`
     display: flex;
     height: 30px;
     width: 1px;
-    background-color: ${Color.grayLine};
+    background-color: ${Theme.lineColor};
+    transition-property: background-color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
     transform: rotate(15deg);
   }
 `;
@@ -161,7 +183,7 @@ export const icon = css`
   display: flex;
   padding: 6px;
   border-radius: 50%;
-  transition-property: background-color color transform;
+  transition-property: background-color, color, transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
 
@@ -186,7 +208,7 @@ export const twitterIcon = css`
 export const githubIcon = css`
   &:focus,
   &:hover {
-    background-color: ${Color.github};
+    background-color: ${Theme.githubHoverColor};
   }
 `;
 
@@ -195,4 +217,9 @@ export const instagramIcon = css`
   &:hover {
     background-color: ${Color.instagram};
   }
+`;
+
+export const themeSwitch = css`
+  align-self: end;
+  justify-content: center;
 `;

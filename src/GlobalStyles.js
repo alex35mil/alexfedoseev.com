@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Layout, ZIndex } from "styles";
+import { Color, Font, Theme, Transition, Layout, ZIndex } from "styles";
 
 export const global = css`
   :global {
@@ -47,7 +47,10 @@ export const global = css`
     }
 
     body {
-      background-color: ${Layout.bgColor};
+      background-color: ${Theme.bgColor};
+      transition-property: background-color;
+      transition-duration: ${Transition.moderate};
+      transition-timing-function: ${Transition.timingFunction};
       font-family: ${Font.mono};
       font-size: ${Font.size}px;
       font-weight: ${Font.normal};
