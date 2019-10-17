@@ -756,8 +756,10 @@ export const footerLink = css`
   background-color: transparent;
   border-radius: 6px;
 
-  &:hover {
-    background-color: ${Theme.postFooterNavLinkHoverBgColor};
+  @media ${Screen.mouse} {
+    &:hover {
+      background-color: ${Theme.postFooterNavLinkHoverBgColor};
+    }
   }
 
   @media ${Screen.small} {
@@ -819,24 +821,30 @@ export const socialSharingButton = css`
   border-radius: 50%;
   transform: scale(1);
 
-  &:hover {
-    transform: scale(1.1);
+  @media ${Screen.mouse} {
+    &:hover {
+      transform: scale(1.1);
 
-    & path {
-      fill: #fff !important;
+      & path {
+        fill: #fff !important;
+      }
     }
   }
 `;
 
 export const socialSharingButtonTwitter = css`
-  &:hover {
-    background-color: ${Color.twitter};
+  @media ${Screen.mouse} {
+    &:hover {
+      background-color: ${Color.twitter};
+    }
   }
 `;
 
 export const socialSharingButtonFacebook = css`
-  &:hover {
-    background-color: ${Color.facebook};
+  @media ${Screen.mouse} {
+    &:hover {
+      background-color: ${Color.facebook};
+    }
   }
 `;
 

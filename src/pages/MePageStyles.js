@@ -266,31 +266,41 @@ export const linkIcon = css`
 `;
 
 export const githubLink = css`
-  &:hover path {
-    fill: ${Theme.githubHoverColor} !important;
+  @media ${Screen.mouse} {
+    &:hover path {
+      fill: ${Theme.githubHoverColor} !important;
+    }
   }
 `;
 
 export const twitterLink = css`
-  &:hover path {
-    fill: ${Color.twitter} !important;
+  @media ${Screen.mouse} {
+    &:hover path {
+      fill: ${Color.twitter} !important;
+    }
   }
 `;
 
 export const instagramLink = css`
-  &:hover path {
-    fill: ${Color.instagram} !important;
+  @media ${Screen.mouse} {
+    &:hover path {
+      fill: ${Color.instagram} !important;
+    }
   }
 `;
 
 export const facebookLink = css`
-  &:hover path {
-    fill: ${Color.facebook} !important;
+  @media ${Screen.mouse} {
+    &:hover path {
+      fill: ${Color.facebook} !important;
+    }
   }
 `;
 
 export const linkedinLink = css`
-  &:hover path {
-    fill: ${Color.linkedin} !important;
+  @media ${Screen.mouse} {
+    &:hover path {
+      fill: ${Color.linkedin} !important;
+    }
   }
 `;

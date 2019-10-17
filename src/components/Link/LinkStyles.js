@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Theme, Transition } from "styles";
+import { Theme, Screen, Transition } from "styles";
 
 export const link = css`
   cursor: pointer;
@@ -16,8 +16,10 @@ export const text = css`
   transition-duration: ${Transition.moderate};
   transition-timing-function: ${Transition.timingFunction};
 
-  &:focus {
-    background-color: rgba(0, 0, 0, 0.05);
+  @media ${Screen.mouse} {
+    &:focus {
+      background-color: rgba(0, 0, 0, 0.05);
+    }
   }
 `;
 
@@ -32,21 +34,25 @@ export const underlineAlways = css`
 export const underlineWhenInteracted = css`
   text-decoration: none;
 
-  &:focus,
-  &:hover {
-    text-decoration: underline;
-    text-decoration-skip: ink;
-    text-decoration-skip-ink: auto;
-    text-decoration-style: solid;
-    -webkit-text-decoration-skip: objects;
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      text-decoration: underline;
+      text-decoration-skip: ink;
+      text-decoration-skip-ink: auto;
+      text-decoration-style: solid;
+      -webkit-text-decoration-skip: objects;
+    }
   }
 `;
 
 export const underlineNever = css`
   text-decoration: none;
 
-  &:focus,
-  &:hover {
-    text-decoration: none;
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      text-decoration: none;
+    }
   }
 `;

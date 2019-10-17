@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Color, Font, Theme, Transition } from "styles";
+import { Color, Font, Theme, Screen, Transition } from "styles";
 
 import * as Logo from "components/Logo/LogoStyles.js";
 
@@ -136,11 +136,13 @@ export const link = css`
   transition-timing-function: ${Transition.timingFunction};
   user-select: none;
 
-  &:focus,
-  &:hover {
-    color: #fff;
-    background-color: ${Color.blue};
-    transform: rotate(-3deg) scale(1.1);
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      color: #fff;
+      background-color: ${Color.blue};
+      transform: rotate(-3deg) scale(1.1);
+    }
   }
 `;
 
@@ -187,35 +189,43 @@ export const icon = css`
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
 
-  &:focus,
-  &:hover {
-    background-color: ${Color.blue};
-    transform: rotate(-7deg) scale(1.1);
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Color.blue};
+      transform: rotate(-7deg) scale(1.1);
 
-    & path {
-      fill: #fff;
+      & path {
+        fill: #fff;
+      }
     }
   }
 `;
 
 export const twitterIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Color.twitter};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Color.twitter};
+    }
   }
 `;
 
 export const githubIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Theme.githubHoverColor};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Theme.githubHoverColor};
+    }
   }
 `;
 
 export const instagramIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Color.instagram};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Color.instagram};
+    }
   }
 `;
 

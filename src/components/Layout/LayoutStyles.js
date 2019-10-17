@@ -131,11 +131,13 @@ export const navLink = css`
   line-height: 1;
   user-select: none;
 
-  &:focus,
-  &:hover {
-    color: ${Color.white};
-    background-color: ${Color.blue};
-    transform: rotate(-3deg) scale(1.1);
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      color: ${Color.white};
+      background-color: ${Color.blue};
+      transform: rotate(-3deg) scale(1.1);
+    }
   }
 
   @media ${Screen.small} {
@@ -334,48 +336,60 @@ export const footerIconLink = css`
   transition-timing-function: ${Transition.timingFunction};
   transform: scale(1);
 
-  &:focus,
-  &:hover {
-    transform: scale(1.3);
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      transform: scale(1.3);
 
-    & path {
-      fill: #fff;
+      & path {
+        fill: #fff;
+      }
     }
   }
 `;
 
 export const footerTwitterIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Color.twitter};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Color.twitter};
+    }
   }
 `;
 
 export const footerGithubIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Theme.githubHoverColor};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Theme.githubHoverColor};
+    }
   }
 `;
 
 export const footerInstagramIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Color.instagram};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Color.instagram};
+    }
   }
 `;
 
 export const footerFacebookIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Color.facebook};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Color.facebook};
+    }
   }
 `;
 
 export const footerLinkedInIcon = css`
-  &:focus,
-  &:hover {
-    background-color: ${Color.linkedin};
+  @media ${Screen.mouse} {
+    &:focus,
+    &:hover {
+      background-color: ${Color.linkedin};
+    }
   }
 `;
 

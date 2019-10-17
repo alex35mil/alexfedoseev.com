@@ -1,6 +1,6 @@
 import { css } from "linaria";
 
-import { Transition } from "styles";
+import { Screen, Transition } from "styles";
 
 export const thumbOverlay = css`
   display: flex;
@@ -17,9 +17,11 @@ export const thumb = css`
   position: absolute;
   cursor: pointer;
 
-  &:focus .${thumbOverlay},
-  &:hover .${thumbOverlay} {
-    background-color: rgba(255, 255, 255, 0.1);
+  @media ${Screen.mouse} {
+    &:focus .${thumbOverlay},
+    &:hover .${thumbOverlay} {
+      background-color: rgba(255, 255, 255, 0.1);
+    }
   }
 `;
 
