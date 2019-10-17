@@ -16,6 +16,8 @@ let dsc0386: Photo.src = [%bs.raw "require('./files/DSC_0386.jpg?preset=photo')"
 let dsc0386Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_0386.jpg?preset=thumb')"];
 let dsc0666: Photo.src = [%bs.raw "require('./files/DSC_0666.jpg?preset=photo')"];
 let dsc0666Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_0666.jpg?preset=thumb')"];
+let dsc0896: Photo.src = [%bs.raw "require('./files/DSC_0896.jpg?preset=photo')"];
+let dsc0896Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_0896.jpg?preset=thumb')"];
 let dsc0909: Photo.src = [%bs.raw "require('./files/DSC_0909.jpg?preset=photo')"];
 let dsc0909Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_0909.jpg?preset=thumb')"];
 let dsc1005: Photo.src = [%bs.raw "require('./files/DSC_1005.jpg?preset=photo')"];
@@ -96,6 +98,10 @@ let dsc3631: Photo.src = [%bs.raw "require('./files/DSC_3631.jpg?preset=photo')"
 let dsc3631Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_3631.jpg?preset=thumb')"];
 let dsc3799: Photo.src = [%bs.raw "require('./files/DSC_3799.jpg?preset=photo')"];
 let dsc3799Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_3799.jpg?preset=thumb')"];
+let dsc3992: Photo.src = [%bs.raw "require('./files/DSC_3992.jpg?preset=photo')"];
+let dsc3992Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_3992.jpg?preset=thumb')"];
+let dsc3994: Photo.src = [%bs.raw "require('./files/DSC_3994.jpg?preset=photo')"];
+let dsc3994Thumb: Photo.thumb = [%bs.raw "require('./files/DSC_3994.jpg?preset=thumb')"];
 let img1527: Photo.src = [%bs.raw "require('./files/IMG_1527.jpg?preset=photo')"];
 let img1527Thumb: Photo.thumb = [%bs.raw "require('./files/IMG_1527.jpg?preset=thumb')"];
 
@@ -108,6 +114,7 @@ let all = [|
   ("dsc0328", dsc0328, dsc0328Thumb),
   ("dsc0386", dsc0386, dsc0386Thumb),
   ("dsc0666", dsc0666, dsc0666Thumb),
+  ("dsc0896", dsc0896, dsc0896Thumb),
   ("dsc0909", dsc0909, dsc0909Thumb),
   ("dsc1005", dsc1005, dsc1005Thumb),
   ("dsc1020", dsc1020, dsc1020Thumb),
@@ -148,5 +155,7 @@ let all = [|
   ("dsc3588", dsc3588, dsc3588Thumb),
   ("dsc3631", dsc3631, dsc3631Thumb),
   ("dsc3799", dsc3799, dsc3799Thumb),
+  ("dsc3992", dsc3992, dsc3992Thumb),
+  ("dsc3994", dsc3994, dsc3994Thumb),
   ("img1527", img1527, img1527Thumb),
 |];
