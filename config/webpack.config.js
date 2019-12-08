@@ -177,7 +177,12 @@ config.module = {
     },
     {
       test: /\.woff2?$/,
-      use: "file-loader",
+      use: {
+        loader: "file-loader",
+        options: {
+          esModule: false,
+        },
+      },
     },
     {
       test: /\.(webp|png|jpe?g)$/,
@@ -216,7 +221,10 @@ config.module = {
         },
         {
           loader: "file-loader",
-          options: { name: "[hash].[ext]" },
+          options: {
+            name: "[hash].[ext]",
+            esModule: false,
+          },
         },
         {
           loader: "image-webpack-loader",
@@ -231,7 +239,10 @@ config.module = {
       test: /\.gif$/,
       use: {
         loader: "file-loader",
-        options: { name: "[hash].[ext]" },
+        options: {
+          name: "[hash].[ext]",
+          esModule: false,
+        },
       },
     },
     {
