@@ -28,7 +28,7 @@
   },
   "dependencies": {
     "bs-nprogress": "5.0.0",
-    "bs-webapi": "0.15.2",
+    "bs-webapi": "0.15.6",
     "justified-layout": "3.0.0",
     "nprogress": "0.2.0",
     "photoswipe": "4.1.3",
@@ -47,7 +47,7 @@
     "@mdx-js/loader": "1.1.0",
     "babel-loader": "8.0.6",
     "babel-plugin-prismjs": "1.1.0",
-    "bs-platform": "5.0.6",
+    "bs-platform": "7.0.1",
     "compression-webpack-plugin": "3.0.0",
     "core-js": "2.6.5",
     "css-loader": "3.0.0",

@@ -1844,15 +1844,15 @@ bs-nprogress@5.0.0:
   resolved "https://registry.yarnpkg.com/bs-nprogress/-/bs-nprogress-5.0.0.tgz#a0ef00ae545a3708908b17240f0cbfb5e4af3225"
   integrity sha512-Fcqnj5vePDQjaAH2tetJMVN9ha2iZSw6LO9CuTp5+OYojwh6XJu9RTbb6o9Wi8LPYC6V6oiI5dj1ed+hqx3Rmg==
 
-bs-platform@5.0.6:
-  version "5.0.6"
-  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-5.0.6.tgz#88c13041fb020479800de3d82c680bf971091425"
-  integrity sha512-6Boa2VEcWJp2WJr38L7bp3J929nYha7gDarjxb070jWzgfPJ/WbzjipmSfnu2eqqk1MfjEIpBipbPz6n1NISwA==
+bs-platform@7.0.1:
+  version "7.0.1"
+  resolved "https://registry.yarnpkg.com/bs-platform/-/bs-platform-7.0.1.tgz#1d7b0ef6088b998dceee5db74a7cd8f01c20a3bd"
+  integrity sha512-UjStdtHhbtC/l6vKJ1XRDqrPk7rFf5PLYHtRX3akDXEYVnTbN36z0g4DEr5mU8S0N945e33HYts9x+i7hKKpZQ==
 
-bs-webapi@0.15.2:
-  version "0.15.2"
-  resolved "https://registry.yarnpkg.com/bs-webapi/-/bs-webapi-0.15.2.tgz#0bf4174cffafde748df19c4ae42f6e8e6c6a22b1"
-  integrity sha512-P3YNG9i29FjGxBLN4UkhiQpBwB4ok+xiGK6kCiUixBB/mb/hwnFGPbxAY/Q2owx0/8ehM+BwRT6vFd01T0GRRQ==
+bs-webapi@0.15.6:
+  version "0.15.6"
+  resolved "https://registry.yarnpkg.com/bs-webapi/-/bs-webapi-0.15.6.tgz#967a074854c76ba0097653a1745fd981eaf62f7b"
+  integrity sha512-J+6+fBhkZ8DC8Xrq5Zv7w5pufEv/23TSsHSPMMoOJ1tejEbmXvk8qkwUi0JqPhWmA86XyGMO7Z2XbNNUtd/CPw==
 
 bser@^2.0.0:
   version "2.1.0"
