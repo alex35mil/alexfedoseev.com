@@ -1,14 +1,17 @@
 [@react.component]
-let make = (~slug: string) => {
+let make = (~year: string, ~slug: string) => {
   let entry =
-    Posts.byYear->BeltExt.Array.findAndThen(((year, posts)) => {
-      let post =
-        posts |> Js.Array.find((post: Posts.entry) => post.slug == slug);
-      switch (post) {
-      | Some(post) => `Return((year, post))
-      | None => `Skip
-      };
-    });
+    Posts.byYear->BeltExt.Array.findAndThen(((year', posts)) =>
+      if (year != year') {
+        `Skip;
+      } else {
+        let post = posts->Js.Array2.find(post => post.slug == slug);
+        switch (post) {
+        | Some(post) => `Return((year, post))
+        | None => `Skip
+        };
+      }
+    );
 
   switch (entry) {
   | Some((year, post)) =>
@@ -23,10 +26,14 @@ let make = (~slug: string) => {
             year
             date={post.date}
             prevPost={
-              Posts.all->Array.get(index + 1)->Option.map(post => post.slug)
+              Posts.all
+              ->Array.get(index + 1)
+              ->Option.map(post => Post.Footer.{year, slug: post.slug})
             }
             nextPost={
-              Posts.all->Array.get(index - 1)->Option.map(post => post.slug)
+              Posts.all
+              ->Array.get(index - 1)
+              ->Option.map(post => Post.Footer.{year, slug: post.slug})
             }>
             <Content title={post.title} />
           </Post>

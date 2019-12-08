@@ -8,8 +8,8 @@ let make = () => {
     <ScreenSize>
       <Layout route>
         {switch (route) {
-         | Blog(`Index) => <BlogPage />
-         | Blog(`Post(slug)) => <PostPage slug />
+         | Blog(Index) => <BlogPage />
+         | Blog(Post({year, slug})) => <PostPage year slug />
          | Photo => <PhotoPage />
          | Me => <MePage />
          }}

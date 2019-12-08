@@ -21,7 +21,7 @@ let make = () => {
                     <div className=Css.link>
                       <Text.Ellipsis>
                         <Link
-                          path={Route.post(~slug=post.slug)}
+                          path={Route.post(~year, ~slug=post.slug)}
                           underline=WhenInteracted>
                           post.title->React.string
                         </Link>

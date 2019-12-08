@@ -500,11 +500,16 @@ module Expandable = {
 };
 
 module Footer = {
+  type post = {
+    year: string,
+    slug: string,
+  };
+
   [@bs.val]
   external encodeURIComponent: string => string = "encodeURIComponent";
 
   [@react.component]
-  let make = (~title, ~prevPost, ~nextPost) => {
+  let make = (~title, ~prevPost: option(post), ~nextPost: option(post)) => {
     let shareOnTwitter =
       React.useCallback0(() => {
         let username = Env.twitterHandle;
@@ -542,8 +547,9 @@ module Footer = {
       <div className=Css.footerRowInner>
         <div className=Css.prevPost>
           {switch (prevPost) {
-           | Some(slug) =>
-             <Link.Box path={Route.post(~slug)} className=Css.footerLink>
+           | Some({year, slug}) =>
+             <Link.Box
+               path={Route.post(~year, ~slug)} className=Css.footerLink>
                <ChevronLeftIcon size=LG color=Faded />
              </Link.Box>
            | None => React.null
@@ -575,8 +581,9 @@ module Footer = {
         </div>
         <div className=Css.nextPost>
           {switch (nextPost) {
-           | Some(slug) =>
-             <Link.Box path={Route.post(~slug)} className=Css.footerLink>
+           | Some({year, slug}) =>
+             <Link.Box
+               path={Route.post(~year, ~slug)} className=Css.footerLink>
                <ChevronRightIcon size=LG color=Faded />
              </Link.Box>
            | None => React.null

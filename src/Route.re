@@ -4,13 +4,20 @@ type t =
   | Main
   | Inner(inner)
 and inner =
-  | Blog([ | `Index | `Post(string)])
+  | Blog(blog)
   | Photo
-  | Me;
+  | Me
+and blog =
+  | Index
+  | Post({
+      year: string,
+      slug: string,
+    });
 
 let main = "/"->Path.pack;
 let blog = "/blog"->Path.pack;
-let post = (~slug: string) => {j|/blog/$slug|j}->Path.pack;
+let post = (~year: string, ~slug: string) =>
+  {j|/blog/$year/$slug|j}->Path.pack;
 let photo = "/photo"->Path.pack;
 let me = "/me"->Path.pack;
 
@@ -35,8 +42,8 @@ let conform = "https://github.com/MinimaHQ/conform"->Path.pack;
 let fromUrl = (url: ReactRouter.url) =>
   switch (url.path) {
   | [] => Main->Some
-  | ["blog"] => Inner(Blog(`Index))->Some
-  | ["blog", slug] => Inner(Blog(`Post(slug)))->Some
+  | ["blog"] => Inner(Blog(Index))->Some
+  | ["blog", year, slug] => Inner(Blog(Post({year, slug})))->Some
   | ["photo"] => Inner(Photo)->Some
   | ["me"] => Inner(Me)->Some
   | _ => None
