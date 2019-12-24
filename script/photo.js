@@ -15,8 +15,7 @@ const IS_PRODUCTION = process.env.NODE_ENV === "production";
 
 const N = parseInt(process.argv[process.argv.length - 1], 10);
 
-const shouldWatch = () =>
-  process.argv.includes("--watch") || process.argv.includes("-w");
+const shouldWatch = () => process.argv.includes("--watch") || process.argv.includes("-w");
 
 const thumbLetBinding = photoId => `${photoId}Thumb`;
 
@@ -55,9 +54,7 @@ const write = () => {
     .join("\n");
 
   const entries = photos
-    .map(
-      photo => `  ("${photo.id}", ${photo.id}, ${thumbLetBinding(photo.id)}),`,
-    )
+    .map(photo => `  ("${photo.id}"->Photo.Id.pack, ${photo.id}, ${thumbLetBinding(photo.id)}),`)
     .join("\n");
 
   fs.writeFileSync(PhotosRe, mod(requires, entries), "utf8");
@@ -67,57 +64,48 @@ const write = () => {
 const watch = () => {
   const client = new Client();
 
-  client.capabilityCheck(
-    { optional: [], required: ["relative_root"] },
-    (err, _res) => {
+  client.capabilityCheck({ optional: [], required: ["relative_root"] }, (err, _res) => {
+    if (err) {
+      console.log("[ERROR]:", err);
+      client.end();
+      return;
+    }
+
+    client.command(["watch-project", root], (err, res) => {
       if (err) {
-        console.log("[ERROR]:", err);
-        client.end();
+        console.error("[ERROR] Failed to watch project:", err);
         return;
       }
 
-      client.command(["watch-project", root], (err, res) => {
+      if ("warning" in res) {
+        console.log("[WARNING]:", res.warning);
+      }
+
+      console.log("Watching", res.watch);
+
+      const SUBSCRIPTION_ID = "PHOTO";
+      const SUBSCRIPTION_PARAMS = {
+        expression: ["anyof", ...sources.map(src => ["match", src, "wholename"])],
+        fields: ["name", "size", "exists", "type"],
+      };
+
+      if (res.relative_path) {
+        SUBSCRIPTION_PARAMS.relative_root = res.relative_path;
+      }
+
+      client.command(["subscribe", res.watch, SUBSCRIPTION_ID, SUBSCRIPTION_PARAMS], (err, res) => {
         if (err) {
-          console.error("[ERROR] Failed to watch project:", err);
+          console.error("[ERROR] Failed to subscribe:", err);
           return;
         }
-
-        if ("warning" in res) {
-          console.log("[WARNING]:", res.warning);
-        }
-
-        console.log("Watching", res.watch);
-
-        const SUBSCRIPTION_ID = "PHOTO";
-        const SUBSCRIPTION_PARAMS = {
-          expression: [
-            "anyof",
-            ...sources.map(src => ["match", src, "wholename"]),
-          ],
-          fields: ["name", "size", "exists", "type"],
-        };
-
-        if (res.relative_path) {
-          SUBSCRIPTION_PARAMS.relative_root = res.relative_path;
-        }
-
-        client.command(
-          ["subscribe", res.watch, SUBSCRIPTION_ID, SUBSCRIPTION_PARAMS],
-          (err, res) => {
-            if (err) {
-              console.error("[ERROR] Failed to subscribe:", err);
-              return;
-            }
-          },
-        );
-
-        client.on("subscription", res => {
-          if (res.subscription !== SUBSCRIPTION_ID) return;
-          write();
-        });
       });
-    },
-  );
+
+      client.on("subscription", res => {
+        if (res.subscription !== SUBSCRIPTION_ID) return;
+        write();
+      });
+    });
+  });
 };
 
 function shuffle(arr) {
@@ -127,7 +115,6 @@ function shuffle(arr) {
   }
   return arr;
 }
-
 
 if (shouldWatch()) {
   watch();

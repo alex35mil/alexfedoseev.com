@@ -79,11 +79,12 @@ let px = x => x->Float.toString ++ "px";
 let make = () => {
   let screen = Screen.useSize();
   let photos = React.useMemo0(() => Photos.all->Array.shuffle); // probably, not the best ux
+
   let layout =
     React.useMemo1(
       () =>
         photos
-        ->Array.map(((_, photo, _)) => photo->Photo.aspectRatio)
+        ->Array.map(((_, photo, _)) => photo.aspectRatio)
         ->JustifiedLayout.makeWithOptions(
             switch (screen) {
             | Small =>
@@ -132,11 +133,8 @@ let make = () => {
       entries->Array.map(((id, photo, _, _)) =>
         Gallery.Photo.make(
           ~pid=id,
-          ~msrc=photo->Photo.placeholder,
-          ~sm=photo->Photo.srcset->Photo.sm,
-          ~md=photo->Photo.srcset->Photo.md,
-          ~lg=photo->Photo.srcset->Photo.lg,
-          ~xl=photo->Photo.srcset->Photo.xl,
+          ~msrc=photo.placeholder,
+          ~srcset=photo.srcset,
         )
       ),
     );
@@ -180,12 +178,16 @@ let make = () => {
     ) {
     | "" => ()
     | _ as hash =>
-      switch (
-        Web.Url.URLSearchParams.(hash->make->get(PhotoSwipe.Url.pid, _))
-      ) {
+      let pid =
+        Web.Url.URLSearchParams.(
+          hash->make->get(PhotoSwipe.Url.pid, _)->Option.map(Photo.Id.pack)
+        );
+      switch (pid) {
       | Some(pid) =>
         switch (
-          entries->Js.Array.findIndex(((id, _, _, _)) => id == pid, _)
+          entries->Js.Array2.findIndex(((id, _, _, _)) =>
+            id->Photo.Id.eq(pid)
+          )
         ) {
         | (-1) => Route.photo->ReactRouter.push
         | _ as index =>
@@ -200,7 +202,7 @@ let make = () => {
           )
         }
       | None => Route.photo->ReactRouter.push
-      }
+      };
     };
     None;
   });
@@ -216,7 +218,7 @@ let make = () => {
       {entries
        ->Array.mapWithIndex((index, (id, _, thumb, box)) =>
            <Photo.Thumb
-             key=id
+             key={id->Photo.Id.toString}
              src=thumb
              box
              onClick={_ =>

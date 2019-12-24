@@ -1,38 +1,50 @@
 module Css = PhotoStyles;
 
-type src;
-type srcset;
-type densities;
-type density;
+type id;
 
-[@bs.get] external width: src => int = "width";
-[@bs.get] external height: src => int = "height";
-[@bs.get] external aspectRatio: src => float = "aspectRatio";
-[@bs.get] external srcset: src => srcset = "srcset";
-[@bs.get] external sm: srcset => densities = "sm";
-[@bs.get] external md: srcset => densities = "md";
-[@bs.get] external lg: srcset => densities = "lg";
-[@bs.get] external xl: srcset => densities = "xl";
-[@bs.get] external oneX: densities => density = "@1x";
-[@bs.get] external twoX: densities => density = "@2x";
-[@bs.get] external threeX: densities => density = "@3x";
-[@bs.get] external densitySrc: density => string = "src";
-[@bs.get] external densityWidth: density => float = "width";
-[@bs.get] external densityHeight: density => float = "height";
-[@bs.get] external fallback: src => string = "fallback";
-[@bs.get] external placeholder: src => string = "placeholder";
+module Id = {
+  external pack: string => id = "%identity";
+  external toString: id => string = "%identity";
+  let eq = (x1, x2) => x1->toString == x2->toString;
+};
+
+type src = {
+  srcset,
+  fallback: string,
+  placeholder: string,
+  width: int,
+  height: int,
+  aspectRatio: float,
+}
+and srcset = {
+  sm: densities,
+  md: densities,
+  lg: densities,
+  xl: densities,
+}
+and densities = {
+  [@bs.as "@1x"]
+  x1: density,
+  [@bs.as "@2x"]
+  x2: density,
+  [@bs.as "@3x"]
+  x3: density,
+}
+and density = {
+  src: string,
+  width: float,
+  height: float,
+};
 
 let px = x => x->Float.toString ++ "px";
 
 module Thumb = {
   type src;
-  type srcset;
 
   [@bs.get] external width: src => int = "width";
   [@bs.get] external height: src => int = "height";
   [@bs.get] external aspectRatio: src => float = "aspectRatio";
-  [@bs.get] external srcset: src => srcset = "srcset";
-  [@bs.get] external thumb: srcset => string = "thumb";
+  [@bs.get] [@bs.scope "srcset"] external thumb: src => string = "thumb";
   [@bs.get] external fallback: src => string = "fallback";
   [@bs.get] external placeholder: src => string = "placeholder";
 
@@ -80,10 +92,6 @@ module Thumb = {
         ~left=box->JustifiedLayout.Box.left->px,
         ~width=box->JustifiedLayout.Box.width->px,
         ~height=box->JustifiedLayout.Box.height->px,
-        ~backgroundImage={j|url("$placeholder")|j},
-        ~backgroundSize="cover",
-        ~backgroundRepeat="no-repeat",
-        ~backgroundPosition="50% 50%",
         (),
       )}
       onClick={_ => onClick()}>
@@ -99,7 +107,7 @@ module Thumb = {
         )}>
         <img
           src={src->fallback}
-          srcSet={src->srcset->thumb}
+          srcSet={src->thumb}
           className={Cn.make([
             switch (state) {
             | Loading => Css.loadingImage
