@@ -102,15 +102,11 @@ let make = (~route: Route.inner, ~children) => {
              />
            }}
           <span className=Css.footerText>
-            {
-              let start =
-                Posts.byYear
-                ->Array.getUnsafe(Posts.byYear->Array.length - 1)
-                ->fst;
-              let current = Js.Date.(make()->getFullYear)->Float.toString;
+            {let start =
+               Posts.all->Array.getUnsafe(Posts.all->Array.length - 1).year;
+             let current = Js.Date.(make()->getFullYear)->Float.toString;
 
-              {j|$(start)—$(current)|j}->React.string;
-            }
+             {j|$(start)—$(current)|j}->React.string}
           </span>
         </div>
         <div className=Css.footerNav>

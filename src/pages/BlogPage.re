@@ -4,7 +4,7 @@ module Css = BlogPageStyles;
 let make = () => {
   <Page>
     <div className=Css.years>
-      {Posts.byYear
+      {Posts.byYear()
        ->Array.map(((year, posts)) =>
            <div key=year className=Css.yearContainer>
              {posts
