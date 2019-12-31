@@ -1,10 +1,7 @@
 module Component = {
   module type t = {
-    [@bs.obj]
-    external makeProps:
-      (~title: string, ~key: string=?, unit) => {. "title": string} =
-      "";
-    let make: React.component({. "title": string});
+    [@bs.obj] external makeProps: (~key: string=?, unit) => {.} = "";
+    let make: React.component({.});
   };
 };
 

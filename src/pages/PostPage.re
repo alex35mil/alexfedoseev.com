@@ -1,6 +1,9 @@
 [@react.component]
 let make = (~year: string, ~slug: string) => {
-  let index = Posts.all->Array.getIndexBy(entry => entry.slug == slug);
+  let index =
+    Posts.all->Array.getIndexBy(entry =>
+      entry.year == year && entry.slug == slug
+    );
 
   switch (index) {
   | Some(index) =>
@@ -27,7 +30,7 @@ let make = (~year: string, ~slug: string) => {
                   Post.Footer.{year: post.year, slug: post.slug}
                 )
             }>
-            <Content title={post.title} />
+            <Content />
           </Post>
       )
     </PostLoader>;
