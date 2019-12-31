@@ -108,6 +108,12 @@ let noteRow = noteRow;
 [@bs.module "./PostStyles.js"] external note: string = "note";
 let note = note;
 
+[@bs.module "./PostStyles.js"] external crossPostNoteRow: string = "crossPostNoteRow";
+let crossPostNoteRow = crossPostNoteRow;
+
+[@bs.module "./PostStyles.js"] external crossPostNote: string = "crossPostNote";
+let crossPostNote = crossPostNote;
+
 [@bs.module "./PostStyles.js"] external highlightRow: string = "highlightRow";
 let highlightRow = highlightRow;
 

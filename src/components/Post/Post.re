@@ -240,6 +240,16 @@ module Note = {
   };
 };
 
+module CrossPostNote = {
+  [@react.component]
+  let make = (~children) => {
+    <RowWithSidenoteIcon
+      icon=(module CrossPostIcon) className=Css.crossPostNoteRow>
+      <div className=Css.crossPostNote> children </div>
+    </RowWithSidenoteIcon>;
+  };
+};
+
 module Highlight = {
   [@react.component]
   let make = (~children) => {

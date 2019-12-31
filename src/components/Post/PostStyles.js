@@ -359,7 +359,7 @@ export const global = css`
     color: black;
     background: none;
     text-shadow: 0 1px white;
-    font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
+    font-family: Consolas, Monaco, "Andale Mono", "Ubuntu Mono", monospace;
     font-size: 1em;
     text-align: left;
     white-space: pre;
@@ -404,7 +404,7 @@ export const global = css`
   /* Code blocks */
   :global pre[class*="language-"] {
     padding: 1em;
-    margin: .5em 0;
+    margin: 0.5em 0;
     overflow: auto;
   }
 
@@ -415,8 +415,8 @@ export const global = css`
 
   /* Inline code */
   :global :not(pre) > code[class*="language-"] {
-    padding: .1em;
-    border-radius: .3em;
+    padding: 0.1em;
+    border-radius: 0.3em;
     white-space: normal;
   }
 
@@ -432,7 +432,7 @@ export const global = css`
   }
 
   :global .namespace {
-    opacity: .7;
+    opacity: 0.7;
   }
 
   :global .token.property,
@@ -477,7 +477,7 @@ export const global = css`
 
   :global .token.function,
   :global .token.class-name {
-    color: #DD4A68;
+    color: #dd4a68;
   }
 
   :global .token.regex,
@@ -507,6 +507,21 @@ export const noteRow = css`
 export const note = css`
   &,
   & a {
+    color: ${Theme.fadedTextColor};
+    transition-property: color;
+    transition-duration: ${Transition.moderate};
+    transition-timing-function: ${Transition.timingFunction};
+  }
+`;
+
+export const crossPostNoteRow = css`
+  margin: ${gap}px 0;
+`;
+
+export const crossPostNote = css`
+  &,
+  & a {
+    font-style: italic;
     color: ${Theme.fadedTextColor};
     transition-property: color;
     transition-duration: ${Transition.moderate};

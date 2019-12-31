@@ -20,6 +20,7 @@ let inlineImage = InlineImage.make;
 let animatedGif = AnimatedGif.make;
 let internalLink = InternalLink.make;
 let note = Note.make;
+let crossPostNote = CrossPostNote.make;
 let expandable = Expandable.make;
 let highlight = Highlight.make;
 
