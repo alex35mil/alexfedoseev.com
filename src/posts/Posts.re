@@ -7,6 +7,17 @@ type entry = {
 };
 
 let all = [|
+  // 2020
+  {
+    slug: "reasonml-safe-identifiers",
+    title: "ReasonML: Safe Identifiers",
+    year: "2020",
+    date: "Jan 1",
+    loader: () =>
+      Module.import(
+        "./2020/ReasonSafeIdentifiers/Post__ReasonSafeIdentifiers.mdx",
+      ),
+  },
   // 2019
   {
     slug: "minima",
