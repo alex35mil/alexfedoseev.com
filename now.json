@@ -1,9 +1,9 @@
 {
   "name": "alexfedoseev.com",
   "version": 2,
-  "builds": [
-    { "src": "build/**", "use": "@now/static" }
-  ],
+  "scope": "alexfedoseev",
+  "public": false,
+  "builds": [{ "src": "build/**", "use": "@now/static" }],
   "routes": [
     {
       "src": "/(.+)\\.js",
