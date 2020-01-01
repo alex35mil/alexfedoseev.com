@@ -67,6 +67,29 @@ As a side note, `make` function doesn't have any runtime footprint and gets eras
 
 ---
 
+If you find using `%identity` too hacky for your taste, you can get away with another approach that doesn't involve `external` and has pretty much the same runtime cost (just a tiny bit of additional code in the output).
+
+```reason
+module TodoId = {
+  module Id: {
+    type t;
+    let make: int => t;
+  } = {
+    type t = int;
+    let make = x => x;
+  };
+
+  type t = Id.t;
+  let make = Id.make;
+};
+```
+
+As you can see, we added `make` function to `Id` module which simply does nothing on the runtime level: it accepts argument and returns it back to a caller. The interesting part is in annotation: `let make: int => t;`. Here we hint to compiler that this function takes `int` and returns `t`. Since `t` _is_ `int` inside the `Id` module, it makes perfect sense to compiler. And since implementation of `t` is not exposed, `make` casts `int` to `t` on the type level for the rest of the app.
+
+`TodoId.make(1)` still doesn't have any runtime footprint, but since we used `let` binding for `make` function, this function would be rendered in the output.
+
+---
+
 <CrossPostNote>
   Cross-posted to{" "}
   <A href="https://blog.minima.app/posts/2020/reasonml-safe-identifiers">blog.minima.app</A>
