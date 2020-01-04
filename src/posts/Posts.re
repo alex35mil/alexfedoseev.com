@@ -9,6 +9,14 @@ type entry = {
 let all = [|
   // 2020
   {
+    slug: "reasonml-safe-routing",
+    title: "ReasonML: Safe Routing",
+    year: "2020",
+    date: "Jan 4",
+    loader: () =>
+      Module.import("./2020/ReasonSafeRouting/Post__ReasonSafeRouting.mdx"),
+  },
+  {
     slug: "reasonml-safe-identifiers",
     title: "ReasonML: Safe Identifiers",
     year: "2020",
