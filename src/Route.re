@@ -21,11 +21,11 @@ let post = (~year: string, ~slug: string) =>
 let photo = "/photo"->Path.pack;
 let me = "/me"->Path.pack;
 
-let twitter = "https://twitter.com/alexfedoseev"->Path.pack;
-let github = "https://github.com/alexfedoseev"->Path.pack;
-let instagram = "https://instagram.com/alex_kiddo"->Path.pack;
-let facebook = "https://www.facebook.com/alex.fedoseev"->Path.pack;
-let linkedin = "https://www.linkedin.com/in/alexfedoseev"->Path.pack;
+let twitter = "https://twitter.com/AlexFedoseev"->Path.pack;
+let github = "https://github.com/AlexFedoseev"->Path.pack;
+let instagram = "https://instagram.com/AlexFedoseevPhoto"->Path.pack;
+let facebook = "https://www.facebook.com/Alex.Fedoseev"->Path.pack;
+let linkedin = "https://www.linkedin.com/in/AlexFedoseev"->Path.pack;
 
 let src = "https://github.com/alexfedoseev/alexfedoseev.com"->Path.pack;
 
