@@ -17,7 +17,8 @@ const N = parseInt(process.argv[process.argv.length - 1], 10);
 
 const shouldWatch = () => process.argv.includes("--watch") || process.argv.includes("-w");
 
-const thumbLetBinding = photoId => `${photoId}Thumb`;
+const originalLetBinding = photoId => `photo_${photoId}`;
+const thumbLetBinding = photoId => `photo_${photoId}_thumb`;
 
 const mod = (requires, entries) =>
   `/* === GENERATED CONTENT === */
@@ -34,7 +35,8 @@ const write = () => {
     id: path
       .basename(photo, ".jpg")
       .toLowerCase()
-      .replace("_", ""),
+      .replace("_", "")
+      .replace("-", "_"),
     file: path.basename(photo),
   }));
 
@@ -44,17 +46,22 @@ const write = () => {
 
   const requires = photos
     .map(photo => {
+      const original = originalLetBinding(photo.id);
       const thumb = thumbLetBinding(photo.id);
       const path = `./files/${photo.file}`;
       return [
-        `let ${photo.id}: Photo.src = [%bs.raw "require('${path}?preset=photo')"];`,
+        `let ${original}: Photo.src = [%bs.raw "require('${path}?preset=photo')"];`,
         `let ${thumb}: Photo.thumb = [%bs.raw "require('${path}?preset=thumb')"];`,
       ].join("\n");
     })
     .join("\n");
 
   const entries = photos
-    .map(photo => `  ("${photo.id}"->Photo.Id.pack, ${photo.id}, ${thumbLetBinding(photo.id)}),`)
+    .map(photo => {
+      const original = originalLetBinding(photo.id);
+      const thumb = thumbLetBinding(photo.id);
+      return `  ("${photo.id}"->Photo.Id.pack, ${original}, ${thumb}),`;
+    })
     .join("\n");
 
   fs.writeFileSync(PhotosRe, mod(requires, entries), "utf8");
