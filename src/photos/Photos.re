@@ -8,6 +8,8 @@ let photo_20200117_dsc00114: Photo.src = [%bs.raw "require('./files/20200117-DSC
 let photo_20200117_dsc00114_thumb: Photo.thumb = [%bs.raw "require('./files/20200117-DSC00114.jpg?preset=thumb')"];
 let photo_20200117_dsc00154: Photo.src = [%bs.raw "require('./files/20200117-DSC00154.jpg?preset=photo')"];
 let photo_20200117_dsc00154_thumb: Photo.thumb = [%bs.raw "require('./files/20200117-DSC00154.jpg?preset=thumb')"];
+let photo_20200119_dsc00220: Photo.src = [%bs.raw "require('./files/20200119-DSC00220.jpg?preset=photo')"];
+let photo_20200119_dsc00220_thumb: Photo.thumb = [%bs.raw "require('./files/20200119-DSC00220.jpg?preset=thumb')"];
 let photo_20200125_dsc00331: Photo.src = [%bs.raw "require('./files/20200125-DSC00331.jpg?preset=photo')"];
 let photo_20200125_dsc00331_thumb: Photo.thumb = [%bs.raw "require('./files/20200125-DSC00331.jpg?preset=thumb')"];
 let photo_20200125_dsc00371: Photo.src = [%bs.raw "require('./files/20200125-DSC00371.jpg?preset=photo')"];
@@ -16,8 +18,14 @@ let photo_20200125_dsc00385: Photo.src = [%bs.raw "require('./files/20200125-DSC
 let photo_20200125_dsc00385_thumb: Photo.thumb = [%bs.raw "require('./files/20200125-DSC00385.jpg?preset=thumb')"];
 let photo_20200125_dsc00393: Photo.src = [%bs.raw "require('./files/20200125-DSC00393.jpg?preset=photo')"];
 let photo_20200125_dsc00393_thumb: Photo.thumb = [%bs.raw "require('./files/20200125-DSC00393.jpg?preset=thumb')"];
-let photo_20200201_dsc00540: Photo.src = [%bs.raw "require('./files/20200201-DSC00540.jpg?preset=photo')"];
-let photo_20200201_dsc00540_thumb: Photo.thumb = [%bs.raw "require('./files/20200201-DSC00540.jpg?preset=thumb')"];
+let photo_20200201_dsc00549: Photo.src = [%bs.raw "require('./files/20200201-DSC00549.jpg?preset=photo')"];
+let photo_20200201_dsc00549_thumb: Photo.thumb = [%bs.raw "require('./files/20200201-DSC00549.jpg?preset=thumb')"];
+let photo_20200509_dsc01005: Photo.src = [%bs.raw "require('./files/20200509-DSC01005.jpg?preset=photo')"];
+let photo_20200509_dsc01005_thumb: Photo.thumb = [%bs.raw "require('./files/20200509-DSC01005.jpg?preset=thumb')"];
+let photo_20200516_dsc01018: Photo.src = [%bs.raw "require('./files/20200516-DSC01018.jpg?preset=photo')"];
+let photo_20200516_dsc01018_thumb: Photo.thumb = [%bs.raw "require('./files/20200516-DSC01018.jpg?preset=thumb')"];
+let photo_20200517_dsc01043: Photo.src = [%bs.raw "require('./files/20200517-DSC01043.jpg?preset=photo')"];
+let photo_20200517_dsc01043_thumb: Photo.thumb = [%bs.raw "require('./files/20200517-DSC01043.jpg?preset=thumb')"];
 let photo_dsc0144: Photo.src = [%bs.raw "require('./files/DSC_0144.jpg?preset=photo')"];
 let photo_dsc0144_thumb: Photo.thumb = [%bs.raw "require('./files/DSC_0144.jpg?preset=thumb')"];
 let photo_dsc0148: Photo.src = [%bs.raw "require('./files/DSC_0148.jpg?preset=photo')"];
@@ -128,11 +136,15 @@ let all = [|
   ("20200117_dsc00103"->Photo.Id.pack, photo_20200117_dsc00103, photo_20200117_dsc00103_thumb),
   ("20200117_dsc00114"->Photo.Id.pack, photo_20200117_dsc00114, photo_20200117_dsc00114_thumb),
   ("20200117_dsc00154"->Photo.Id.pack, photo_20200117_dsc00154, photo_20200117_dsc00154_thumb),
+  ("20200119_dsc00220"->Photo.Id.pack, photo_20200119_dsc00220, photo_20200119_dsc00220_thumb),
   ("20200125_dsc00331"->Photo.Id.pack, photo_20200125_dsc00331, photo_20200125_dsc00331_thumb),
   ("20200125_dsc00371"->Photo.Id.pack, photo_20200125_dsc00371, photo_20200125_dsc00371_thumb),
   ("20200125_dsc00385"->Photo.Id.pack, photo_20200125_dsc00385, photo_20200125_dsc00385_thumb),
   ("20200125_dsc00393"->Photo.Id.pack, photo_20200125_dsc00393, photo_20200125_dsc00393_thumb),
-  ("20200201_dsc00540"->Photo.Id.pack, photo_20200201_dsc00540, photo_20200201_dsc00540_thumb),
+  ("20200201_dsc00549"->Photo.Id.pack, photo_20200201_dsc00549, photo_20200201_dsc00549_thumb),
+  ("20200509_dsc01005"->Photo.Id.pack, photo_20200509_dsc01005, photo_20200509_dsc01005_thumb),
+  ("20200516_dsc01018"->Photo.Id.pack, photo_20200516_dsc01018, photo_20200516_dsc01018_thumb),
+  ("20200517_dsc01043"->Photo.Id.pack, photo_20200517_dsc01043, photo_20200517_dsc01043_thumb),
   ("dsc0144"->Photo.Id.pack, photo_dsc0144, photo_dsc0144_thumb),
   ("dsc0148"->Photo.Id.pack, photo_dsc0148, photo_dsc0148_thumb),
   ("dsc0220"->Photo.Id.pack, photo_dsc0220, photo_dsc0220_thumb),
