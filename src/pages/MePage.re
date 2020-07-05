@@ -159,36 +159,6 @@ let make = () =>
               "Twitter"->React.string
             </A>
           </div>
-          <div className=Css.linkRow>
-            <A
-              href=Route.instagram
-              target=Blank
-              underline=Always
-              className={Cn.make([Css.link, Css.instagramLink])}>
-              <InstagramIcon size=SM color=Faded className=Css.linkIcon />
-              "Instagram"->React.string
-            </A>
-          </div>
-          <div className=Css.linkRow>
-            <A
-              href=Route.facebook
-              target=Blank
-              underline=Always
-              className={Cn.make([Css.link, Css.facebookLink])}>
-              <FacebookIcon size=SM color=Faded className=Css.linkIcon />
-              "Facebook"->React.string
-            </A>
-          </div>
-          <div className=Css.linkRow>
-            <A
-              href=Route.linkedin
-              target=Blank
-              underline=Always
-              className={Cn.make([Css.link, Css.linkedinLink])}>
-              <LinkedInIcon size=SM color=Faded className=Css.linkIcon />
-              "LinkedIn"->React.string
-            </A>
-          </div>
         </div>
       </div>
     </div>

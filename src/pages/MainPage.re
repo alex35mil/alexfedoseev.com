@@ -36,12 +36,6 @@ let make = () => {
                 className={Cn.make([Css.icon, Css.githubIcon])}>
                 <GithubIcon size=MD color=Faded />
               </A.Box>
-              <A.Box
-                href=Route.instagram
-                target=Blank
-                className={Cn.make([Css.icon, Css.instagramIcon])}>
-                <InstagramIcon size=MD color=Faded />
-              </A.Box>
             </div>
           </div>
         </div>

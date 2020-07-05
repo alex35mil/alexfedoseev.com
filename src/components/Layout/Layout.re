@@ -140,24 +140,6 @@ let make = (~route: Route.inner, ~children) => {
             className={Cn.make([Css.footerIconLink, Css.footerGithubIcon])}>
             <GithubIcon size=SM color=Faded />
           </A.Box>
-          <A.Box
-            href=Route.instagram
-            target=Blank
-            className={Cn.make([Css.footerIconLink, Css.footerInstagramIcon])}>
-            <InstagramIcon size=SM color=Faded />
-          </A.Box>
-          <A.Box
-            href=Route.facebook
-            target=Blank
-            className={Cn.make([Css.footerIconLink, Css.footerFacebookIcon])}>
-            <FacebookIcon size=SM color=Faded />
-          </A.Box>
-          <A.Box
-            href=Route.linkedin
-            target=Blank
-            className={Cn.make([Css.footerIconLink, Css.footerLinkedInIcon])}>
-            <LinkedInIcon size=SM color=Faded />
-          </A.Box>
         </div>
         <ThemeSwitch className=Css.themeSwitchFooter />
       </div>
