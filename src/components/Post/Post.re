@@ -3,22 +3,44 @@ module Css = PostStyles;
 module Row = {
   [@react.component]
   let make = (~className, ~children) => {
-    <div className={Cn.make([Css.row, className])}> <div /> children </div>;
+    <div className=Cn.(Css.row + className)> children </div>;
   };
 };
 
 module ExpandedRow = {
   [@react.component]
   let make = (~className, ~children) => {
-    <div className={Cn.make([Css.expandedRow, className])}> children </div>;
+    <div className=Cn.(Css.expandedRow + className)> children </div>;
   };
 };
 
 module RowWithSidenoteText = {
   [@react.component]
-  let make = (~text, ~className, ~children) => {
-    <div className={Cn.make([Css.row, Css.rowWithSidenote, className])}>
-      <Layout.SecondarySidenote> text->React.string </Layout.SecondarySidenote>
+  let make =
+      (~text, ~className, ~smallScreenVisibility: Visibility.t, ~children) => {
+    <div
+      className=Cn.(
+        Css.row
+        + (
+          switch (smallScreenVisibility) {
+          | Shown => Css.rowWithSidenote
+          | Hidden => Css.rowWithHiddenSidenoteOnSmallScreens
+          }
+        )
+        + className
+      )>
+      <Layout.SecondarySidenote
+        className=Cn.(
+          Css.rowSidenote
+          + (
+            switch (smallScreenVisibility) {
+            | Shown => none
+            | Hidden => Css.rowSidenoteHiddenOnSmallScreens
+            }
+          )
+        )>
+        text->React.string
+      </Layout.SecondarySidenote>
       children
     </div>;
   };
@@ -26,10 +48,25 @@ module RowWithSidenoteText = {
 
 module RowWithSidenoteIcon = {
   [@react.component]
-  let make = (~icon: (module Icon.Component), ~className, ~children) => {
+  let make =
+      (
+        ~icon: (module Icon.Component),
+        ~className,
+        ~smallScreenVisibility: Visibility.t,
+        ~children,
+      ) => {
     let (module Icon) = icon;
-    <div className={Cn.make([Css.row, Css.rowWithSidenote, className])}>
-      <Layout.SecondarySidenote>
+    <div className=Cn.(Css.row + Css.rowWithSidenote + className)>
+      <Layout.SecondarySidenote
+        className=Cn.(
+          Css.rowSidenote
+          + (
+            switch (smallScreenVisibility) {
+            | Shown => none
+            | Hidden => Css.rowSidenoteHiddenOnSmallScreens
+            }
+          )
+        )>
         <Icon size=MD color=Faded />
       </Layout.SecondarySidenote>
       children
@@ -39,15 +76,16 @@ module RowWithSidenoteIcon = {
 
 module H1 = {
   [@react.component]
-  let make = (~children) => {
-    <h1 className=Css.h1> children </h1>;
+  let make = (~className="", ~children) => {
+    <h1 className=Cn.(Css.h1 + className)> children </h1>;
   };
 };
 
 module H2 = {
   [@react.component]
   let make = (~children) => {
-    <RowWithSidenoteText text="##" className=Css.h2Row>
+    <RowWithSidenoteText
+      text="##" className=Css.h2Row smallScreenVisibility=Hidden>
       <h2 className=Css.h2> children </h2>
     </RowWithSidenoteText>;
   };
@@ -56,7 +94,8 @@ module H2 = {
 module H3 = {
   [@react.component]
   let make = (~children) => {
-    <RowWithSidenoteText text="###" className=Css.h3Row>
+    <RowWithSidenoteText
+      text="###" className=Css.h3Row smallScreenVisibility=Hidden>
       <h3 className=Css.h3> children </h3>
     </RowWithSidenoteText>;
   };
@@ -65,7 +104,8 @@ module H3 = {
 module H4 = {
   [@react.component]
   let make = (~children) => {
-    <RowWithSidenoteText text="####" className=Css.h4Row>
+    <RowWithSidenoteText
+      text="####" className=Css.h4Row smallScreenVisibility=Hidden>
       <h4 className=Css.h4> children </h4>
     </RowWithSidenoteText>;
   };
@@ -96,7 +136,7 @@ module Ol = {
   [@react.component]
   let make = (~children) => {
     <Row className=Css.listRow>
-      <ol className={Cn.make([Css.list, Css.ol])}> children </ol>
+      <ol className=Cn.(Css.list + Css.ol)> children </ol>
     </Row>;
   };
 };
@@ -105,7 +145,7 @@ module Ul = {
   [@react.component]
   let make = (~children) => {
     <Row className=Css.listRow>
-      <ul className={Cn.make([Css.list, Css.ul])}> children </ul>
+      <ul className=Cn.(Css.list + Css.ul)> children </ul>
     </Row>;
   };
 };
@@ -191,29 +231,23 @@ module Code = {
     <>
       {switch (language, file) {
        | (Some((_, label)), None) =>
-         <div
-           className={Cn.make([
-             Css.codeLabelsRow,
-             Css.codeLabelsRowWithoutFile,
-           ])}>
-           <div className={Cn.make([Css.codeLabel, Css.languageLabel])}>
+         <div className=Cn.(Css.codeLabelsRow + Css.codeLabelsRowWithoutFile)>
+           <div className=Cn.(Css.codeLabel + Css.languageLabel)>
              label->React.string
            </div>
          </div>
        | (Some((_, label)), Some(file)) =>
-         <div
-           className={Cn.make([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
-           <div className={Cn.make([Css.codeLabel, Css.fileLabel])}>
+         <div className=Cn.(Css.codeLabelsRow + Css.codeLabelsRowWithFile)>
+           <div className=Cn.(Css.codeLabel + Css.fileLabel)>
              file->React.string
            </div>
-           <div className={Cn.make([Css.codeLabel, Css.languageLabel])}>
+           <div className=Cn.(Css.codeLabel + Css.languageLabel)>
              label->React.string
            </div>
          </div>
        | (None, Some(file)) =>
-         <div
-           className={Cn.make([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
-           <div className={Cn.make([Css.codeLabel, Css.fileLabel])}>
+         <div className=Cn.(Css.codeLabelsRow + Css.codeLabelsRowWithFile)>
+           <div className=Cn.(Css.codeLabel + Css.fileLabel)>
              file->React.string
            </div>
          </div>
@@ -234,7 +268,8 @@ module InlineCode = {
 module Note = {
   [@react.component]
   let make = (~children) => {
-    <RowWithSidenoteIcon icon=(module InfoIcon) className=Css.noteRow>
+    <RowWithSidenoteIcon
+      icon=(module InfoIcon) className=Css.noteRow smallScreenVisibility=Shown>
       <div className=Css.note> children </div>
     </RowWithSidenoteIcon>;
   };
@@ -244,7 +279,9 @@ module CrossPostNote = {
   [@react.component]
   let make = (~children) => {
     <RowWithSidenoteIcon
-      icon=(module CrossPostIcon) className=Css.crossPostNoteRow>
+      icon=(module CrossPostIcon)
+      className=Css.crossPostNoteRow
+      smallScreenVisibility=Shown>
       <div className=Css.crossPostNote> children </div>
     </RowWithSidenoteIcon>;
   };
@@ -273,6 +310,11 @@ module CoverImage = {
     | ShowImage
     | UpdateParallaxFactor(float);
 
+  type title = {
+    text: string,
+    bgColor: PostCover.titleBgColor,
+  };
+
   let reducer = (state, action) =>
     switch (action) {
     | ShowImage =>
@@ -283,19 +325,11 @@ module CoverImage = {
     | UpdateParallaxFactor(parallaxFactor) => {...state, parallaxFactor}
     };
 
-  module Src = {
-    type t;
-
-    [@bs.get] external srcset: t => string = "srcset";
-    [@bs.get] external fallback: t => string = "fallback";
-    [@bs.get] external placeholder: t => string = "placeholder";
-  };
-
   [@react.component]
-  let make = (~src, ~credit) => {
+  let make = (~src, ~credit: option(PostCover.credit), ~title: title) => {
     let screen = React.useContext(ScreenSize.Context.x);
     let image = React.useRef(Js.Nullable.null);
-    let placeholder = src->Src.placeholder;
+    let placeholder = src->PostCover.placeholder;
 
     let (state, dispatch) =
       reducer->React.useReducer({status: Loading, parallaxFactor: 0.});
@@ -346,16 +380,18 @@ module CoverImage = {
         <img
           sizes="100vw"
           ref={image->ReactDom.Ref.domRef}
-          src={src->Src.fallback}
-          srcSet={src->Src.srcset}
-          className={Cn.make([
-            Css.image,
-            Css.coverImage,
-            switch (state.status) {
-            | Loading => Css.loadingImage
-            | Loaded => Css.loadedImage
-            },
-          ])}
+          src={src->PostCover.fallback}
+          srcSet={src->PostCover.srcset}
+          className=Cn.(
+            Css.image
+            + Css.coverImage
+            + (
+              switch (state.status) {
+              | Loading => Css.loadingImage
+              | Loaded => Css.loadedImage
+              }
+            )
+          )
           style={ReactDom.Style.make(
             ~transform=
               "translate3d(0px, "
@@ -366,11 +402,28 @@ module CoverImage = {
           onLoad={_ => ShowImage->dispatch}
         />
         <div className=Css.coverImageOverlay />
+        <div className=Css.coverImageTitleContainer>
+          <H1
+            className=Cn.(
+              Css.coverImageTitleText
+              + (
+                switch (title.bgColor) {
+                | Blue => Css.coverImageTitleBgColorBlue
+                | Orange => Css.coverImageTitleBgColorOrange
+                }
+              )
+            )>
+            title.text->React.string
+          </H1>
+        </div>
         {switch (credit) {
          | Some(credit) =>
            <figcaption className=Css.coverImageCredit>
              "Artwork: "->React.string
-             <A href={credit##url}> {credit##text->React.string} </A>
+             {switch (credit.url) {
+              | Some(url) => <A href=url> credit.text->React.string </A>
+              | None => credit.text->React.string
+              }}
            </figcaption>
          | None => React.null
          }}
@@ -424,7 +477,7 @@ module InlineImage = {
           src={src->Src.fallback}
           srcSet={src->Src.srcset->Src.srcs}
           alt=?caption
-          className={Cn.make([Css.inlineImage, placementClassName])}
+          className=Cn.(Css.inlineImage + placementClassName)
         />
         {switch (caption) {
          | Some(caption) =>
@@ -452,7 +505,7 @@ module AnimatedGif = {
         <img
           src
           alt=?caption
-          className={Cn.make([Css.inlineImage, placementClassName])}
+          className=Cn.(Css.inlineImage + placementClassName)
         />
         {switch (caption) {
          | Some(caption) =>
@@ -481,7 +534,10 @@ module Expandable = {
     let (state, dispatch) = reducer->React.useReducer(`Collapsed);
 
     <>
-      <RowWithSidenoteIcon icon=(module TipIcon) className=Css.expandableRow>
+      <RowWithSidenoteIcon
+        icon=(module TipIcon)
+        className=Css.expandableRow
+        smallScreenVisibility=Shown>
         <Control onClick={_ => Toggle->dispatch}>
           <div className=Css.expandableTrigger>
             <span className=Css.expandableTriggerText>
@@ -490,20 +546,25 @@ module Expandable = {
             <CaretIcon
               size=MD
               color=Faded
-              className={Cn.make([
-                Css.expandableTriggerIcon,
-                switch (state) {
-                | `Collapsed => Css.expandableTriggerIconCollapsed
-                | `Expanded => Css.expandableTriggerIconExpanded
-                },
-              ])}
+              className=Cn.(
+                Css.expandableTriggerIcon
+                + (
+                  switch (state) {
+                  | `Collapsed => Css.expandableTriggerIconCollapsed
+                  | `Expanded => Css.expandableTriggerIconExpanded
+                  }
+                )
+              )
             />
           </div>
         </Control>
       </RowWithSidenoteIcon>
       {switch (state) {
        | `Collapsed => React.null
-       | `Expanded => <> children <Hr /> </>
+       | `Expanded =>
+         <ExpandedRow className=Css.expandableContentBg>
+           children
+         </ExpandedRow>
        }}
     </>;
   };
@@ -512,6 +573,7 @@ module Expandable = {
 module Footer = {
   type post = {
     year: string,
+    category: string,
     slug: string,
   };
 
@@ -557,9 +619,10 @@ module Footer = {
       <div className=Css.footerRowInner>
         <div className=Css.prevPost>
           {switch (prevPost) {
-           | Some({year, slug}) =>
+           | Some({year, category, slug}) =>
              <Link.Box
-               path={Route.post(~year, ~slug)} className=Css.footerLink>
+               path={Route.post(~year, ~category, ~slug)}
+               className=Css.footerLink>
                <ChevronLeftIcon size=LG color=Faded />
              </Link.Box>
            | None => React.null
@@ -567,10 +630,9 @@ module Footer = {
         </div>
         <div className=Css.socialSharing>
           <Control
-            className={Cn.make([
-              Css.socialSharingButton,
-              Css.socialSharingButtonTwitter,
-            ])}
+            className=Cn.(
+              Css.socialSharingButton + Css.socialSharingButtonTwitter
+            )
             onClick={_ => shareOnTwitter()}>
             <TwitterShareIcon
               title="Share on Twitter"
@@ -578,10 +640,9 @@ module Footer = {
             />
           </Control>
           <Control
-            className={Cn.make([
-              Css.socialSharingButton,
-              Css.socialSharingButtonFacebook,
-            ])}
+            className=Cn.(
+              Css.socialSharingButton + Css.socialSharingButtonFacebook
+            )
             onClick={_ => shareOnFacebook()}>
             <FacebookShareIcon
               title="Share on Facebook"
@@ -591,9 +652,10 @@ module Footer = {
         </div>
         <div className=Css.nextPost>
           {switch (nextPost) {
-           | Some({year, slug}) =>
+           | Some({year, category, slug}) =>
              <Link.Box
-               path={Route.post(~year, ~slug)} className=Css.footerLink>
+               path={Route.post(~year, ~category, ~slug)}
+               className=Css.footerLink>
                <ChevronRightIcon size=LG color=Faded />
              </Link.Box>
            | None => React.null
@@ -605,16 +667,41 @@ module Footer = {
 };
 
 [@react.component]
-let make = (~title, ~year, ~date, ~prevPost, ~nextPost, ~children) => {
+let make =
+    (
+      ~title,
+      ~category,
+      ~cover: option(PostCover.t),
+      ~year,
+      ~date,
+      ~prevPost,
+      ~nextPost,
+      ~children,
+    ) => {
   <Page>
     <div className=Css.container>
-      <div className=Css.title>
-        <div className=Css.date>
-          <Layout.PrimarySidenote>
-            {j|$(date), $(year)|j}->React.string
-          </Layout.PrimarySidenote>
-        </div>
-        <H1> title->React.string </H1>
+      {switch (cover) {
+       | None => <H1> title->React.string </H1>
+       | Some(cover) =>
+         <CoverImage
+           src={cover.src}
+           credit={cover.credit}
+           title={text: title, bgColor: cover.titleBgColor}
+         />
+       }}
+      <div className=Css.details>
+        "Posted in "->React.string
+        <Link
+          path={category->Route.blogCategory}
+          underline=Always
+          className=Css.categoryLink>
+          {category
+           ->PostCategory.toString
+           ->String.capitalize_ascii
+           ->React.string}
+        </Link>
+        {j| · |j}->React.string
+        {j|$(date), $(year)|j}->React.string
       </div>
       <div className=Css.content> children </div>
       <Footer title prevPost nextPost />

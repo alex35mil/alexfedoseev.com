@@ -3,11 +3,11 @@
 [@bs.module "./PostStyles.js"] external container: string = "container";
 let container = container;
 
-[@bs.module "./PostStyles.js"] external title: string = "title";
-let title = title;
+[@bs.module "./PostStyles.js"] external details: string = "details";
+let details = details;
 
-[@bs.module "./PostStyles.js"] external date: string = "date";
-let date = date;
+[@bs.module "./PostStyles.js"] external categoryLink: string = "categoryLink";
+let categoryLink = categoryLink;
 
 [@bs.module "./PostStyles.js"] external content: string = "content";
 let content = content;
@@ -17,6 +17,15 @@ let row = row;
 
 [@bs.module "./PostStyles.js"] external rowWithSidenote: string = "rowWithSidenote";
 let rowWithSidenote = rowWithSidenote;
+
+[@bs.module "./PostStyles.js"] external rowWithHiddenSidenoteOnSmallScreens: string = "rowWithHiddenSidenoteOnSmallScreens";
+let rowWithHiddenSidenoteOnSmallScreens = rowWithHiddenSidenoteOnSmallScreens;
+
+[@bs.module "./PostStyles.js"] external rowSidenote: string = "rowSidenote";
+let rowSidenote = rowSidenote;
+
+[@bs.module "./PostStyles.js"] external rowSidenoteHiddenOnSmallScreens: string = "rowSidenoteHiddenOnSmallScreens";
+let rowSidenoteHiddenOnSmallScreens = rowSidenoteHiddenOnSmallScreens;
 
 [@bs.module "./PostStyles.js"] external expandedRow: string = "expandedRow";
 let expandedRow = expandedRow;
@@ -141,6 +150,18 @@ let coverImageOverlay = coverImageOverlay;
 [@bs.module "./PostStyles.js"] external coverImage: string = "coverImage";
 let coverImage = coverImage;
 
+[@bs.module "./PostStyles.js"] external coverImageTitleContainer: string = "coverImageTitleContainer";
+let coverImageTitleContainer = coverImageTitleContainer;
+
+[@bs.module "./PostStyles.js"] external coverImageTitleText: string = "coverImageTitleText";
+let coverImageTitleText = coverImageTitleText;
+
+[@bs.module "./PostStyles.js"] external coverImageTitleBgColorBlue: string = "coverImageTitleBgColorBlue";
+let coverImageTitleBgColorBlue = coverImageTitleBgColorBlue;
+
+[@bs.module "./PostStyles.js"] external coverImageTitleBgColorOrange: string = "coverImageTitleBgColorOrange";
+let coverImageTitleBgColorOrange = coverImageTitleBgColorOrange;
+
 [@bs.module "./PostStyles.js"] external coverImageCredit: string = "coverImageCredit";
 let coverImageCredit = coverImageCredit;
 
@@ -182,6 +203,9 @@ let expandableTriggerIconCollapsed = expandableTriggerIconCollapsed;
 
 [@bs.module "./PostStyles.js"] external expandableTriggerIconExpanded: string = "expandableTriggerIconExpanded";
 let expandableTriggerIconExpanded = expandableTriggerIconExpanded;
+
+[@bs.module "./PostStyles.js"] external expandableContentBg: string = "expandableContentBg";
+let expandableContentBg = expandableContentBg;
 
 [@bs.module "./PostStyles.js"] external socialSharingContainer: string = "socialSharingContainer";
 let socialSharingContainer = socialSharingContainer;

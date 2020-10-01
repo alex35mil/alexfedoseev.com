@@ -15,7 +15,6 @@ let pre = Pre.make;
 let code = Code.make;
 let inlineCode = InlineCode.make;
 
-let coverImage = CoverImage.make;
 let inlineImage = InlineImage.make;
 let animatedGif = AnimatedGif.make;
 let internalLink = InternalLink.make;

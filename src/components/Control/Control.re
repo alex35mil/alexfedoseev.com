@@ -19,7 +19,7 @@ let make =
       type_="button"
       ref=?{theRef->Js.Nullable.toOption->Option.map(ReactDom.Ref.domRef)}
       disabled
-      className={Cn.make([Css.control, className])}
+      className=Cn.(Css.control + className)
       ?style
       ?onClick
       ?onMouseDown

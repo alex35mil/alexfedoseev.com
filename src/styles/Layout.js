@@ -1,10 +1,10 @@
-export const bgColor = "#fff";
-
 export const largeScreenRowGap = 28;
-export const largeScreenColGap = 20;
-export const largeScreenContentWidth = 840;
-export const largeScreenLeftColWidth = 120;
-export const largeScreenRightColWidth = largeScreenContentWidth - largeScreenLeftColWidth - largeScreenColGap;
+export const largeScreenColGap = 30;
+export const largeScreenContentWidth = 600;
+export const largeScreenLogoWidth = 120;
+export const largeScreenRightColWidth =
+  largeScreenContentWidth - largeScreenLogoWidth - largeScreenColGap;
 
-export const smallScreenRowGap = 36;
+export const smallScreenHeaderHeight = 25;
+export const smallScreenRowGap = 22;
 export const smallScreenHPad = 24;

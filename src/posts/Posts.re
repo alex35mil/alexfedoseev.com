@@ -3,6 +3,8 @@ type entry = {
   slug: string,
   year: string,
   date: string,
+  category: PostCategory.t,
+  cover: option(PostCover.t),
   loader: unit => Promise.t(Module.js),
 };
 
@@ -13,6 +15,8 @@ let all = [|
     title: "ReasonML: Safe Routing",
     year: "2020",
     date: "Jan 4",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import("./2020/ReasonSafeRouting/Post__ReasonSafeRouting.mdx"),
   },
@@ -21,6 +25,8 @@ let all = [|
     title: "ReasonML: Safe Identifiers",
     year: "2020",
     date: "Jan 1",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import(
         "./2020/ReasonSafeIdentifiers/Post__ReasonSafeIdentifiers.mdx",
@@ -32,6 +38,8 @@ let all = [|
     title: "Minima",
     year: "2019",
     date: "Jun 10",
+    category: Dev,
+    cover: None,
     loader: () => Module.import("./2019/Minima/Post__Minima.mdx"),
   },
   // 2018
@@ -40,6 +48,8 @@ let all = [|
     title: "ReasonML: Eliminating illegal state",
     year: "2018",
     date: "Mar 22",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import(
         "./2018/ReasonEliminatingIllegalState/Post__ReasonEliminatingIllegalState.mdx",
@@ -50,6 +60,8 @@ let all = [|
     title: "ReasonML: Modules",
     year: "2018",
     date: "Mar 13",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import("./2018/ReasonModules/Post__ReasonModules.mdx"),
   },
@@ -59,6 +71,8 @@ let all = [|
     title: "Tableau",
     year: "2017",
     date: "Aug 10",
+    category: Dev,
+    cover: PostTableau.cover->Some,
     loader: () => Module.import("./2017/Tableau/Post__Tableau.mdx"),
   },
   {
@@ -66,6 +80,8 @@ let all = [|
     title: "Redux Tree",
     year: "2017",
     date: "Mar 18",
+    category: Dev,
+    cover: PostReduxTree.cover->Some,
     loader: () => Module.import("./2017/ReduxTree/Post__ReduxTree.mdx"),
   },
   {
@@ -73,6 +89,8 @@ let all = [|
     title: "Bulletproof Enums using Immutable Records and Flow",
     year: "2017",
     date: "Mar 13",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import(
         "./2017/EnumsUsingImmutableRecordsAndFlow/Post__EnumsUsingImmutableRecordsAndFlow.mdx",
@@ -83,6 +101,8 @@ let all = [|
     title: "A Year of development with Redux. Part III",
     year: "2017",
     date: "Feb 28",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import(
         "./2017/YearOfDevelopmentWithReduxPartIII/Post__YearOfDevelopmentWithReduxPartIII.mdx",
@@ -93,6 +113,8 @@ let all = [|
     title: "A Year of development with Redux. Part II",
     year: "2017",
     date: "Jan 20",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import(
         "./2017/YearOfDevelopmentWithReduxPartII/Post__YearOfDevelopmentWithReduxPartII.mdx",
@@ -103,6 +125,8 @@ let all = [|
     title: "A Year of development with Redux. Part I",
     year: "2017",
     date: "Jan 10",
+    category: Dev,
+    cover: None,
     loader: () =>
       Module.import(
         "./2017/YearOfDevelopmentWithReduxPartI/Post__YearOfDevelopmentWithReduxPartI.mdx",
@@ -114,6 +138,8 @@ let all = [|
     title: "Yo, ES6",
     year: "2016",
     date: "Jan 11",
+    category: Dev,
+    cover: None,
     loader: () => Module.import("./2016/YoES6/Post__YoES6.mdx"),
   },
   // 2015
@@ -122,6 +148,8 @@ let all = [|
     title: "Isomorphic React with Rails",
     year: "2015",
     date: "Sep 12",
+    category: Dev,
+    cover: Some(PostIsomorphicReactWithRails.cover),
     loader: () =>
       Module.import(
         "./2015/IsomorphicReactWithRails/Post__IsomorphicReactWithRails.mdx",
@@ -129,26 +157,25 @@ let all = [|
   },
 |];
 
-let byYear: ref(option(array((string, array(entry))))) = None->ref;
+type byYear = array((string, array(entry)));
 
-let byYear = () =>
-  switch (byYear^) {
-  | Some(x) => x
-  | None =>
-    let res =
-      all->Array.reduce([||], (acc, post) => {
-        switch (acc->Array.get(acc->Array.length - 1)) {
-        | None =>
-          acc->Js.Array2.push((post.year, [|post|]))->ignore;
-          acc;
-        | Some((year, _posts)) when year != post.year =>
-          acc->Js.Array2.push((post.year, [|post|]))->ignore;
-          acc;
-        | Some((_year, posts)) =>
-          posts->Js.Array2.push(post)->ignore;
-          acc;
-        }
-      });
-    byYear := res->Some;
-    res;
-  };
+let byYear = (posts): byYear => {
+  posts->Array.reduce([||], (acc, post) =>
+    switch (acc->Array.get(acc->Array.length - 1)) {
+    | None =>
+      acc->Js.Array2.push((post.year, [|post|]))->ignore;
+      acc;
+    | Some((year, _posts)) when year != post.year =>
+      acc->Js.Array2.push((post.year, [|post|]))->ignore;
+      acc;
+    | Some((_year, posts)) =>
+      posts->Js.Array2.push(post)->ignore;
+      acc;
+    }
+  );
+};
+
+let allByYear = () => all->byYear;
+
+let categoryByYear = category =>
+  all->Array.keep(post => PostCategory.(post.category == category))->byYear;

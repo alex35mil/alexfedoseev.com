@@ -4,19 +4,20 @@ import { Color, Font, Theme, Transition, Screen, Layout } from "styles";
 
 import * as Logo from "components/Logo/LogoStyles.js";
 
+const navMediumScreen = Screen.between(440, Screen.smallMaxWidth);
+
 export const container = css`
   display: grid;
   position: relative;
   width: 100%;
 
   @media ${Screen.small} {
-    grid-template-columns: minmax(auto, 700px);
-    grid-template-rows: max-content 1fr max-content;
+    grid-template-rows: ${Layout.smallScreenHeaderHeight}px 1fr max-content;
     grid-row-gap: ${Layout.smallScreenRowGap}px;
     justify-self: center;
     justify-content: center;
-    justify-items: center;
-    padding: 30px 0;
+    justify-items: space-between;
+    padding: ${Layout.smallScreenRowGap}px 0;
   }
 
   @media ${Screen.large} {
@@ -26,7 +27,13 @@ export const container = css`
     justify-self: center;
     justify-content: center;
     justify-items: center;
-    padding: 40px 0 0;
+    padding: 30px 0 0;
+  }
+`;
+
+export const containerExtendedOnSmallScreens = css`
+  @media ${Screen.small} {
+    grid-template-columns: 1fr;
   }
 `;
 
@@ -34,22 +41,34 @@ export const header = css`
   display: grid;
 
   @media ${Screen.small} {
-    grid-template-columns: max-content max-content;
+    grid-template-columns: ${logoLargeScreenWidth}px 1fr;
     grid-column-gap: 14px;
-    justify-content: center;
-    padding: 0 ${Layout.smallScreenHPad}px;
+    justify-content: space-between;
+  }
+
+  @media ${navMediumScreen} {
+    grid-template-columns: ${logoLargeScreenWidth}px 1fr max-content;
+    grid-column-gap: 14px;
+    justify-content: space-between;
   }
 
   @media ${Screen.large} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
+    grid-template-columns: ${logoLargeScreenWidth}px 1fr max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
+    width: ${Layout.largeScreenContentWidth}px;
   }
 `;
 
-const logoLargeScreenWidth = Layout.largeScreenLeftColWidth;
+export const headerWithSmallScreenPaddings = css`
+  @media ${Screen.small} {
+    padding: 0 ${Layout.smallScreenHPad}px;
+  }
+`;
+
+const logoLargeScreenWidth = Layout.largeScreenLogoWidth;
 const logoLargeScreenHeight = Logo.height;
 const logoSmallScreenWidth = 110;
-const logoSmallScreenHeight = Math.ceil(logoSmallScreenWidth * Logo.height / Logo.width);
+const logoSmallScreenHeight = Math.ceil((logoSmallScreenWidth * Logo.height) / Logo.width);
 
 export const logo = css`
   display: flex;
@@ -87,22 +106,6 @@ export const logoSvg = css`
   }
 `;
 
-export const mainCol = css`
-  display: grid;
-
-  @media ${Screen.small} {
-    grid-template-columns: max-content;
-    align-items: center;
-  }
-
-  @media ${Screen.large} {
-    grid-template-columns: 1fr max-content;
-    grid-column-gap: 14px;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
 export const navigation = css`
   display: grid;
 
@@ -110,22 +113,36 @@ export const navigation = css`
     grid-template-columns: max-content max-content max-content;
     grid-column-gap: 14px;
     align-items: center;
+    justify-content: end;
+  }
+
+  @media ${navMediumScreen} {
+    grid-template-columns: max-content max-content max-content;
+    grid-column-gap: 14px;
+    align-items: center;
     justify-content: start;
   }
 
   @media ${Screen.large} {
-    grid-template-columns: max-content max-content 1fr;
-    grid-column-gap: 28px;
+    grid-template-columns: max-content max-content max-content;
+    grid-column-gap: 20px;
     align-items: center;
+    justify-content: start;
   }
 `;
 
 const largeScreenNavLinkHPad = 7;
 const smallScreenNavLinkHPad = 4;
 
+const navLinkVPad = 3;
+const navLinkActiveBorderWidth = 3;
+
 export const navLink = css`
   display: inline-block;
-  transition-property: background-color, color, transform;
+  position: relative;
+  top: ${navLinkActiveBorderWidth}px;
+  color: ${Theme.fadedTextColor};
+  transition-property: border-bottom, transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};
   line-height: 1;
@@ -134,62 +151,40 @@ export const navLink = css`
   @media ${Screen.mouse} {
     &:focus,
     &:hover {
-      color: ${Color.white};
-      background-color: ${Color.blue};
+      color: ${Theme.fadedTextColor};
       transform: rotate(-3deg) scale(1.1);
+      border-bottom: ${navLinkActiveBorderWidth}px solid ${Color.blue};
     }
   }
 
   @media ${Screen.small} {
-    padding: 4px ${smallScreenNavLinkHPad}px;
+    padding: 4px 0;
   }
 
   @media ${Screen.large} {
-    padding: 5px ${largeScreenNavLinkHPad}px;
+    padding: ${navLinkVPad + navLinkActiveBorderWidth - navLinkVPad}px 0 ${navLinkVPad}px;
   }
 `;
 
 export const navLinkActive = css`
-  color: ${Color.white};
-  background-color: ${Color.blue};
   font-size: 0.8em;
+  border-bottom: ${navLinkActiveBorderWidth}px solid ${Color.blue};
 `;
 
 export const navLinkInactive = css`
   font-size: 0.8em;
-  color: ${Theme.fadedTextColor};
-  background-color: transparent;
-`;
-
-export const navSep = css`
-  display: flex;
-  height: 30px;
-  width: 1px;
-  background-color: ${Theme.lineColor};
-  transition-property: background-color;
-  transition-duration: ${Transition.moderate};
-  transition-timing-function: ${Transition.timingFunction};
-`;
-
-export const restNavLinks = css`
-  display: grid;
-  grid-auto-flow: column;
-  grid-auto-columns: max-content;
-  grid-column-gap: 10px;
-  align-items: center;
-
-  @media ${Screen.small} {
-    margin-left: -${smallScreenNavLinkHPad}px;
-  }
-
-  @media ${Screen.large} {
-    margin-left: -${largeScreenNavLinkHPad}px;
-  }
+  border-bottom: ${navLinkActiveBorderWidth}px solid transparent;
 `;
 
 export const themeSwitchHeader = css`
   @media ${Screen.small} {
     display: none;
+  }
+
+  @media ${navMediumScreen} {
+    display: flex;
+    position: relative;
+    justify-content: flex-end;
   }
 
   @media ${Screen.large} {
@@ -209,6 +204,10 @@ export const themeSwitchFooter = css`
   @media ${Screen.large} {
     display: none;
   }
+
+  @media ${Screen.small} {
+    order: 5;
+  }
 `;
 
 export const footer = css`
@@ -222,12 +221,13 @@ export const footer = css`
   }
 
   @media ${Screen.large} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
+    grid-template-columns: max-content max-content max-content max-content;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: end;
     justify-content: space-between;
     margin: 20px 0 30px;
+    width: ${Layout.largeScreenContentWidth}px;
     user-select: none;
   }
 `;
@@ -236,7 +236,7 @@ export const footerSources = css`
   display: grid;
 
   @media ${Screen.small} {
-    order: 2;
+    order: 4;
     justify-content: center;
   }
 
@@ -259,23 +259,6 @@ export const footerSourcesLink = css`
   transition-timing-function: ${Transition.timingFunction};
 `;
 
-export const footerMainCol = css`
-  display: grid;
-
-  @media ${Screen.small} {
-    order: 1;
-    grid-template-rows: max-content max-content max-content max-content;
-    grid-row-gap: 20px;
-  }
-
-  @media ${Screen.large} {
-    grid-template-columns: max-content max-content max-content;
-    grid-column-gap: 8px;
-    align-items: center;
-    justify-content: space-between;
-  }
-`;
-
 export const footerNav = css`
   display: grid;
 
@@ -285,12 +268,13 @@ export const footerNav = css`
     grid-column-gap: 12px;
     justify-content: center;
     align-items: center;
+    order: 2;
   }
 
   @media ${Screen.large} {
     grid-auto-flow: column;
     grid-auto-columns: max-content;
-    grid-column-gap: 28px;
+    grid-column-gap: 16px;
     align-items: center;
   }
 `;
@@ -300,10 +284,14 @@ export const footerCopy = css`
   grid-template-columns: max-content max-content max-content;
   align-items: center;
   justify-content: center;
+
+  @media ${Screen.small} {
+    order: 1;
+  }
 `;
 
 export const footerText = css`
-  font-size: .6em;
+  font-size: 0.6em;
   padding: 6px 0;
   color: ${Theme.fadedTextColor};
   transition-property: color;
@@ -325,6 +313,10 @@ export const footerIcons = css`
   grid-column-gap: 10px;
   align-items: center;
   justify-content: center;
+
+  @media ${Screen.small} {
+    order: 3;
+  }
 `;
 
 export const footerIconLink = css`
@@ -408,7 +400,7 @@ export const sidenote = css`
   }
 
   @media ${Screen.large} {
-    font-size: .65em;
+    font-size: 0.65em;
     justify-content: flex-end;
     text-align: right;
   }

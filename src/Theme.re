@@ -16,7 +16,10 @@ module type Colors = {
   let avatarBorderColor: string;
   let githubHoverColor: string;
   let postSidenoteColor: string;
+  let postExpandableContentBgColor: string;
   let postFooterNavLinkHoverBgColor: string;
+  let badgeTextColor: string;
+  let badgeBgColor: string;
 
   let codeColor: string;
   let codeBgColor: string;
@@ -97,9 +100,15 @@ module Dom = {
     root->setVar("--github-hover-color", Theme.githubHoverColor);
     root->setVar("--post-sidenote-color", Theme.postSidenoteColor);
     root->setVar(
+      "--post-expandable-content-bg-color",
+      Theme.postExpandableContentBgColor,
+    );
+    root->setVar(
       "--post-footer-nav-link-hover-bg-color",
       Theme.postFooterNavLinkHoverBgColor,
     );
+    root->setVar("--badge-text-color", Theme.badgeTextColor);
+    root->setVar("--badge-bg-color", Theme.badgeBgColor);
     root->setVar("--code-color", Theme.codeColor);
     root->setVar("--code-bg-color", Theme.codeBgColor);
     root->setVar("--code-label-bg-color", Theme.codeLabelBgColor);

@@ -1,31 +1,17 @@
 <!-- Redux Tree -->
 
-import {
-  a as A,
-  note as Note,
-  inlineCode as C,
-  coverImage as CoverImage,
-  highlight as Highlight,
-} from "markdown";
-
-import coverImage from "./images/cover.jpg?preset=cover";
-
-<CoverImage
-  src={coverImage}
-  credit={{
-    text: "veeterzy.com",
-    url: "http://veeterzy.com",
-  }}
-/>
+import { a as A, note as Note, inlineCode as C, highlight as Highlight } from "markdown";
 
 There are two ways of thinking of about UI: in terms of **state** or in terms of **interactions**.
 
 ## State-based model
+
 This pattern is common in the Redux community. In this style of thinking, the building blocks of the app are reducers. Each reducer is tightly coupled to a specific part of the state. It decides how to respond to actions from the outside. It has full control over its part of the state, and that’s its only concern.
 
 The main take away here is that **state is a smart essence**.
 
 ## Interactions-based model
+
 In this model, application state is represented as an **inert tree**.
 
 ```
@@ -39,7 +25,10 @@ state:
 ```
 
 <Note>
-  The state tree is a combination of <C>branches</C> and <C>leaves</C>. A branch doesn’t hold any state itself but is a grouping of leaves that each hold chunks of the application state. For example, the branch <C>state.entities</C> groups the states of the <C>posts</C> leaf, <C>comments</C> leaf, etc.
+  The state tree is a combination of <C>branches</C> and <C>leaves</C>. A branch doesn’t hold any
+  state itself but is a grouping of leaves that each hold chunks of the application state. For
+  example, the branch <C>state.entities</C> groups the states of the <C>posts</C> leaf,{" "}
+  <C>comments</C> leaf, etc.
 </Note>
 
 When a user interacts with the UI, the application changes its state in response. As opposed to a reducers-based model, state is a passive data container here. And interactions are the ones in charge.
@@ -55,9 +44,8 @@ const requestAction = postId => ({
 
 // Action handler: reduces the state of the single leaf
 const onRequest = {
-  POST_DELETE_REQUESTED:
-    (state, { postId }) =>
-      state.update("processingPosts", processingPosts => processingPosts.add(postId)),
+  POST_DELETE_REQUESTED: (state, { postId }) =>
+    state.update("processingPosts", processingPosts => processingPosts.add(postId)),
 };
 ```
 
@@ -86,11 +74,10 @@ const onSuccess = {
     // 2. remove post entity
     {
       leaf: ["entities", "posts"], // <= keypath to the leaf of the state
-      reduce:
-        (postsEntitiesState, { postId }) =>
-          postsEntitiesState
-            .updateIn(["index"], index => index.delete(postId))
-            .updateIn(["entities"], entities => entities.delete(postId)),
+      reduce: (postsEntitiesState, { postId }) =>
+        postsEntitiesState
+          .updateIn(["index"], index => index.delete(postId))
+          .updateIn(["entities"], entities => entities.delete(postId)),
     },
   ],
 };

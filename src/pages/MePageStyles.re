@@ -12,6 +12,9 @@ let photo = photo;
 [@bs.module "./MePageStyles.js"] external aboutContent: string = "aboutContent";
 let aboutContent = aboutContent;
 
+[@bs.module "./MePageStyles.js"] external title: string = "title";
+let title = title;
+
 [@bs.module "./MePageStyles.js"] external row: string = "row";
 let row = row;
 

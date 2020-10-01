@@ -4,45 +4,23 @@ import { Color, Font, Theme, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
-  grid-template-rows: max-content 1fr;
+  grid-template-rows: max-content max-content 1fr max-content;
   justify-content: center;
   justify-items: center;
-
-  @media ${Screen.small} {
-    grid-row-gap: 16px;
-  }
-
-  @media ${Screen.large} {
-    grid-row-gap: 10px;
-  }
 `;
 
-export const title = css`
-  display: grid;
-
-  @media ${Screen.small} {
-    grid-template-rows: max-content max-content;
-    grid-row-gap: 16px;
-    justify-content: center;
-    justify-items: center;
-    padding: 0 ${Layout.smallScreenHPad}px;
-    text-align: center;
-  }
-
-  @media ${Screen.large} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
-    grid-template-rows: max-content;
-    grid-column-gap: ${Layout.largeScreenColGap}px;
-    align-content: center;
-    align-items: baseline;
-  }
+export const details = css`
+  margin: 10px 0;
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
+  text-align: center;
+  font-size: 0.8em;
 `;
 
-export const date = css`
-  @media ${Screen.small} {
-    order: 1;
-    text-align: center;
-  }
+export const categoryLink = css`
+  color: ${Theme.fadedTextColor};
 `;
 
 export const content = css`
@@ -53,20 +31,22 @@ export const content = css`
   justify-content: start;
 `;
 
-const gap = 14;
+const vGap = 14;
+const largeScreenSidenoteGap = 10;
 
 export const row = css`
   display: grid;
+  hyphens: auto;
 
   @media ${Screen.small} {
     grid-template-rows: auto;
-    grid-template-columns: max-content auto;
+    grid-template-columns: auto;
     align-content: start;
     padding: 0 ${Layout.smallScreenHPad}px;
   }
 
   @media ${Screen.large} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
+    grid-template-columns: ${Layout.largeScreenContentWidth}px;
     grid-template-rows: auto;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: start;
@@ -75,10 +55,43 @@ export const row = css`
 `;
 
 export const rowWithSidenote = css`
+  position: relative;
   align-items: baseline;
 
   @media ${Screen.small} {
+    grid-template-columns: min-content auto;
     grid-column-gap: 10px;
+  }
+`;
+
+export const rowWithHiddenSidenoteOnSmallScreens = css`
+  position: relative;
+  align-items: baseline;
+
+  @media ${Screen.small} {
+    grid-template-columns: auto;
+  }
+`;
+
+export const rowSidenote = css`
+  display: block;
+  line-height: 1.5;
+
+  @media ${Screen.small} {
+    grid-column-gap: 10px;
+  }
+
+  @media ${Screen.large} {
+    position: absolute;
+    left: 50%;
+    transform: translateX(calc(-${Layout.largeScreenContentWidth / 2}px - 100% - ${largeScreenSidenoteGap}px));
+    overflow: visible;
+  }
+`;
+
+export const rowSidenoteHiddenOnSmallScreens = css`
+  @media ${Screen.small} {
+    display: none;
   }
 `;
 
@@ -108,10 +121,20 @@ export const h1 = css`
   transition-property: color;
   transition-duration: ${Transition.moderate};
   transition-timing-function: ${Transition.timingFunction};
+
+  @media ${Screen.small} {
+    padding: 0 ${Layout.smallScreenHPad}px;
+    text-align: center;
+  }
+
+  @media ${Screen.large} {
+    max-width: ${Screen.smallMaxWidth - 20}px;
+    text-align: center;
+  }
 `;
 
 export const h2Row = css`
-  margin: ${gap}px 0 0;
+  margin: ${vGap}px 0 0;
 `;
 
 export const h2 = css`
@@ -126,7 +149,7 @@ export const h2 = css`
 `;
 
 export const h3Row = css`
-  margin: ${gap}px 0 0;
+  margin: ${vGap}px 0 0;
 `;
 
 export const h3 = css`
@@ -140,7 +163,7 @@ export const h3 = css`
 `;
 
 export const h4Row = css`
-  margin: ${gap}px 0 0;
+  margin: ${vGap}px 0 0;
 `;
 
 export const h4 = css`
@@ -154,7 +177,7 @@ export const h4 = css`
 `;
 
 export const pRow = css`
-  margin: ${gap}px 0;
+  margin: ${vGap}px 0;
 
   .${h2Row} + &,
   .${h3Row} + & {
@@ -170,14 +193,14 @@ export const p = css`
   transition-timing-function: ${Transition.timingFunction};
 `;
 
+const listMargin = "1.5em";
+
 export const listRow = css`
-  margin: ${gap}px 0;
+  margin: ${vGap}px 0;
 `;
 
 export const list = css`
-  @media ${Screen.small} {
-    margin-left: calc(1em + ${Layout.smallScreenHPad}px);
-  }
+  margin-left: ${listMargin};
 `;
 
 export const ol = css`
@@ -192,7 +215,7 @@ export const ol = css`
       position: relative;
       max-width: 0px;
       max-height: 0px;
-      left: -1.7em;
+      left: -${listMargin};
       color: ${Theme.fadedTextColor};
       transition-property: color;
       transition-duration: ${Transition.moderate};
@@ -210,7 +233,7 @@ export const ul = css`
     position: relative;
     max-width: 0px;
     max-height: 0px;
-    left: -1.7em;
+    left: -${listMargin};
     color: ${Theme.fadedTextColor};
     transition-property: color;
     transition-duration: ${Transition.moderate};
@@ -227,7 +250,7 @@ export const li = css`
 `;
 
 export const hrRow = css`
-  margin: ${gap}px 0;
+  margin: ${vGap}px 0;
 `;
 
 export const hr = css`
@@ -249,7 +272,7 @@ export const inlineCode = css`
 `;
 
 export const codeRow = css`
-  margin: ${gap}px 0;
+  margin: ${vGap}px 0;
 `;
 
 const largeScreenCodeVPad = 20;
@@ -291,7 +314,6 @@ export const code = css`
 
   @media ${Screen.large} {
     width: ${Layout.largeScreenContentWidth}px;
-    padding-left: ${Layout.largeScreenLeftColWidth + Layout.largeScreenColGap}px;
     overflow: visible;
   }
 `;
@@ -349,7 +371,7 @@ export const fileLabel = css`
   }
 
   @media ${Screen.large} {
-    left: ${Layout.largeScreenLeftColWidth + Layout.largeScreenColGap - languageLabelHPad}px;
+    left: -${languageLabelHPad}px;
   }
 `;
 
@@ -501,7 +523,7 @@ export const global = css`
 `;
 
 export const noteRow = css`
-  margin: ${gap}px 0;
+  margin: ${vGap}px 0;
 `;
 
 export const note = css`
@@ -515,7 +537,7 @@ export const note = css`
 `;
 
 export const crossPostNoteRow = css`
-  margin: ${gap}px 0;
+  margin: ${vGap}px 0;
 `;
 
 export const crossPostNote = css`
@@ -530,7 +552,7 @@ export const crossPostNote = css`
 `;
 
 export const highlightRow = css`
-  margin: ${gap * 2}px 0;
+  margin: ${vGap * 2}px 0;
 `;
 
 export const highlight = css`
@@ -569,7 +591,7 @@ export const loadedImage = css`
 `;
 
 export const coverImageRow = css`
-  margin: ${gap}px 0;
+  margin: 0 0 ${vGap}px;
 `;
 
 export const coverImageFigure = css`
@@ -581,11 +603,11 @@ export const coverImageFigure = css`
   overflow: hidden;
 
   @media ${Screen.small} {
-    height: 220px;
+    height: calc(100vh - ${Layout.smallScreenHeaderHeight + (Layout.smallScreenRowGap * 2)}px);
   }
 
   @media ${Screen.large} {
-    height: 320px;
+    height: 60vh;
   }
 `;
 
@@ -603,7 +625,38 @@ export const coverImageOverlay = css`
 
 export const coverImage = css`
   object-fit: cover;
-  width: 100%;
+
+  @media ${Screen.small} {
+    height: 100%;
+  }
+
+  @media ${Screen.large} {
+    width: 100%;
+  }
+`;
+
+export const coverImageTitleContainer = css`
+  position: absolute;
+  display: block;
+  top: 50%;
+  transform: translateY(-100%);
+  max-width: 80vw;
+  text-align: center;
+`;
+
+export const coverImageTitleText = css`
+  display: inline;
+  padding: 2px 8px;
+  color: ${Color.white};
+  line-height: 1.4;
+`;
+
+export const coverImageTitleBgColorBlue = css`
+  background-color: ${Color.blue};
+`;
+
+export const coverImageTitleBgColorOrange = css`
+  background-color: ${Color.orange};
 `;
 
 export const coverImageCredit = css`
@@ -621,7 +674,7 @@ export const coverImageCredit = css`
 `;
 
 export const inlineImageRow = css`
-  margin: ${gap * 2}px 0;
+  margin: ${vGap * 2}px 0;
 
   .${h2Row} + &,
   .${h3Row} + & {
@@ -665,18 +718,26 @@ export const inlineImagePlacementFill = css`
   width: 100%;
 `;
 
+const bleed = 210;
+const bleedScreen = `only screen and (min-width: ${Screen.smallMaxWidth + 1}px) and (max-width: ${Layout.largeScreenContentWidth + bleed}px)`;
+
 export const inlineImagePlacementBleed = css`
   @media ${Screen.small} {
     width: 100%;
   }
 
   @media ${Screen.large} {
-    width: calc(100% + 210px);
+    width: calc(100% + ${bleed}px);
+  }
+
+  /* Must go after Screen.large */
+  @media ${bleedScreen} {
+    width: 100%;
   }
 `;
 
 export const expandableRow = css`
-  margin: ${gap}px 0;
+  margin: ${vGap}px 0;
 `;
 
 export const expandableTrigger = css`
@@ -707,6 +768,10 @@ export const expandableTriggerIconExpanded = css`
   transform: rotate(180deg);
 `;
 
+export const expandableContentBg = css`
+  background-color: ${Theme.postExpandableContentBgColor};
+`;
+
 export const socialSharingContainer = css`
   display: grid;
 
@@ -734,9 +799,8 @@ export const footerRow = css`
   }
 
   @media ${Screen.large} {
-    width: ${Layout.largeScreenRightColWidth}px;
-    transform: translateX(${(Layout.largeScreenLeftColWidth + Layout.largeScreenColGap) / 2}px);
-    grid-template-columns: ${Layout.largeScreenRightColWidth}px;
+    width: ${Layout.largeScreenContentWidth}px;
+    grid-template-columns: ${Layout.largeScreenContentWidth}px;
     margin: 30px 0 0;
   }
 `;
@@ -759,7 +823,7 @@ export const footerRowInner = css`
   }
 `;
 
-const footerLinkSmallScreenHPad = 30;
+const footerLinkSmallScreenHPad = Layout.smallScreenHPad;
 const footerLinkLargeScreenHPad = 50;
 
 export const footerLink = css`

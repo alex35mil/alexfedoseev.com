@@ -3,8 +3,14 @@
 [@bs.module "./LayoutStyles.js"] external container: string = "container";
 let container = container;
 
+[@bs.module "./LayoutStyles.js"] external containerExtendedOnSmallScreens: string = "containerExtendedOnSmallScreens";
+let containerExtendedOnSmallScreens = containerExtendedOnSmallScreens;
+
 [@bs.module "./LayoutStyles.js"] external header: string = "header";
 let header = header;
+
+[@bs.module "./LayoutStyles.js"] external headerWithSmallScreenPaddings: string = "headerWithSmallScreenPaddings";
+let headerWithSmallScreenPaddings = headerWithSmallScreenPaddings;
 
 [@bs.module "./LayoutStyles.js"] external logo: string = "logo";
 let logo = logo;
@@ -14,9 +20,6 @@ let logoLink = logoLink;
 
 [@bs.module "./LayoutStyles.js"] external logoSvg: string = "logoSvg";
 let logoSvg = logoSvg;
-
-[@bs.module "./LayoutStyles.js"] external mainCol: string = "mainCol";
-let mainCol = mainCol;
 
 [@bs.module "./LayoutStyles.js"] external navigation: string = "navigation";
 let navigation = navigation;
@@ -29,12 +32,6 @@ let navLinkActive = navLinkActive;
 
 [@bs.module "./LayoutStyles.js"] external navLinkInactive: string = "navLinkInactive";
 let navLinkInactive = navLinkInactive;
-
-[@bs.module "./LayoutStyles.js"] external navSep: string = "navSep";
-let navSep = navSep;
-
-[@bs.module "./LayoutStyles.js"] external restNavLinks: string = "restNavLinks";
-let restNavLinks = restNavLinks;
 
 [@bs.module "./LayoutStyles.js"] external themeSwitchHeader: string = "themeSwitchHeader";
 let themeSwitchHeader = themeSwitchHeader;
@@ -50,9 +47,6 @@ let footerSources = footerSources;
 
 [@bs.module "./LayoutStyles.js"] external footerSourcesLink: string = "footerSourcesLink";
 let footerSourcesLink = footerSourcesLink;
-
-[@bs.module "./LayoutStyles.js"] external footerMainCol: string = "footerMainCol";
-let footerMainCol = footerMainCol;
 
 [@bs.module "./LayoutStyles.js"] external footerNav: string = "footerNav";
 let footerNav = footerNav;

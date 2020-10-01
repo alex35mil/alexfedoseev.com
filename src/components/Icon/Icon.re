@@ -55,15 +55,17 @@ let make = (~title: string, ~size: size, ~className="", ~children) => {
     title
     viewBoxWidth=viewBoxSize
     viewBoxHeight=viewBoxSize
-    className={Cn.make([
-      Css.icon,
-      switch (size) {
-      | SM => Css.smSize
-      | MD => Css.mdSize
-      | LG => Css.lgSize
-      },
-      className,
-    ])}>
+    className=Cn.(
+      Css.icon
+      + (
+        switch (size) {
+        | SM => Css.smSize
+        | MD => Css.mdSize
+        | LG => Css.lgSize
+        }
+      )
+      + className
+    )>
     children
   </Svg>;
 };

@@ -2,9 +2,11 @@ module Css = BlogPageStyles;
 
 [@react.component]
 let make = () => {
+  let posts = React.useMemo0(() => Posts.allByYear());
+
   <Page>
     <div className=Css.years>
-      {Posts.byYear()
+      {posts
        ->Array.map(((year, posts)) =>
            <div key=year className=Css.yearContainer>
              {posts
@@ -18,14 +20,25 @@ let make = () => {
                          }}
                       </Layout.PrimarySidenote>
                     </div>
-                    <div className=Css.link>
-                      <Text.Ellipsis>
-                        <Link
-                          path={Route.post(~year, ~slug=post.slug)}
-                          underline=WhenInteracted>
-                          post.title->React.string
-                        </Link>
-                      </Text.Ellipsis>
+                    <div className=Css.links>
+                      <div className=Css.postLink>
+                        <Text.Ellipsis>
+                          <Link
+                            path={Route.post(
+                              ~year,
+                              ~category=post.category->PostCategory.toString,
+                              ~slug=post.slug,
+                            )}
+                            underline=WhenInteracted>
+                            post.title->React.string
+                          </Link>
+                        </Text.Ellipsis>
+                      </div>
+                      <Link.Box path={post.category->Route.blogCategory}>
+                        <Badge rotateOnHover=true>
+                          {post.category->PostCategory.toString->React.string}
+                        </Badge>
+                      </Link.Box>
                     </div>
                   </div>
                 )

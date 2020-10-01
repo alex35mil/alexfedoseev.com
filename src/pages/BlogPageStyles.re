@@ -12,5 +12,8 @@ let post = post;
 [@bs.module "./BlogPageStyles.js"] external year: string = "year";
 let year = year;
 
-[@bs.module "./BlogPageStyles.js"] external link: string = "link";
-let link = link;
+[@bs.module "./BlogPageStyles.js"] external links: string = "links";
+let links = links;
+
+[@bs.module "./BlogPageStyles.js"] external postLink: string = "postLink";
+let postLink = postLink;

@@ -3,11 +3,11 @@ import { css } from "linaria";
 import { Color, Font, Transition, Screen, Layout } from "styles";
 
 export const smallContainerWidth = 300;
-export const mediumContainerWidth = 600;
+export const mediumContainerWidth = 450;
 export const largeContainerWidth = Layout.largeScreenContentWidth;
 
-export const smallScreenMaxWidth = 620;
-export const mediumScreenMaxWidth = 900;
+export const smallScreenMaxWidth = 440;
+export const mediumScreenMaxWidth = 600;
 
 export const smallScreen = `only screen and (max-width: ${smallScreenMaxWidth}px)`;
 export const mediumScreen = `only screen and (min-width: ${smallScreenMaxWidth + 1}px) and (max-width: ${mediumScreenMaxWidth}px)`;

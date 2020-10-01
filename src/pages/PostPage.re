@@ -16,18 +16,28 @@ let make = (~year: string, ~slug: string) => {
             title={post.title}
             year
             date={post.date}
+            category={post.category}
+            cover={post.cover}
             prevPost={
               Posts.all
               ->Array.get(index + 1)
               ->Option.map(post =>
-                  Post.Footer.{year: post.year, slug: post.slug}
+                  Post.Footer.{
+                    year: post.year,
+                    category: post.category->PostCategory.toString,
+                    slug: post.slug,
+                  }
                 )
             }
             nextPost={
               Posts.all
               ->Array.get(index - 1)
               ->Option.map(post =>
-                  Post.Footer.{year: post.year, slug: post.slug}
+                  Post.Footer.{
+                    year: post.year,
+                    category: post.category->PostCategory.toString,
+                    slug: post.slug,
+                  }
                 )
             }>
             <Content />

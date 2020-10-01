@@ -4,7 +4,7 @@ module Css = ThemeSwitchStyles;
 let make = (~className="") => {
   let theme = React.useContext(Theme.Context.x);
 
-  <div className={Cn.make([Css.container, className])}>
+  <div className=Cn.(Css.container + className)>
     <input
       id="theme-switch"
       type_="checkbox"
@@ -25,12 +25,12 @@ let make = (~className="") => {
         <LightThemeIcon
           size=SM
           color=Faded
-          className={Cn.make([Css.icon, Css.lightIcon])}
+          className=Cn.(Css.icon + Css.lightIcon)
         />
         <DarkThemeIcon
           size=SM
           color=Faded
-          className={Cn.make([Css.icon, Css.darkIcon])}
+          className=Cn.(Css.icon + Css.darkIcon)
         />
       </div>
     </label>

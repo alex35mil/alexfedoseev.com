@@ -10,7 +10,10 @@ let iconColor = "#aaa";
 let avatarBorderColor = bgColor;
 let githubHoverColor = "#333";
 let postSidenoteColor = "#aaa";
+let postExpandableContentBgColor = "#f5f2f0";
 let postFooterNavLinkHoverBgColor = "rgba(0, 0, 0, 0.02)";
+let badgeTextColor = "#7a7a7a";
+let badgeBgColor = "#e7e7e7";
 
 let codeColor = "#333";
 let codeBgColor = "#f5f2f0";

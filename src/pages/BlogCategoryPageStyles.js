@@ -2,13 +2,47 @@ import { css } from "linaria";
 
 import { Color, Font, Transition, Screen, Theme, Layout } from "styles";
 
+export const container = css`
+  display: grid;
+  grid-template-rows: max-content max-content;
+
+  @media ${Screen.small} {
+    grid-template-columns: 1fr;
+  }
+`;
+
+export const title = css`
+  display: inline-block;
+  margin-bottom: 10px;
+  font-family: ${Font.heading};
+  font-size: 34px;
+  font-weight: ${Font.bold};
+  color: ${Theme.textColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
+
+  @media ${Screen.small} {
+    justify-content: start;
+    justify-items: start;
+    padding: 0 ${Layout.smallScreenHPad}px;
+  }
+
+  @media ${Screen.large} {
+    align-content: center;
+    align-items: baseline;
+    padding-left: ${Layout.largeScreenLogoWidth + Layout.largeScreenColGap}px;
+    /* text-overflow: ellipsis requires non-relative width to be set */
+    max-width: calc(100vw - ${Layout.smallScreenHPad * 2}px);
+  }
+`;
+
 export const years = css`
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
 
   @media ${Screen.small} {
-    grid-template-columns: 1fr;
     grid-row-gap: ${Layout.smallScreenRowGap}px;
     padding: 0 ${Layout.smallScreenHPad}px;
   }
@@ -23,18 +57,16 @@ export const yearContainer = css`
   display: grid;
   grid-auto-flow: row;
   grid-auto-rows: max-content;
+  grid-row-gap: 3px;
 
   @media ${Screen.small} {
     grid-auto-rows: max-content;
-    grid-template-columns: 1fr;
     justify-content: start;
     justify-items: start;
-    grid-row-gap: 2px;
   }
 
   @media ${Screen.large} {
     grid-auto-rows: max-content;
-    grid-row-gap: 3px;
   }
 `;
 
@@ -42,14 +74,13 @@ export const post = css`
   display: grid;
 
   @media ${Screen.small} {
-    grid-template-columns: 1fr;
-    justify-content: center;
+    justify-content: start;
     justify-items: start;
-    text-align: left;
+    text-align: center;
   }
 
   @media ${Screen.large} {
-    grid-template-columns: ${Layout.largeScreenLogoWidth}px ${Layout.largeScreenRightColWidth}px;
+    grid-template-columns: ${Layout.largeScreenLogoWidth}px max-content;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: center;
@@ -67,30 +98,6 @@ export const year = css`
   }
 `;
 
-const linksHGap = 8;
-
-export const links = css`
-  display: grid;
-
-  @media ${Screen.small} {
-    grid-template-columns: auto max-content;
-    grid-column-gap: ${linksHGap}px;
-    align-items: center;
-    justify-content: start;
-    justify-items: start;
-  }
-
-  @media ${Screen.large} {
-    grid-template-columns: max-content max-content;
-    grid-template-rows: max-content;
-    grid-column-gap: ${linksHGap}px;
-    align-content: center;
-    align-items: center;
-  }
-`;
-
-const approxCategoryBadgeWidth = 50;
-
 export const postLink = css`
   font-size: 0.9em;
   color: ${Theme.textColor};
@@ -98,7 +105,7 @@ export const postLink = css`
   @media ${Screen.small} {
     font-size: 0.8em;
     /* text-overflow: ellipsis requires non-relative width to be set */
-    max-width: calc(100vw - ${Layout.smallScreenHPad * 2 + approxCategoryBadgeWidth + linksHGap}px);
+    max-width: calc(100vw - ${Layout.smallScreenHPad * 2}px);
   }
 
   @media ${Screen.large} {
@@ -107,6 +114,6 @@ export const postLink = css`
 
   @media ${Screen.between(Screen.smallMaxWidth + 1, Layout.largeScreenContentWidth + 200)} {
     /* text-overflow: ellipsis requires non-relative width to be set */
-    max-width: ${Layout.largeScreenRightColWidth - approxCategoryBadgeWidth - linksHGap}px;
+    max-width: ${Layout.largeScreenRightColWidth}px;
   }
 `;

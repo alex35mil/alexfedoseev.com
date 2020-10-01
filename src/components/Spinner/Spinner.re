@@ -46,19 +46,23 @@ let make =
     };
 
   <div
-    className={Cn.make([
-      spread ? Css.spreadedContainer : Css.container,
-      switch (bg) {
-      | None => Css.transparentBg
-      | Some(White) => Css.whiteBg
-      },
-    ])}>
+    className=Cn.(
+      spread
+        ? Css.spreadedContainer
+        : Css.container
+          + (
+            switch (bg) {
+            | None => Css.transparentBg
+            | Some(White) => Css.whiteBg
+            }
+          )
+    )>
     <div className={spread ? Css.spreadedWrapper : Css.wrapper}>
       <div
         className=Css.spinner
         style={ReactDom.Style.make(~height=spinnerHeight->px, ())}>
         <span
-          className={Cn.make([Css.col, Css.leftCol, colorClassName])}
+          className=Cn.(Css.col + Css.leftCol + colorClassName)
           style={ReactDom.Style.make(
             ~width=colWidth->px,
             ~height=colHeight->px,
@@ -66,7 +70,7 @@ let make =
           )}
         />
         <span
-          className={Cn.make([Css.col, Css.middleCol, colorClassName])}
+          className=Cn.(Css.col + Css.middleCol + colorClassName)
           style={ReactDom.Style.make(
             ~width=colWidth->px,
             ~height=colHeight->px,
@@ -76,7 +80,7 @@ let make =
           )}
         />
         <span
-          className={Cn.make([Css.col, Css.rightCol, colorClassName])}
+          className=Cn.(Css.col + Css.rightCol + colorClassName)
           style={ReactDom.Style.make(
             ~width=colWidth->px,
             ~height=colHeight->px,

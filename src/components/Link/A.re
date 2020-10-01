@@ -32,16 +32,18 @@ let make =
       | Self => None
       }
     }
-    className={Cn.make([
-      Css.link,
-      Css.text,
-      switch (underline) {
-      | Always => Css.underlineAlways
-      | WhenInteracted => Css.underlineWhenInteracted
-      | Never => Css.underlineNever
-      },
-      className,
-    ])}>
+    className=Cn.(
+      Css.link
+      + Css.text
+      + (
+        switch (underline) {
+        | Always => Css.underlineAlways
+        | WhenInteracted => Css.underlineWhenInteracted
+        | Never => Css.underlineNever
+        }
+      )
+      + className
+    )>
     children
   </a>;
 };
@@ -64,7 +66,7 @@ module Box = {
         | Self => None
         }
       }
-      className={Cn.make([Css.link, Css.underlineNever, className])}>
+      className=Cn.(Css.link + Css.underlineNever + className)>
       children
     </a>;
   };

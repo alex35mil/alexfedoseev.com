@@ -88,7 +88,7 @@ export const headline = css`
 `;
 
 const logoWidth = 140;
-const logoHeight = Math.ceil(logoWidth * Logo.height / Logo.width);
+const logoHeight = Math.ceil((logoWidth * Logo.height) / Logo.width);
 
 export const logo = css`
   display: flex;
@@ -101,7 +101,7 @@ export const logoSvg = css`
   height: ${logoHeight}px;
 `;
 
-const linkHPad = 8;
+const linkHPad = 6;
 
 export const links = css`
   display: grid;
@@ -131,6 +131,7 @@ export const link = css`
   padding: 2px ${linkHPad}px;
   color: ${Theme.textColor};
   font-size: 0.9em;
+  line-height: 1;
   transition-property: background-color, color, transform;
   transition-duration: ${Transition.fast};
   transition-timing-function: ${Transition.timingFunction};

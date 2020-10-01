@@ -108,12 +108,12 @@ module Thumb = {
         <img
           src={src->fallback}
           srcSet={src->thumb}
-          className={Cn.make([
+          className={
             switch (state) {
             | Loading => Css.loadingImage
             | Loaded => Css.loadedImage
-            },
-          ])}
+            }
+          }
           style={ReactDom.Style.make(
             ~width=box->JustifiedLayout.Box.width->px,
             ~height=box->JustifiedLayout.Box.height->px,

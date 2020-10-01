@@ -16,16 +16,18 @@ let make =
     ) => {
   <ReactRouter.Link
     path
-    className={Cn.make([
-      Css.link,
-      Css.text,
-      switch (underline) {
-      | Always => Css.underlineAlways
-      | WhenInteracted => Css.underlineWhenInteracted
-      | Never => Css.underlineNever
-      },
-      className,
-    ])}
+    className=Cn.(
+      Css.link
+      + Css.text
+      + (
+        switch (underline) {
+        | Always => Css.underlineAlways
+        | WhenInteracted => Css.underlineWhenInteracted
+        | Never => Css.underlineNever
+        }
+      )
+      + className
+    )
     ?onClick>
     children
   </ReactRouter.Link>;
@@ -36,7 +38,7 @@ module Box = {
   let make = (~path: ReactRouter.path, ~className="", ~onClick=?, ~children) => {
     <ReactRouter.Link
       path
-      className={Cn.make([Css.link, Css.underlineNever, className])}
+      className=Cn.(Css.link + Css.box + Css.underlineNever + className)
       ?onClick>
       children
     </ReactRouter.Link>;

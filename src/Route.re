@@ -8,16 +8,22 @@ and inner =
   | Photo
   | Me
 and blog =
-  | Index
+  | Index(blogIndex)
   | Post({
       year: string,
+      category: string,
       slug: string,
-    });
+    })
+and blogIndex =
+  | All
+  | Category(PostCategory.t);
 
 let main = "/"->Path.pack;
 let blog = "/blog"->Path.pack;
-let post = (~year: string, ~slug: string) =>
-  {j|/blog/$year/$slug|j}->Path.pack;
+let blogCategory = (category: PostCategory.t) =>
+  ("/blog/" ++ category->PostCategory.toString)->Path.pack;
+let post = (~year: string, ~category: string, ~slug: string) =>
+  {j|/blog/$category/$year/$slug|j}->Path.pack;
 let photo = "/photo"->Path.pack;
 let me = "/me"->Path.pack;
 
@@ -39,8 +45,14 @@ let conform = "https://github.com/MinimaHQ/conform"->Path.pack;
 let fromUrl = (url: ReactRouter.url) =>
   switch (url.path) {
   | [] => Main->Some
-  | ["blog"] => Inner(Blog(Index))->Some
-  | ["blog", year, slug] => Inner(Blog(Post({year, slug})))->Some
+  | ["blog"] => Inner(Blog(Index(All)))->Some
+  | ["blog", category] =>
+    switch (category->PostCategory.fromString) {
+    | Ok(category) => Inner(Blog(Index(Category(category))))->Some
+    | Error () => None
+    }
+  | ["blog", category, year, slug] =>
+    Inner(Blog(Post({year, category, slug})))->Some
   | ["photo"] => Inner(Photo)->Some
   | ["me"] => Inner(Me)->Some
   | _ => None

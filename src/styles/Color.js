@@ -1,4 +1,5 @@
 export const blue = "#29d";
+export const orange = "#ee8e00";
 export const beige = "#f5f2f0";
 export const white = "#fff";
 

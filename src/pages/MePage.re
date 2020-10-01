@@ -18,10 +18,11 @@ let make = () =>
   <Page>
     <div className=Css.container>
       <div className=Css.about>
-        <div className=Css.photo />
+        <div />
         <div className=Css.aboutContent>
+          <h1 className=Css.title> "Hi!"->React.string </h1>
           <p>
-            "Hi, I'm Alex, a full-stack developer interested in user experience, product development, statically typed languages and functional programming."
+            "I'm Alex, a full-stack developer interested in user experience, product development, statically typed languages and functional programming."
             ->React.string
           </p>
           <p>
@@ -144,7 +145,7 @@ let make = () =>
               href=Route.github
               target=Blank
               underline=Always
-              className={Cn.make([Css.link, Css.githubLink])}>
+              className=Cn.(Css.link + Css.githubLink)>
               <GithubIcon size=SM color=Faded className=Css.linkIcon />
               "Github"->React.string
             </A>
@@ -154,7 +155,7 @@ let make = () =>
               href=Route.twitter
               target=Blank
               underline=Always
-              className={Cn.make([Css.link, Css.twitterLink])}>
+              className=Cn.(Css.link + Css.twitterLink)>
               <TwitterIcon size=SM color=Faded className=Css.linkIcon />
               "Twitter"->React.string
             </A>

@@ -29,15 +29,15 @@ export const about = css`
   display: grid;
 
   @media ${Screen.small} {
-    grid-template-rows: max-content max-content;
-    grid-row-gap: 24px;
+    grid-template-rows: 0 max-content;
+    grid-row-gap: 0;
     justify-content: center;
     justify-items: center;
     text-align: center;
   }
 
   @media ${Screen.large} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
+    grid-template-columns: ${Layout.largeScreenLogoWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: start;
@@ -80,6 +80,16 @@ export const aboutContent = css`
   grid-row-gap: 14px;
 `;
 
+export const title = css`
+  font-family: ${Font.heading};
+  font-size: 34px;
+  font-weight: ${Font.bold};
+  color: ${Theme.textColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
+`;
+
 export const row = css`
   display: grid;
 
@@ -90,7 +100,7 @@ export const row = css`
   }
 
   @media ${Screen.large} {
-    grid-template-columns: ${Layout.largeScreenLeftColWidth}px ${Layout.largeScreenRightColWidth}px;
+    grid-template-columns: ${Layout.largeScreenLogoWidth}px ${Layout.largeScreenRightColWidth}px;
     grid-template-rows: max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     align-content: start;

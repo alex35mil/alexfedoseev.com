@@ -27,13 +27,13 @@ let make = () => {
               <A.Box
                 href=Route.twitter
                 target=Blank
-                className={Cn.make([Css.icon, Css.twitterIcon])}>
+                className=Cn.(Css.icon + Css.twitterIcon)>
                 <TwitterIcon size=MD color=Faded />
               </A.Box>
               <A.Box
                 href=Route.github
                 target=Blank
-                className={Cn.make([Css.icon, Css.githubIcon])}>
+                className=Cn.(Css.icon + Css.githubIcon)>
                 <GithubIcon size=MD color=Faded />
               </A.Box>
             </div>

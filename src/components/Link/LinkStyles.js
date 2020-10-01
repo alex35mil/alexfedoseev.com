@@ -23,6 +23,10 @@ export const text = css`
   }
 `;
 
+export const box = css`
+  line-height: 0;
+`;
+
 export const underlineAlways = css`
   text-decoration: underline;
   text-decoration-skip: ink;
