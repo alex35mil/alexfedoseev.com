@@ -1,5 +1,8 @@
+module Css = GalleryStyles;
+
 let _ = PhotoSwipe.Css.core;
 let _ = PhotoSwipe.Css.ui;
+let _ = Css.global;
 
 module Photo = {
   type t;
@@ -16,8 +19,15 @@ module Photo = {
     | X3;
 
   [@bs.obj]
-  external make: (~pid: Photo.id, ~srcset: Photo.srcset, ~msrc: string) => t =
-    "";
+  external make:
+    (
+      ~pid: Photo.id,
+      ~srcset: Photo.srcset,
+      ~msrc: string,
+      ~title: string=?,
+      unit
+    ) =>
+    t;
 
   [@bs.get] external srcset: t => Photo.srcset = "srcset";
 
@@ -33,7 +43,7 @@ type gallery = {
     (
       ~index: int,
       ~container: Dom.element,
-      ~getThumbBoundsFn: int => PhotoSwipe.thumbBounds
+      ~getThumbBoundsFn: int => option(PhotoSwipe.thumbBounds)
     ) =>
     unit,
 };

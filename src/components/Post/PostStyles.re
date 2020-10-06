@@ -129,6 +129,9 @@ let highlightRow = highlightRow;
 [@bs.module "./PostStyles.js"] external highlight: string = "highlight";
 let highlight = highlight;
 
+[@bs.module "./PostStyles.js"] external mediaCaption: string = "mediaCaption";
+let mediaCaption = mediaCaption;
+
 [@bs.module "./PostStyles.js"] external image: string = "image";
 let image = image;
 
@@ -174,9 +177,6 @@ let inlineImageFigure = inlineImageFigure;
 [@bs.module "./PostStyles.js"] external inlineImage: string = "inlineImage";
 let inlineImage = inlineImage;
 
-[@bs.module "./PostStyles.js"] external inlineImageCaption: string = "inlineImageCaption";
-let inlineImageCaption = inlineImageCaption;
-
 [@bs.module "./PostStyles.js"] external inlineImagePlacementCenter: string = "inlineImagePlacementCenter";
 let inlineImagePlacementCenter = inlineImagePlacementCenter;
 
@@ -185,6 +185,48 @@ let inlineImagePlacementFill = inlineImagePlacementFill;
 
 [@bs.module "./PostStyles.js"] external inlineImagePlacementBleed: string = "inlineImagePlacementBleed";
 let inlineImagePlacementBleed = inlineImagePlacementBleed;
+
+[@bs.module "./PostStyles.js"] external galleryRow: string = "galleryRow";
+let galleryRow = galleryRow;
+
+[@bs.module "./PostStyles.js"] external galleryLayout: string = "galleryLayout";
+let galleryLayout = galleryLayout;
+
+[@bs.module "./PostStyles.js"] external galleryLayout_Small: string = "galleryLayout_Small";
+let galleryLayout_Small = galleryLayout_Small;
+
+[@bs.module "./PostStyles.js"] external galleryLayout_One: string = "galleryLayout_One";
+let galleryLayout_One = galleryLayout_One;
+
+[@bs.module "./PostStyles.js"] external galleryLayout_L1_L2: string = "galleryLayout_L1_L2";
+let galleryLayout_L1_L2 = galleryLayout_L1_L2;
+
+[@bs.module "./PostStyles.js"] external galleryLayout_LPS1_LPS1: string = "galleryLayout_LPS1_LPS1";
+let galleryLayout_LPS1_LPS1 = galleryLayout_LPS1_LPS1;
+
+[@bs.module "./PostStyles.js"] external galleryLayout_P1_P1_P1: string = "galleryLayout_P1_P1_P1";
+let galleryLayout_P1_P1_P1 = galleryLayout_P1_P1_P1;
+
+[@bs.module "./PostStyles.js"] external galleryThumb: string = "galleryThumb";
+let galleryThumb = galleryThumb;
+
+[@bs.module "./PostStyles.js"] external galleryPlusBadgeTriangleOverlay: string = "galleryPlusBadgeTriangleOverlay";
+let galleryPlusBadgeTriangleOverlay = galleryPlusBadgeTriangleOverlay;
+
+[@bs.module "./PostStyles.js"] external galleryPlusBadgeTriangle: string = "galleryPlusBadgeTriangle";
+let galleryPlusBadgeTriangle = galleryPlusBadgeTriangle;
+
+[@bs.module "./PostStyles.js"] external galleryPlusBadgeText: string = "galleryPlusBadgeText";
+let galleryPlusBadgeText = galleryPlusBadgeText;
+
+[@bs.module "./PostStyles.js"] external galleryPlusBadgeTextLarger: string = "galleryPlusBadgeTextLarger";
+let galleryPlusBadgeTextLarger = galleryPlusBadgeTextLarger;
+
+[@bs.module "./PostStyles.js"] external galleryPlusBadgeTextSmaller: string = "galleryPlusBadgeTextSmaller";
+let galleryPlusBadgeTextSmaller = galleryPlusBadgeTextSmaller;
+
+[@bs.module "./PostStyles.js"] external galleryPlusBadge: string = "galleryPlusBadge";
+let galleryPlusBadge = galleryPlusBadge;
 
 [@bs.module "./PostStyles.js"] external expandableRow: string = "expandableRow";
 let expandableRow = expandableRow;

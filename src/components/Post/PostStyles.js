@@ -573,6 +573,16 @@ export const highlight = css`
   }
 `;
 
+export const mediaCaption = css`
+  margin: 14px 0 0;
+  color: ${Theme.fadedTextColor};
+  transition-property: color;
+  transition-duration: ${Transition.moderate};
+  transition-timing-function: ${Transition.timingFunction};
+  font-size: 0.8em;
+  text-align: center;
+`;
+
 export const image = css`
   /* NOTE: Do not add transform to this list since it's used in inline style */
   transition-property: filter, opacity;
@@ -693,16 +703,6 @@ export const inlineImage = css`
   position: relative;
 `;
 
-export const inlineImageCaption = css`
-  margin: 14px 0 0;
-  color: ${Theme.fadedTextColor};
-  transition-property: color;
-  transition-duration: ${Transition.moderate};
-  transition-timing-function: ${Transition.timingFunction};
-  font-size: 0.8em;
-  text-align: center;
-`;
-
 export const inlineImagePlacementCenter = css`
   @media ${Screen.small} {
     width: 100%;
@@ -733,6 +733,149 @@ export const inlineImagePlacementBleed = css`
   /* Must go after Screen.large */
   @media ${bleedScreen} {
     width: 100%;
+  }
+`;
+
+export const galleryRow = css`
+  position: relative;
+  margin: ${vGap}px 0;
+`;
+
+export const galleryLayout = css`
+  display: grid;
+  position: relative;
+
+  & button figure,
+  & button figure img {
+    width: 100%;
+    height: 100%;
+  }
+`;
+
+export const galleryLayout_Small = css`
+  @media ${Screen.small} {
+    & button:nth-child(1) {
+      width: 100%;
+    }
+  }
+`;
+
+export const galleryLayout_One = css`
+  @media ${Screen.large} {
+    & button:nth-child(1) {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+  }
+`;
+
+export const galleryLayout_L1_L2 = css`
+  @media ${Screen.large} {
+    & button:nth-child(1) {
+      grid-area: 1 / 1 / 3 / 2;
+    }
+
+    & button:nth-child(2) {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    & button:nth-child(3) {
+      grid-area: 2 / 2 / 3 / 3;
+    }
+  }
+`;
+
+export const galleryLayout_LPS1_LPS1 = css`
+  @media ${Screen.large} {
+    & button:nth-child(1) {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    & button:nth-child(2) {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+  }
+`;
+
+export const galleryLayout_P1_P1_P1 = css`
+  @media ${Screen.large} {
+    & button:nth-child(1) {
+      grid-area: 1 / 1 / 2 / 2;
+    }
+
+    & button:nth-child(2) {
+      grid-area: 1 / 2 / 2 / 3;
+    }
+
+    & button:nth-child(3) {
+      grid-area: 1 / 3 / 2 / 4;
+    }
+  }
+`;
+
+export const galleryThumb = css`
+  position: relative;
+  line-height: 0;
+`;
+
+const galleryPlusBadgeSize = 50;
+const galleryPlusBadgeColor = Color.orange;
+
+export const galleryPlusBadgeTriangleOverlay = css`
+  display: flex;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-bottom: ${galleryPlusBadgeSize}px solid white;
+  border-left: ${galleryPlusBadgeSize}px solid transparent;
+  opacity: 0;
+  transition: opacity ${Transition.fast} ${Transition.timingFunction};
+`;
+export const galleryPlusBadgeTriangle = css`
+  display: flex;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: 0;
+  height: 0;
+  border-bottom: ${galleryPlusBadgeSize}px solid ${galleryPlusBadgeColor};
+  border-left: ${galleryPlusBadgeSize}px solid transparent;
+`;
+
+export const galleryPlusBadgeText = css`
+  display: flex;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  width: ${galleryPlusBadgeSize / 1.55}px;
+  height: ${galleryPlusBadgeSize / 1.55}px;
+  font-family: ${Font.heading};
+  font-weight: ${Font.bold};
+  color: white;
+`;
+
+export const galleryPlusBadgeTextLarger = css`
+  font-size: ${galleryPlusBadgeSize / 3}px;
+`;
+
+export const galleryPlusBadgeTextSmaller = css`
+  font-size: ${galleryPlusBadgeSize / 4}px;
+`;
+
+export const galleryPlusBadge= css`
+  display: flex;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  width: ${galleryPlusBadgeSize}px;
+  height: ${galleryPlusBadgeSize}px;
+
+  &:focus .${galleryPlusBadgeTriangleOverlay},
+  &:hover .${galleryPlusBadgeTriangleOverlay} {
+    opacity: 0.15;
   }
 `;
 

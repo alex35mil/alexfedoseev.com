@@ -10,6 +10,10 @@ const RAW = "raw";
 const WIDTH = "width";
 const HEIGHT = "height";
 
+const LANDSCAPE = "landscape";
+const PORTRAIT = "portrait";
+const SQUARE = "square";
+
 const DPR_1X = 1;
 const DPR_2X = 2;
 const DPR_3X = 3;
@@ -53,8 +57,9 @@ module.exports.pitch = async function(request) {
   }
 
   const dimensions = imageSize(image);
-  const aspectRatio = dimensions.width / dimensions.height;
   const sizes = normalizeSizes(preset.sizes, dimensions);
+  const aspectRatio = dimensions.width / dimensions.height;
+  const orientation = aspectRatio > 1 ? LANDSCAPE : aspectRatio < 1 ? PORTRAIT : SQUARE;
 
   const sources = sizes.reduce(
     (dict, size) => ({
@@ -93,6 +98,7 @@ module.exports.pitch = async function(request) {
         placeholder,
         dimensions,
         aspectRatio,
+        orientation,
       );
     case FIXED:
       return exportFixed(
@@ -102,6 +108,7 @@ module.exports.pitch = async function(request) {
         placeholder,
         dimensions,
         aspectRatio,
+        orientation,
       );
     case RAW:
       return exportRaw(
@@ -111,6 +118,7 @@ module.exports.pitch = async function(request) {
         placeholder,
         dimensions,
         aspectRatio,
+        orientation,
       );
     default:
       throw new Error(
@@ -177,6 +185,7 @@ function exportFluid(
   placeholder,
   dimensions,
   aspectRatio,
+  orientation,
 ) {
   const stringifiedSrcset = Object.entries(sources)
     .reduce((acc, [label, source]) => {
@@ -196,7 +205,7 @@ function exportFluid(
     }, [])
     .join(`+ ', ' + `);
 
-  return `module.exports = { srcset: ${stringifiedSrcset}, fallback: ${fallback}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio} }`;
+  return `module.exports = { srcset: ${stringifiedSrcset}, fallback: ${fallback}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio}, orientation: "${orientation}" }`;
 }
 
 function exportFixed(
@@ -206,6 +215,7 @@ function exportFixed(
   placeholder,
   dimensions,
   aspectRatio,
+  orientation,
 ) {
   const srcsets = Object.entries(sources).reduce(
     (dict, [label, source]) => ({
@@ -217,7 +227,7 @@ function exportFixed(
   const stringifiedSrcsets = Object.entries(srcsets)
     .map(([label, srcset]) => `${label}: ${srcset}`)
     .join(", ");
-  return `module.exports = { srcset: { ${stringifiedSrcsets} }, fallback: ${fallback}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio} }`;
+  return `module.exports = { srcset: { ${stringifiedSrcsets} }, fallback: ${fallback}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio}, orientation: "${orientation}" }`;
 }
 
 function exportRaw(
@@ -227,6 +237,7 @@ function exportRaw(
   placeholder,
   dimensions,
   aspectRatio,
+  orientation,
 ) {
   const getActualDimensions = (value, dimension, dpr) => {
     let size = value * dpr;
@@ -294,5 +305,5 @@ function exportRaw(
     })
     .join(", ");
 
-  return `module.exports = { srcset: { ${stringifiedSrcsets} }, fallback: ${fallback}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio} }`;
+  return `module.exports = { srcset: { ${stringifiedSrcsets} }, fallback: ${fallback}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio}, orientation: "${orientation}" }`;
 }

@@ -12,8 +12,7 @@ module Context = {
         .
         "value": t,
         "children": React.element,
-      } =
-      "";
+      };
   };
 };
 
@@ -36,7 +35,7 @@ let make = (~children) => {
 
   let initialState =
     React.useMemo0(() =>
-      if (largeMq->React.Ref.current->MediaQueryList.matches) {
+      if (largeMq.current->MediaQueryList.matches) {
         Screen.Large;
       } else {
         Screen.Small;
@@ -46,10 +45,9 @@ let make = (~children) => {
   let (state, dispatch) = reducer->React.useReducer(initialState);
 
   React.useEffect0(() =>
-    smallMq
-    ->React.Ref.current
+    smallMq.current
     ->MediaQueryList.subscribe(mq => {
-        smallMq->React.Ref.setCurrent(mq);
+        smallMq.current = mq;
         if (mq->MediaQueryList.matches) {
           UpdateScreen(Small)->dispatch;
         };
@@ -57,10 +55,9 @@ let make = (~children) => {
   );
 
   React.useEffect0(() =>
-    largeMq
-    ->React.Ref.current
+    largeMq.current
     ->MediaQueryList.subscribe(mq => {
-        largeMq->React.Ref.setCurrent(mq);
+        largeMq.current = mq;
         if (mq->MediaQueryList.matches) {
           UpdateScreen(Large)->dispatch;
         };

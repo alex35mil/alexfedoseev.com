@@ -201,11 +201,6 @@ config.module = {
                 sizes: [880],
                 fallback: 880,
               },
-              thumb: {
-                type: "fixed",
-                sizes: [{ label: "thumb", width: 350, height: 290 }],
-                fallback: "thumb",
-              },
               photo: {
                 type: "raw",
                 sizes: [
@@ -215,6 +210,21 @@ config.module = {
                   { label: "xl", width: 2500 },
                 ],
                 fallback: "md",
+              },
+              gridThumb: {
+                type: "fixed",
+                sizes: [
+                  { label: "thumb", width: 350, height: 290 },
+                ],
+                fallback: "thumb",
+              },
+              // TODO: Optimize more
+              postThumb: {
+                type: "fixed",
+                sizes: [
+                  { label: "thumb", width: 600, height: 500 },
+                ],
+                fallback: "thumb",
               },
             },
           },

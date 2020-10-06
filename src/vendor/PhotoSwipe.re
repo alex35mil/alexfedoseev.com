@@ -24,7 +24,7 @@ module Make = (Photo: Photo) => {
   external makeOptions:
     (
       ~index: int=?,
-      ~getThumbBoundsFn: int => thumbBounds=?,
+      ~getThumbBoundsFn: int => option(thumbBounds)=?,
       ~showHideOpacity: bool=?,
       ~showAnimationDuration: int=?,
       ~hideAnimationDuration: int=?,
@@ -53,8 +53,7 @@ module Make = (Photo: Photo) => {
       ~shareButtons: array(shareButton)=?,
       unit
     ) =>
-    options =
-    "";
+    options;
 
   [@bs.send] external init: t => unit = "init";
   [@bs.send] external invalidateCurrItems: t => unit = "init";
@@ -86,8 +85,7 @@ module Photo = {
   [@bs.obj]
   external make:
     (~src: string, ~msrc: string, ~w: int, ~h: int, ~pid: string, unit) =>
-    photo =
-    "";
+    photo;
 
   [@bs.get] external width: photo => float = "w";
   [@bs.get] external height: photo => float = "h";
@@ -110,16 +108,14 @@ module ViewportSize = {
 };
 
 module ThumbBounds = {
-  [@bs.obj]
-  external make: (~x: float, ~y: float, ~w: float) => thumbBounds = "";
+  [@bs.obj] external make: (~x: float, ~y: float, ~w: float) => thumbBounds;
 };
 
 module ShareButton = {
   [@bs.obj]
   external make:
     (~id: string, ~label: string, ~url: string, ~download: bool=?, unit) =>
-    shareButton =
-    "";
+    shareButton;
 };
 
 module Dom = {
@@ -127,7 +123,7 @@ module Dom = {
   let make =
     React.forwardRef(theRef =>
       <div
-        ref=?{theRef->Js.Nullable.toOption->Option.map(ReactDom.Ref.domRef)}
+        ref=?{theRef->Js.Nullable.toOption->Option.map(ReactDOM.Ref.domRef)}
         className="pswp"
         tabIndex=(-1)
         role="dialog"
@@ -186,3 +182,20 @@ module Dom = {
       </div>
     );
 };
+
+let pidFromUrl = () =>
+  switch (
+    Web.Dom.(
+      window
+      ->Window.location
+      ->Location.hash
+      ->Js.String2.substringToEnd(~from=1)
+    )
+  ) {
+  | "" => None
+  | _ as hash =>
+    switch (Web.Url.URLSearchParams.(hash->make->get(Url.pid, _))) {
+    | Some(pid) => Some(Ok(pid))
+    | None => Some(Error())
+    }
+  };

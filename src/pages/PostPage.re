@@ -17,6 +17,7 @@ let make = (~year: string, ~slug: string) => {
             year
             date={post.date}
             category={post.category}
+            slug
             cover={post.cover}
             prevPost={
               Posts.all

@@ -4,6 +4,7 @@ module Css = ControlStyles;
 let make =
   React.forwardRef(
     (
+      ~id=?,
       ~className="",
       ~style=?,
       ~disabled=false,
@@ -16,8 +17,9 @@ let make =
       theRef,
     ) =>
     <button
+      ?id
       type_="button"
-      ref=?{theRef->Js.Nullable.toOption->Option.map(ReactDom.Ref.domRef)}
+      ref=?{theRef->Js.Nullable.toOption->Option.map(ReactDOM.Ref.domRef)}
       disabled
       className=Cn.(Css.control + className)
       ?style

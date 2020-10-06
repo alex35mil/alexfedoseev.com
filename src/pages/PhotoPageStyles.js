@@ -29,3 +29,7 @@ export const photos = css`
     width: ${largeContainerWidth}px;
   }
 `;
+
+export const thumb = css`
+  position: absolute;
+`;

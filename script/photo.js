@@ -51,7 +51,7 @@ const write = () => {
       const path = `./files/${photo.file}`;
       return [
         `let ${original}: Photo.src = [%bs.raw "require('${path}?preset=photo')"];`,
-        `let ${thumb}: Photo.thumb = [%bs.raw "require('${path}?preset=thumb')"];`,
+        `let ${thumb}: Photo.thumb = [%bs.raw "require('${path}?preset=gridThumb')"];`,
       ].join("\n");
     })
     .join("\n");

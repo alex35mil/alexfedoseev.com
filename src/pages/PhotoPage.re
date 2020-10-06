@@ -25,9 +25,9 @@ module Screen = {
 
     let initialState =
       React.useMemo0(() =>
-        if (largeMq->React.Ref.current->MediaQueryList.matches) {
+        if (largeMq.current->MediaQueryList.matches) {
           Large;
-        } else if (mediumMq->React.Ref.current->MediaQueryList.matches) {
+        } else if (mediumMq.current->MediaQueryList.matches) {
           Medium;
         } else {
           Small;
@@ -37,10 +37,9 @@ module Screen = {
     let (state, dispatch) = reducer->React.useReducer(initialState);
 
     React.useEffect0(() =>
-      smallMq
-      ->React.Ref.current
+      smallMq.current
       ->MediaQueryList.subscribe(mq => {
-          smallMq->React.Ref.setCurrent(mq);
+          smallMq.current = mq;
           if (mq->MediaQueryList.matches) {
             UpdateScreen(Small)->dispatch;
           };
@@ -48,10 +47,9 @@ module Screen = {
     );
 
     React.useEffect0(() =>
-      mediumMq
-      ->React.Ref.current
+      mediumMq.current
       ->MediaQueryList.subscribe(mq => {
-          mediumMq->React.Ref.setCurrent(mq);
+          mediumMq.current = mq;
           if (mq->MediaQueryList.matches) {
             UpdateScreen(Medium)->dispatch;
           };
@@ -59,10 +57,9 @@ module Screen = {
     );
 
     React.useEffect0(() =>
-      largeMq
-      ->React.Ref.current
+      largeMq.current
       ->MediaQueryList.subscribe(mq => {
-          largeMq->React.Ref.setCurrent(mq);
+          largeMq.current = mq;
           if (mq->MediaQueryList.matches) {
             UpdateScreen(Large)->dispatch;
           };
@@ -70,6 +67,37 @@ module Screen = {
     );
 
     state;
+  };
+};
+
+module Thumb = {
+  let px = x => x->Float.toString ++ "px";
+
+  [@react.component]
+  let make = (~id, ~src, ~box, ~onClick) => {
+    <Photo.Thumb
+      id
+      src
+      className=Css.thumb
+      controlStyle={ReactDOM.Style.make(
+        ~top=box->JustifiedLayout.Box.top->px,
+        ~left=box->JustifiedLayout.Box.left->px,
+        ~width=box->JustifiedLayout.Box.width->px,
+        ~height=box->JustifiedLayout.Box.height->px,
+        (),
+      )}
+      figureStyle={ReactDOM.Style.make(
+        ~width=box->JustifiedLayout.Box.width->px,
+        ~height=box->JustifiedLayout.Box.height->px,
+        (),
+      )}
+      imgStyle={ReactDOM.Style.make(
+        ~width=box->JustifiedLayout.Box.width->px,
+        ~height=box->JustifiedLayout.Box.height->px,
+        (),
+      )}
+      onClick
+    />;
   };
 };
 
@@ -135,6 +163,7 @@ let make = () => {
           ~pid=id,
           ~msrc=photo.placeholder,
           ~srcset=photo.srcset,
+          (),
         )
       ),
     );
@@ -143,81 +172,66 @@ let make = () => {
     React.useCallback2(
       index => {
         let (_, _, _, box) = entries->Array.getUnsafe(index);
-        let container =
-          Web.Dom.(
-            gridContainer
-            ->React.Ref.current
-            ->Js.Nullable.toOption
-            ->Option.getExn
-            ->Element.getBoundingClientRect
-          );
-
-        PhotoSwipe.ThumbBounds.make(
-          ~x=
-            Web.Dom.(container->DomRect.left +. box->JustifiedLayout.Box.left),
-          ~y=
-            Web.Dom.(
-              container->DomRect.top
-              +. window->Window.pageYOffset
-              +. box->JustifiedLayout.Box.top
-            ),
-          ~w=box->JustifiedLayout.Box.width,
+        Web.Dom.(
+          gridContainer.current
+          ->Js.Nullable.toOption
+          ->Option.map(container => {
+              let container = container->Element.getBoundingClientRect;
+              PhotoSwipe.ThumbBounds.make(
+                ~x=
+                  Web.Dom.(
+                    container->DomRect.left +. box->JustifiedLayout.Box.left
+                  ),
+                ~y=
+                  Web.Dom.(
+                    container->DomRect.top
+                    +. window->Window.pageYOffset
+                    +. box->JustifiedLayout.Box.top
+                  ),
+                ~w=box->JustifiedLayout.Box.width,
+              );
+            })
         );
       },
       (entries, gridContainer),
     );
 
   React.useEffect0(() => {
-    switch (
-      Web.Dom.(
-        window
-        ->Window.location
-        ->Location.hash
-        ->Js.String2.substringToEnd(~from=1)
-      )
-    ) {
-    | "" => ()
-    | _ as hash =>
-      let pid =
-        Web.Url.URLSearchParams.(
-          hash->make->get(PhotoSwipe.Url.pid, _)->Option.map(Photo.Id.pack)
-        );
-      switch (pid) {
-      | Some(pid) =>
-        switch (
-          entries->Js.Array2.findIndex(((id, _, _, _)) =>
-            id->Photo.Id.eq(pid)
-          )
-        ) {
-        | (-1) => Route.photo->ReactRouter.push
-        | _ as index =>
-          gallery.init(
-            ~index,
-            ~container=
-              galleryContainer
-              ->React.Ref.current
-              ->Js.Nullable.toOption
-              ->Option.getExn,
-            ~getThumbBoundsFn,
-          )
-        }
-      | None => Route.photo->ReactRouter.push
+    switch (PhotoSwipe.pidFromUrl()) {
+    | None => ()
+    | Some(Ok(pid)) =>
+      let pid = pid->Photo.Id.pack;
+      switch (
+        entries->Js.Array2.findIndex(((id, _, _, _)) =>
+          id->Photo.Id.eq(pid)
+        )
+      ) {
+      | (-1) => Route.photo->ReactRouter.push
+      | _ as index =>
+        gallery.init(
+          ~index,
+          ~container=
+            galleryContainer.current->Js.Nullable.toOption->Option.getExn,
+          ~getThumbBoundsFn,
+        )
       };
+    | Some(Error ()) => Route.photo->ReactRouter.push
     };
     None;
   });
 
   <Page>
     <div
-      ref={gridContainer->ReactDom.Ref.domRef}
+      ref={gridContainer->ReactDOM.Ref.domRef}
       className=Css.photos
-      style={ReactDom.Style.make(
+      style={ReactDOM.Style.make(
         ~height=layout->JustifiedLayout.Result.containerHeight->px,
         (),
       )}>
       {entries
        ->Array.mapWithIndex((index, (id, _, thumb, box)) =>
-           <Photo.Thumb
+           <Thumb
+             id
              key={id->Photo.Id.toString}
              src=thumb
              box
@@ -225,8 +239,7 @@ let make = () => {
                gallery.init(
                  ~index,
                  ~container=
-                   galleryContainer
-                   ->React.Ref.current
+                   galleryContainer.current
                    ->Js.Nullable.toOption
                    ->Option.getExn,
                  ~getThumbBoundsFn,

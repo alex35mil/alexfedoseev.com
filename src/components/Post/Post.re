@@ -1,5 +1,31 @@
 module Css = PostStyles;
 
+module PostContext = {
+  type t = {
+    year: string,
+    category: PostCategory.t,
+    slug: string,
+  };
+
+  include ReactContext.Make({
+    type context = t;
+    let defaultValue = {year: "", category: ""->Obj.magic, slug: ""};
+  });
+};
+
+module PhotoGalleryContext = {
+  type t = {container: React.ref(Js.nullable(Dom.element))};
+
+  include ReactContext.Make({
+    type context = t;
+    let defaultValue = {
+      container: {
+        React.current: Js.Nullable.null,
+      },
+    };
+  });
+};
+
 module Row = {
   [@react.component]
   let make = (~className, ~children) => {
@@ -335,7 +361,7 @@ module CoverImage = {
       reducer->React.useReducer({status: Loading, parallaxFactor: 0.});
 
     React.useEffect0(() => {
-      switch (image->React.Ref.current->Js.Nullable.toOption) {
+      switch (image.current->Js.Nullable.toOption) {
       | Some(image)
           when
             Web.Dom.(
@@ -370,7 +396,7 @@ module CoverImage = {
     <ExpandedRow className=Css.coverImageRow>
       <figure
         className=Css.coverImageFigure
-        style={ReactDom.Style.make(
+        style={ReactDOM.Style.make(
           ~backgroundImage={j|url("$placeholder")|j},
           ~backgroundSize="cover",
           ~backgroundRepeat="no-repeat",
@@ -379,7 +405,7 @@ module CoverImage = {
         )}>
         <img
           sizes="100vw"
-          ref={image->ReactDom.Ref.domRef}
+          ref={image->ReactDOM.Ref.domRef}
           src={src->PostCover.fallback}
           srcSet={src->PostCover.srcset}
           className=Cn.(
@@ -392,7 +418,7 @@ module CoverImage = {
               }
             )
           )
-          style={ReactDom.Style.make(
+          style={ReactDOM.Style.make(
             ~transform=
               "translate3d(0px, "
               ++ state.parallaxFactor->Int.fromFloat->Int.toString
@@ -481,7 +507,7 @@ module InlineImage = {
         />
         {switch (caption) {
          | Some(caption) =>
-           <figcaption className=Css.inlineImageCaption>
+           <figcaption className=Css.mediaCaption>
              caption->React.string
            </figcaption>
          | None => React.null
@@ -509,12 +535,538 @@ module AnimatedGif = {
         />
         {switch (caption) {
          | Some(caption) =>
-           <figcaption className=Css.inlineImageCaption>
+           <figcaption className=Css.mediaCaption>
              caption->React.string
            </figcaption>
          | None => React.null
          }}
       </figure>
+    </Row>;
+  };
+};
+
+module PhotoGallery = {
+  type photo = {
+    id: Photo.id,
+    src: Photo.src,
+    thumb: Photo.thumb,
+    caption: option(string),
+  };
+
+  let px = x => x->Float.toString ++ "px";
+
+  module Layout = {
+    type t =
+      | SmallScreen
+      | One
+      | L1_L2({
+          leftAspectRatio: float,
+          rightAspectRatio: float,
+        })
+      | LPS1_LPS1({
+          leftAspectRatio: float,
+          rightAspectRatio: float,
+        })
+      | P1_P1_P1({
+          leftAspectRatio: float,
+          middleAspectRatio: float,
+          rightAspectRatio: float,
+        });
+
+    type guessed = {
+      layout: t,
+      thumbs: array(photo),
+      plus: option(int),
+    };
+
+    type result = {
+      thumbs: array(photo),
+      plus: option(int),
+      style: ReactDOM.Style.t,
+      className: string,
+    };
+
+    let contentWidth = Layout.largeScreenContentWidth->Float.fromInt;
+    let gap = 10.;
+
+    let guess = (photos: array(photo), ~screen: Screen.t) => {
+      switch (screen) {
+      | Small =>
+        let photo = photos->Array.getUnsafe(0);
+        {
+          layout: SmallScreen,
+          thumbs: [|photo|],
+          plus:
+            switch (photos->Array.length - 1) {
+            | 0 => None
+            | x => Some(x)
+            },
+        };
+      | Large =>
+        let p1 = photos->Array.get(0);
+        let p2 = photos->Array.get(1);
+        let p3 = photos->Array.get(2);
+        switch (p1, p2, p3) {
+        | (Some(photo), None, None) => {
+            layout: One,
+            thumbs: [|photo|],
+            plus: None,
+          }
+
+        | (
+            Some({src: {orientation: `landscape}} as photo1),
+            Some({src: {orientation: `landscape}} as photo2),
+            Some({src: {orientation: `landscape}} as photo3),
+          )
+            when photo2.src.aspectRatio == photo3.src.aspectRatio => {
+            layout:
+              L1_L2({
+                leftAspectRatio: photo1.src.aspectRatio,
+                rightAspectRatio: photo2.src.aspectRatio,
+              }),
+            thumbs: [|photo1, photo2, photo3|],
+            plus:
+              switch (photos->Array.length - 3) {
+              | 0 => None
+              | x => Some(x)
+              },
+          }
+
+        | (
+            Some({src: {orientation: `landscape}} as photo1),
+            Some({src: {orientation: `portrait}} as photo2),
+            Some({src: {orientation: `landscape | `portrait | `square}}) |
+            None,
+          )
+        | (
+            Some({src: {orientation: `landscape}} as photo1),
+            Some({src: {orientation: `landscape}} as photo2),
+            Some({src: {orientation: `portrait | `square}}) | None,
+          )
+        | (
+            Some({src: {orientation: `portrait}} as photo1),
+            Some({src: {orientation: `landscape}} as photo2),
+            Some({src: {orientation: `portrait | `square}}) | None,
+          ) => {
+            layout:
+              LPS1_LPS1({
+                leftAspectRatio: photo1.src.aspectRatio,
+                rightAspectRatio: photo2.src.aspectRatio,
+              }),
+            thumbs: [|photo1, photo2|],
+            plus:
+              switch (photos->Array.length - 2) {
+              | 0 => None
+              | x => Some(x)
+              },
+          }
+
+        | (
+            Some({src: {orientation: `portrait}} as photo1),
+            Some({src: {orientation: `portrait}} as photo2),
+            Some({src: {orientation: `portrait}} as photo3),
+          ) => {
+            layout:
+              P1_P1_P1({
+                leftAspectRatio: photo1.src.aspectRatio,
+                middleAspectRatio: photo2.src.aspectRatio,
+                rightAspectRatio: photo3.src.aspectRatio,
+              }),
+            thumbs: [|photo1, photo2, photo3|],
+            plus:
+              switch (photos->Array.length - 3) {
+              | 0 => None
+              | x => Some(x)
+              },
+          }
+
+        | _ => failwith("Unimplemented layout!")
+        };
+      };
+    };
+
+    let small = (thumbs: array(photo), ~plus: option(int)) => {
+      let thumb = thumbs->Array.getUnsafe(0);
+
+      let plus' =
+        switch (plus) {
+        | Some(plus) =>
+          let plus' = thumbs->Array.length + plus - 1;
+          plus' > 0 ? Some(plus') : None;
+        | None =>
+          let plus' = thumbs->Array.length - 1;
+          plus' > 0 ? Some(plus') : None;
+        };
+
+      {
+        thumbs: [|thumb|],
+        plus: plus',
+        style: ReactDOM.Style.make(),
+        className: Css.galleryLayout_Small,
+      };
+    };
+
+    let one = (thumbs: array(photo), ~plus: option(int)) => {
+      let thumb = thumbs->Array.getUnsafe(0);
+
+      let plus' =
+        switch (plus) {
+        | Some(plus) =>
+          let plus' = thumbs->Array.length + plus - 1;
+          plus' > 0 ? Some(plus') : None;
+        | None =>
+          let plus' = thumbs->Array.length - 1;
+          plus' > 0 ? Some(plus') : None;
+        };
+
+      // iw - image width
+      // ih - image height
+      // CW - content width
+      // IAR - image aspect ratio
+      //
+      // Base SOLE:
+      //   | iw = CW
+      //   | liw / lih = IAR
+      //
+      // Normalized SOLE:
+      //   | 1 * iw +   0    * ih = CW
+      //   | 1 * iw + (-IAR) * ih = 0
+      let a = [|[|1., 0.|], [|1., -. thumb.src.aspectRatio|]|];
+      let b = [|contentWidth, 0.|];
+
+      switch (Sole.solve(a, b)) {
+      | Some([|iw, ih|]) =>
+        let iw = iw->px;
+        let ih = ih->px;
+        {
+          thumbs: [|thumb|],
+          plus: plus',
+          style:
+            ReactDOM.Style.make(
+              ~gridTemplateColumns={j|$(iw)|j},
+              ~gridTemplateRows={j|$(ih)|j},
+              ~gridColumnGap=0.->px,
+              ~gridRowGap=0.->px,
+              (),
+            ),
+          className: Css.galleryLayout_One,
+        };
+      | Some(_)
+      | None => {
+          thumbs: [|thumb|],
+          plus: plus',
+          style: ReactDOM.Style.make(),
+          className: Cn.none,
+        }
+      };
+    };
+
+    let build = (photos, ~screen: Screen.t) =>
+      switch (photos->guess(~screen)) {
+      | {layout: SmallScreen, thumbs, plus} => thumbs->small(~plus)
+      | {layout: One, thumbs, plus} => thumbs->one(~plus)
+      | {layout: L1_L2({leftAspectRatio, rightAspectRatio}), thumbs, plus} =>
+        // liw - left image width
+        // lih - left image height
+        // riw - right image width
+        // rih - right image height
+        // CW - content width
+        // GAP - gap
+        // LIAR - left image aspect ratio
+        // RIAR - right image aspect ratio
+        //
+        // Base SOLE:
+        //   | liw + GAP + riw = CW
+        //   | rih * 2 + GAP = lih
+        //   | liw / lih = LIAR
+        //   | riw / rih = RIAR
+        //
+        // Normalized SOLE:
+        //   | 1 * liw +   0     * lih + 1 * riw +   0     * rih = CW - GAP
+        //   | 0 * liw + (-1)    * lih + 0 * riw +   2     * rih = -GAP
+        //   | 1 * liw + (-LIAR) * lih + 0 * riw +   0     * rih = 0
+        //   | 0 * liw +   0     * lih + 1 * riw + (-RIAR) * rih = 0
+
+        let a = [|
+          [|1., 0., 1., 0.|],
+          [|0., (-1.), 0., 2.|],
+          [|1., -. leftAspectRatio, 0., 0.|],
+          [|0., 0., 1., -. rightAspectRatio|],
+        |];
+        let b = [|contentWidth -. gap, -. gap, 0., 0.|];
+
+        switch (Sole.solve(a, b)) {
+        | Some([|liw, _lih, riw, rih|]) =>
+          let liw = liw->px;
+          let riw = riw->px;
+          let rih = rih->px;
+          {
+            thumbs,
+            plus,
+            className: Css.galleryLayout_L1_L2,
+            style:
+              ReactDOM.Style.make(
+                ~gridTemplateColumns={j|$(liw) $(riw)|j},
+                ~gridTemplateRows={j|repeat(2, $(rih))|j},
+                ~gridColumnGap=gap->px,
+                ~gridRowGap=gap->px,
+                (),
+              ),
+          };
+        | Some(_)
+        | None => thumbs->one(~plus)
+        };
+
+      | {
+          layout: LPS1_LPS1({leftAspectRatio, rightAspectRatio}),
+          thumbs,
+          plus,
+        } =>
+        // liw - left image width
+        // lih - left image height
+        // riw - right image width
+        // rih - right image height
+        // CW - content width
+        // GAP - gap
+        // LIAR - left image aspect ratio
+        // RIAR - right image aspect ratio
+        //
+        // Base SOLE:
+        //   | liw + GAP + riw = CW
+        //   | lih = rih
+        //   | liw / lih = LIAR
+        //   | riw / rih = RIAR
+        //
+        // Normalized SOLE:
+        //   | 1 * liw +   0     * lih + 1 * riw +   0     * rih = CW - GAP
+        //   | 0 * liw + (-1)    * lih + 0 * riw +   1     * rih = 0
+        //   | 1 * liw + (-LIAR) * lih + 0 * riw +   0     * rih = 0
+        //   | 0 * liw +   0     * lih + 1 * riw + (-RIAR) * rih = 0
+        let a = [|
+          [|1., 0., 1., 0.|],
+          [|0., (-1.), 0., 1.|],
+          [|1., -. leftAspectRatio, 0., 0.|],
+          [|0., 0., 1., -. rightAspectRatio|],
+        |];
+        let b = [|contentWidth -. gap, 0., 0., 0.|];
+
+        switch (Sole.solve(a, b)) {
+        | Some([|liw, lih, riw, _rih|]) =>
+          let liw = liw->px;
+          let lih = lih->px;
+          let riw = riw->px;
+          {
+            thumbs,
+            plus,
+            className: Css.galleryLayout_LPS1_LPS1,
+            style:
+              ReactDOM.Style.make(
+                ~gridTemplateColumns={j|$(liw) $(riw)|j},
+                ~gridTemplateRows={j|$(lih)|j},
+                ~gridColumnGap=gap->px,
+                ~gridRowGap=0.->px,
+                (),
+              ),
+          };
+        | Some(_)
+        | None => thumbs->one(~plus)
+        };
+
+      | {
+          layout:
+            P1_P1_P1({leftAspectRatio, middleAspectRatio, rightAspectRatio}),
+          thumbs,
+          plus,
+        } =>
+        // liw - left image width
+        // lih - left image height
+        // miw - middle image width
+        // mih - middle image height
+        // riw - right image width
+        // rih - right image height
+        // CW - content width
+        // GAP - gap
+        // LIAR - left image aspect ratio
+        // MIAR - middle image aspect ratio
+        // RIAR - right image aspect ratio
+        //
+        // Base SOLE:
+        //   | liw + GAP + miw + GAP + riw = CW
+        //   | lih = rih
+        //   | lih = mih
+        //   | liw / lih = LIAR
+        //   | miw / mih = MIAR
+        //   | riw / rih = RIAR
+        //
+        // Normalized SOLE:
+        //   | 1 * liw +   0     * lih + 1 * miw +   0     * mih + 1 * riw +   0     * rih = CW - GAP - GAP
+        //   | 0 * liw +   1     * lih + 0 * miw +   0     * mih + 0 * riw + (-1)    * rih = 0
+        //   | 0 * liw +   1     * lih + 0 * miw + (-1)    * mih + 0 * riw +   0     * rih = 0
+        //   | 1 * liw + (-LIAR) * lih + 0 * miw +   0     * mih + 0 * riw +   0     * rih = 0
+        //   | 0 * liw +   0     * lih + 1 * miw + (-MIAR) * mih + 0 * riw +   0     * rih = 0
+        //   | 0 * liw +   0     * lih + 0 * miw +   0     * mih + 1 * riw + (-RIAR) * rih = 0
+        let a = [|
+          [|1., 0., 1., 0., 1., 0.|],
+          [|0., 1., 0., 0., 0., (-1.)|],
+          [|0., 1., 0., (-1.), 0., 0.|],
+          [|1., -. leftAspectRatio, 0., 0., 0., 0.|],
+          [|0., 0., 1., -. middleAspectRatio, 0., 0.|],
+          [|0., 0., 0., 0., 1., -. rightAspectRatio|],
+        |];
+        let b = [|contentWidth -. gap *. 2., 0., 0., 0., 0., 0.|];
+
+        switch (Sole.solve(a, b)) {
+        | Some([|liw, lih, miw, _mih, riw, _rih|]) =>
+          let liw = liw->px;
+          let miw = miw->px;
+          let riw = riw->px;
+          let lih = lih->px;
+          {
+            thumbs,
+            plus,
+            className: Css.galleryLayout_P1_P1_P1,
+            style:
+              ReactDOM.Style.make(
+                ~gridTemplateColumns={j|$(liw) $(miw) $(riw)|j},
+                ~gridTemplateRows={j|$(lih)|j},
+                ~gridColumnGap=gap->px,
+                ~gridRowGap=0.->px,
+                (),
+              ),
+          };
+        | Some(_)
+        | None => thumbs->one(~plus)
+        };
+      };
+  };
+
+  [@react.component]
+  let make = (~photos: array(photo), ~caption: option(string)=?) => {
+    let screen = React.useContext(ScreenSize.Context.x);
+
+    let {PhotoGalleryContext.container: galleryContainer} =
+      React.useContext(PhotoGalleryContext.x);
+
+    let gallery =
+      Gallery.useGallery(
+        photos->Array.map(photo =>
+          Gallery.Photo.make(
+            ~pid=photo.id,
+            ~msrc=photo.src.placeholder,
+            ~srcset=photo.src.srcset,
+            ~title=?photo.caption,
+            (),
+          )
+        ),
+      );
+
+    let getThumbBoundsFn =
+      React.useCallback1(
+        index => {
+          let photo = photos->Array.getUnsafe(index);
+          Web.Dom.(
+            document
+            ->Document.getElementById(photo.id->Photo.Id.toString, _)
+            ->Option.map(container => {
+                let container = container->Element.getBoundingClientRect;
+                PhotoSwipe.ThumbBounds.make(
+                  ~x=Web.Dom.(container->DomRect.left),
+                  ~y=
+                    Web.Dom.(
+                      container->DomRect.top +. window->Window.pageYOffset
+                    ),
+                  ~w=Web.Dom.(container->DomRect.width),
+                );
+              })
+          );
+        },
+        [|photos|],
+      );
+
+    let layout = photos->Layout.build(~screen);
+
+    React.useEffect0(() => {
+      switch (PhotoSwipe.pidFromUrl()) {
+      | None => ()
+      | Some(Ok(pid)) =>
+        let pid = pid->Photo.Id.pack;
+        switch (
+          photos->Js.Array2.findIndex(photo => photo.id->Photo.Id.eq(pid))
+        ) {
+        | (-1) => ()
+        | _ as index =>
+          gallery.init(
+            ~index,
+            ~container=
+              galleryContainer.current->Js.Nullable.toOption->Option.getExn,
+            ~getThumbBoundsFn,
+          )
+        };
+      | Some(Error ()) => ()
+      };
+      None;
+    });
+
+    <Row className=Css.galleryRow>
+      <div
+        className=Cn.(Css.galleryLayout + layout.className)
+        style={layout.style}>
+        {layout.thumbs
+         ->Array.mapWithIndex((index, photo) => {
+             <Photo.Thumb
+               key={photo.id->Photo.Id.toString}
+               id={photo.id}
+               src={photo.thumb}
+               className=Css.galleryThumb
+               onClick={() =>
+                 gallery.init(
+                   ~index,
+                   ~container=
+                     galleryContainer.current
+                     ->Js.Nullable.toOption
+                     ->Option.getExn,
+                   ~getThumbBoundsFn,
+                 )
+               }
+             />
+           })
+         ->React.array}
+        {switch (layout.plus) {
+         | Some(plus) =>
+           <Control
+             className=Css.galleryPlusBadge
+             onClick={_ =>
+               gallery.init(
+                 ~index=layout.thumbs->Array.length,
+                 ~container=
+                   galleryContainer.current
+                   ->Js.Nullable.toOption
+                   ->Option.getExn,
+                 ~getThumbBoundsFn,
+               )
+             }>
+             <div className=Css.galleryPlusBadgeTriangle />
+             <div className=Css.galleryPlusBadgeTriangleOverlay />
+             <div
+               className=Cn.(
+                 Css.galleryPlusBadgeText
+                 + (
+                   plus < 10
+                     ? Css.galleryPlusBadgeTextLarger
+                     : Css.galleryPlusBadgeTextSmaller
+                 )
+               )>
+               {("+" ++ plus->Int.toString)->React.string}
+             </div>
+           </Control>
+         | None => React.null
+         }}
+      </div>
+      {switch (caption) {
+       | Some(caption) =>
+         <div className=Css.mediaCaption> caption->React.string </div>
+       | None => React.null
+       }}
     </Row>;
   };
 };
@@ -671,6 +1223,7 @@ let make =
     (
       ~title,
       ~category,
+      ~slug,
       ~cover: option(PostCover.t),
       ~year,
       ~date,
@@ -678,33 +1231,40 @@ let make =
       ~nextPost,
       ~children,
     ) => {
-  <Page>
-    <div className=Css.container>
-      {switch (cover) {
-       | None => <H1> title->React.string </H1>
-       | Some(cover) =>
-         <CoverImage
-           src={cover.src}
-           credit={cover.credit}
-           title={text: title, bgColor: cover.titleBgColor}
-         />
-       }}
-      <div className=Css.details>
-        "Posted in "->React.string
-        <Link
-          path={category->Route.blogCategory}
-          underline=Always
-          className=Css.categoryLink>
-          {category
-           ->PostCategory.toString
-           ->String.capitalize_ascii
-           ->React.string}
-        </Link>
-        {j| · |j}->React.string
-        {j|$(date), $(year)|j}->React.string
-      </div>
-      <div className=Css.content> children </div>
-      <Footer title prevPost nextPost />
-    </div>
-  </Page>;
+  let galleryContainer = React.useRef(Js.Nullable.null);
+
+  <PostContext.Provider value={year, category, slug}>
+    <PhotoGalleryContext.Provider value={container: galleryContainer}>
+      <Page>
+        <div className=Css.container>
+          {switch (cover) {
+           | None => <H1> title->React.string </H1>
+           | Some(cover) =>
+             <CoverImage
+               src={cover.src}
+               credit={cover.credit}
+               title={text: title, bgColor: cover.titleBgColor}
+             />
+           }}
+          <div className=Css.details>
+            "Posted in "->React.string
+            <Link
+              path={category->Route.blogCategory}
+              underline=Always
+              className=Css.categoryLink>
+              {category
+               ->PostCategory.toString
+               ->String.capitalize_ascii
+               ->React.string}
+            </Link>
+            {j| · |j}->React.string
+            {j|$(date), $(year)|j}->React.string
+          </div>
+          <div className=Css.content> children </div>
+          <Footer title prevPost nextPost />
+        </div>
+        <Gallery ref=galleryContainer />
+      </Page>
+    </PhotoGalleryContext.Provider>
+  </PostContext.Provider>;
 };

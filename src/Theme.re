@@ -175,11 +175,11 @@ module Provider = {
 
     React.useEffect1(
       () => {
-        if (mounted->React.Ref.current) {
+        if (mounted.current) {
           theme->Storage.setTheme;
           theme->Dom.setTheme;
         } else {
-          mounted->React.Ref.setCurrent(true);
+          mounted.current = true;
         };
         None;
       },

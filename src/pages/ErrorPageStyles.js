@@ -4,6 +4,7 @@ import { Color, Font, Theme, Transition, Screen, Layout } from "styles";
 
 export const container = css`
   display: grid;
+  color: ${Theme.textColor};
 
   @media ${Screen.small} {
     grid-template-rows: max-content max-content;

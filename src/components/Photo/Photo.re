@@ -15,6 +15,7 @@ type src = {
   width: int,
   height: int,
   aspectRatio: float,
+  orientation,
 }
 and srcset = {
   sm: densities,
@@ -34,9 +35,8 @@ and density = {
   src: string,
   width: float,
   height: float,
-};
-
-let px = x => x->Float.toString ++ "px";
+}
+and orientation = [ | `landscape | `portrait | `square];
 
 module Thumb = {
   type src;
@@ -65,14 +65,36 @@ module Thumb = {
     };
 
   [@react.component]
-  let make = (~src, ~box, ~onClick) => {
+  let make =
+      (
+        ~id,
+        ~src,
+        ~className,
+        ~controlStyle=?,
+        ~figureStyle=?,
+        ~imgStyle=?,
+        ~onClick,
+      ) => {
     let photo = React.useRef(Js.Nullable.null);
     let placeholder = src->placeholder;
+
+    let baseFigureStyle =
+      React.useMemo1(
+        () =>
+          ReactDOM.Style.make(
+            ~backgroundImage={j|url("$(placeholder)")|j},
+            ~backgroundSize="cover",
+            ~backgroundRepeat="no-repeat",
+            ~backgroundPosition="50% 50%",
+            (),
+          ),
+        [|placeholder|],
+      );
 
     let (state, dispatch) = reducer->React.useReducer(Loading);
 
     React.useEffect0(() => {
-      switch (photo->React.Ref.current->Js.Nullable.toOption) {
+      switch (photo.current->Js.Nullable.toOption) {
       | Some(photo)
           when
             Web.Dom.(
@@ -86,26 +108,17 @@ module Thumb = {
     });
 
     <Control
-      className=Css.thumb
-      style={ReactDom.Style.make(
-        ~top=box->JustifiedLayout.Box.top->px,
-        ~left=box->JustifiedLayout.Box.left->px,
-        ~width=box->JustifiedLayout.Box.width->px,
-        ~height=box->JustifiedLayout.Box.height->px,
-        (),
-      )}
+      className=Cn.(Css.thumb + className)
+      style=?controlStyle
       onClick={_ => onClick()}>
       <figure
-        style={ReactDom.Style.make(
-          ~width=box->JustifiedLayout.Box.width->px,
-          ~height=box->JustifiedLayout.Box.height->px,
-          ~backgroundImage={j|url("$placeholder")|j},
-          ~backgroundSize="cover",
-          ~backgroundRepeat="no-repeat",
-          ~backgroundPosition="50% 50%",
-          (),
-        )}>
+        style={
+          figureStyle->Option.mapWithDefault(baseFigureStyle, style =>
+            ReactDOM.Style.combine(style, baseFigureStyle)
+          )
+        }>
         <img
+          id={id->Id.toString}
           src={src->fallback}
           srcSet={src->thumb}
           className={
@@ -114,11 +127,7 @@ module Thumb = {
             | Loaded => Css.loadedImage
             }
           }
-          style={ReactDom.Style.make(
-            ~width=box->JustifiedLayout.Box.width->px,
-            ~height=box->JustifiedLayout.Box.height->px,
-            (),
-          )}
+          style=?imgStyle
           onLoad={_ => ShowImage->dispatch}
         />
         <div className=Css.thumbOverlay />

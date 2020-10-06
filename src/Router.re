@@ -3,11 +3,11 @@ let useRouter = () => {
   let urlRef = React.useRef(url);
 
   React.useEffect(() => {
-    let prevUrl = urlRef->React.Ref.current;
+    let prevUrl = urlRef.current;
     if (!url.path->List.eq(prevUrl.path, (==))) {
       ProgressBar.start();
     };
-    urlRef->React.Ref.setCurrent(url);
+    urlRef.current = url;
     None;
   });
 

@@ -60,10 +60,10 @@ let make =
     <div className={spread ? Css.spreadedWrapper : Css.wrapper}>
       <div
         className=Css.spinner
-        style={ReactDom.Style.make(~height=spinnerHeight->px, ())}>
+        style={ReactDOM.Style.make(~height=spinnerHeight->px, ())}>
         <span
           className=Cn.(Css.col + Css.leftCol + colorClassName)
-          style={ReactDom.Style.make(
+          style={ReactDOM.Style.make(
             ~width=colWidth->px,
             ~height=colHeight->px,
             (),
@@ -71,7 +71,7 @@ let make =
         />
         <span
           className=Cn.(Css.col + Css.middleCol + colorClassName)
-          style={ReactDom.Style.make(
+          style={ReactDOM.Style.make(
             ~width=colWidth->px,
             ~height=colHeight->px,
             ~marginRight=colMargin->px,
@@ -81,7 +81,7 @@ let make =
         />
         <span
           className=Cn.(Css.col + Css.rightCol + colorClassName)
-          style={ReactDom.Style.make(
+          style={ReactDOM.Style.make(
             ~width=colWidth->px,
             ~height=colHeight->px,
             (),

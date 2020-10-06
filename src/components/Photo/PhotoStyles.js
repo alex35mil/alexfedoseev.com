@@ -14,7 +14,6 @@ export const thumbOverlay = css`
 `;
 
 export const thumb = css`
-  position: absolute;
   cursor: pointer;
 
   @media ${Screen.mouse} {
