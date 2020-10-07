@@ -1,8 +1,8 @@
+open Px;
+
 module Css = PhotoPageStyles;
 
 module Thumb = {
-  let px = x => x->Float.toString ++ "px";
-
   [@react.component]
   let make = (~id, ~src, ~box, ~onClick) => {
     <Photo.Thumb
@@ -30,8 +30,6 @@ module Thumb = {
     />;
   };
 };
-
-let px = x => x->Float.toString ++ "px";
 
 let smallScreenContainerWidth = () =>
   Web.Dom.(window->Window.innerWidth - Layout.smallScreenHPad * 2);

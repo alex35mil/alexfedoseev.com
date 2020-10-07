@@ -546,14 +546,14 @@ module AnimatedGif = {
 };
 
 module PhotoGallery = {
+  open Px;
+
   type photo = {
     id: Photo.id,
     src: Photo.src,
     thumb: Photo.thumb,
     caption: option(string),
   };
-
-  let px = x => x->Float.toString ++ "px";
 
   module Layout = {
     type t =
