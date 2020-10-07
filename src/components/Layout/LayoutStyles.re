@@ -3,14 +3,8 @@
 [@bs.module "./LayoutStyles.js"] external container: string = "container";
 let container = container;
 
-[@bs.module "./LayoutStyles.js"] external containerExtendedOnSmallScreens: string = "containerExtendedOnSmallScreens";
-let containerExtendedOnSmallScreens = containerExtendedOnSmallScreens;
-
 [@bs.module "./LayoutStyles.js"] external header: string = "header";
 let header = header;
-
-[@bs.module "./LayoutStyles.js"] external headerWithSmallScreenPaddings: string = "headerWithSmallScreenPaddings";
-let headerWithSmallScreenPaddings = headerWithSmallScreenPaddings;
 
 [@bs.module "./LayoutStyles.js"] external logo: string = "logo";
 let logo = logo;

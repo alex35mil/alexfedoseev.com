@@ -14,29 +14,8 @@ let make = (~route: Route.inner, ~children) => {
     React.useCallback0(event => event->ReactEvent.Mouse.target##blur());
 
   // Make click outside work in Safari on iOS
-  <div
-    className=Cn.(
-      Css.container
-      + (
-        switch (route) {
-        | Blog(_)
-        | Me => Css.containerExtendedOnSmallScreens
-        | Photo => none
-        }
-      )
-    )
-    onClick=ignore>
-    <div
-      className=Cn.(
-        Css.header
-        + (
-          switch (route) {
-          | Blog(_)
-          | Me => Css.headerWithSmallScreenPaddings
-          | Photo => none
-          }
-        )
-      )>
+  <div className=Css.container onClick=ignore>
+    <div className=Css.header>
       <div className=Css.logo>
         <Link.Box path=Route.main className=Css.logoLink>
           <Logo className=Css.logoSvg />

@@ -13,6 +13,7 @@ export const container = css`
 
   @media ${Screen.small} {
     grid-template-rows: ${Layout.smallScreenHeaderHeight}px 1fr max-content;
+    grid-template-columns: 1fr;
     grid-row-gap: ${Layout.smallScreenRowGap}px;
     justify-self: center;
     justify-content: center;
@@ -31,12 +32,6 @@ export const container = css`
   }
 `;
 
-export const containerExtendedOnSmallScreens = css`
-  @media ${Screen.small} {
-    grid-template-columns: 1fr;
-  }
-`;
-
 export const header = css`
   display: grid;
 
@@ -44,6 +39,7 @@ export const header = css`
     grid-template-columns: ${logoLargeScreenWidth}px 1fr;
     grid-column-gap: 14px;
     justify-content: space-between;
+    padding: 0 ${Layout.smallScreenHPad}px;
   }
 
   @media ${navMediumScreen} {
@@ -56,12 +52,6 @@ export const header = css`
     grid-template-columns: ${logoLargeScreenWidth}px 1fr max-content;
     grid-column-gap: ${Layout.largeScreenColGap}px;
     width: ${Layout.largeScreenContentWidth}px;
-  }
-`;
-
-export const headerWithSmallScreenPaddings = css`
-  @media ${Screen.small} {
-    padding: 0 ${Layout.smallScreenHPad}px;
   }
 `;
 

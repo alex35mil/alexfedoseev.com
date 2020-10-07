@@ -1,75 +1,5 @@
 module Css = PhotoPageStyles;
 
-// For a photo grid layout, we need more granular screen type
-module Screen = {
-  type t =
-    | Small
-    | Medium
-    | Large;
-
-  type action =
-    | UpdateScreen(t);
-
-  let reducer = (_, action) =>
-    switch (action) {
-    | UpdateScreen(nextScreen) => nextScreen
-    };
-
-  let useSize = () => {
-    let smallMq =
-      React.useRef(Web.Dom.(window->Window.matchMedia(Css.smallScreen, _)));
-    let mediumMq =
-      React.useRef(Web.Dom.(window->Window.matchMedia(Css.mediumScreen, _)));
-    let largeMq =
-      React.useRef(Web.Dom.(window->Window.matchMedia(Css.largeScreen, _)));
-
-    let initialState =
-      React.useMemo0(() =>
-        if (largeMq.current->MediaQueryList.matches) {
-          Large;
-        } else if (mediumMq.current->MediaQueryList.matches) {
-          Medium;
-        } else {
-          Small;
-        }
-      );
-
-    let (state, dispatch) = reducer->React.useReducer(initialState);
-
-    React.useEffect0(() =>
-      smallMq.current
-      ->MediaQueryList.subscribe(mq => {
-          smallMq.current = mq;
-          if (mq->MediaQueryList.matches) {
-            UpdateScreen(Small)->dispatch;
-          };
-        })
-    );
-
-    React.useEffect0(() =>
-      mediumMq.current
-      ->MediaQueryList.subscribe(mq => {
-          mediumMq.current = mq;
-          if (mq->MediaQueryList.matches) {
-            UpdateScreen(Medium)->dispatch;
-          };
-        })
-    );
-
-    React.useEffect0(() =>
-      largeMq.current
-      ->MediaQueryList.subscribe(mq => {
-          largeMq.current = mq;
-          if (mq->MediaQueryList.matches) {
-            UpdateScreen(Large)->dispatch;
-          };
-        })
-    );
-
-    state;
-  };
-};
-
 module Thumb = {
   let px = x => x->Float.toString ++ "px";
 
@@ -103,10 +33,34 @@ module Thumb = {
 
 let px = x => x->Float.toString ++ "px";
 
+let smallScreenContainerWidth = () =>
+  Web.Dom.(window->Window.innerWidth - Layout.smallScreenHPad * 2);
+
 [@react.component]
 let make = () => {
-  let screen = Screen.useSize();
   let photos = React.useMemo0(() => Photos.all->Array.shuffle); // probably, not the best ux
+  let screen = React.useContext(ScreenSize.Context.x);
+
+  let (containerWidth, setContainerWidth) =
+    React.useState(() =>
+      switch (screen) {
+      | Small => smallScreenContainerWidth()
+      | Large => Layout.largeScreenContentWidth
+      }
+    );
+
+  // TODO: It can be optimized by throttling updates and preventing unneccessary updates.
+  React.useEffect2(
+    () => {
+      Subscription.onResize(_ => {
+        switch (screen) {
+        | Small => setContainerWidth(_ => smallScreenContainerWidth())
+        | Large => setContainerWidth(_ => Layout.largeScreenContentWidth)
+        }
+      })
+    },
+    (screen, setContainerWidth),
+  );
 
   let layout =
     React.useMemo1(
@@ -114,31 +68,14 @@ let make = () => {
         photos
         ->Array.map(((_, photo, _)) => photo.aspectRatio)
         ->JustifiedLayout.makeWithOptions(
-            switch (screen) {
-            | Small =>
-              JustifiedLayout.makeOptions(
-                ~containerWidth=Css.smallContainerWidth,
-                ~containerPadding=0,
-                ~targetRowHeight=140,
-                (),
-              )
-            | Medium =>
-              JustifiedLayout.makeOptions(
-                ~containerWidth=Css.mediumContainerWidth,
-                ~containerPadding=0,
-                ~targetRowHeight=140,
-                (),
-              )
-            | Large =>
-              JustifiedLayout.makeOptions(
-                ~containerWidth=Layout.largeScreenContentWidth,
-                ~containerPadding=0,
-                ~targetRowHeight=180,
-                (),
-              )
-            },
+            JustifiedLayout.makeOptions(
+              ~containerWidth,
+              ~containerPadding=0,
+              ~targetRowHeight=180,
+              (),
+            ),
           ),
-      [|screen|],
+      [|containerWidth|],
     );
 
   let entries =
