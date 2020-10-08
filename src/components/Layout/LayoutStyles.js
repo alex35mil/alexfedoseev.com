@@ -28,7 +28,7 @@ export const container = css`
     justify-self: center;
     justify-content: center;
     justify-items: center;
-    padding: 30px 0 0;
+    padding: ${Layout.largeScreenRowGap}px 0 0;
   }
 `;
 
