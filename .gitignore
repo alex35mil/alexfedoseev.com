@@ -10,3 +10,4 @@ log/
 .linaria-cache
 
 src/photos/files/*.jpg
+src/posts/2020/Turkey/images/*.jpg
