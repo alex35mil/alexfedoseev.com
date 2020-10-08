@@ -114,6 +114,7 @@ export const expandedRow = css`
 
 export const h1 = css`
   display: flex;
+  margin-top: 10px;
   font-family: ${Font.heading};
   font-size: 34px;
   font-weight: ${Font.bold};
