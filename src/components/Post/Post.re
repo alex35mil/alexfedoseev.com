@@ -1071,6 +1071,25 @@ module PhotoGallery = {
   };
 };
 
+module YoutubeVideo = {
+  [@react.component]
+  let make =
+    React.memo((~id: string, ~caption: option(string)=?) => {
+      let iframe = {j|<iframe src="https://www.youtube-nocookie.com/embed/$id" width="560" height="349" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>|j};
+      <Row className=Css.videoRow>
+        <div
+          dangerouslySetInnerHTML={"__html": iframe}
+          className=Css.videoContainer
+        />
+        {switch (caption) {
+         | Some(caption) =>
+           <div className=Css.mediaCaption> caption->React.string </div>
+         | None => React.null
+         }}
+      </Row>;
+    });
+};
+
 module Expandable = {
   type action =
     | Toggle;

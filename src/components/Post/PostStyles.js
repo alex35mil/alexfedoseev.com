@@ -879,6 +879,24 @@ export const galleryPlusBadge= css`
   }
 `;
 
+export const videoRow = css`
+  margin: ${vGap}px 0;
+`;
+
+export const videoContainer = css`
+  position: relative;
+  padding-bottom: 56.25%; /* 16:9 */
+  height: 0;
+
+  & iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+  }
+`;
+
 export const expandableRow = css`
   margin: ${vGap}px 0;
 `;

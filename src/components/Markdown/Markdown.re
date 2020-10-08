@@ -18,6 +18,7 @@ let inlineCode = InlineCode.make;
 let inlineImage = InlineImage.make;
 let animatedGif = AnimatedGif.make;
 let photoGallery = PhotoGallery.make;
+let youtubeVideo = YoutubeVideo.make;
 let internalLink = InternalLink.make;
 let note = Note.make;
 let crossPostNote = CrossPostNote.make;

@@ -228,6 +228,12 @@ let galleryPlusBadgeTextSmaller = galleryPlusBadgeTextSmaller;
 [@bs.module "./PostStyles.js"] external galleryPlusBadge: string = "galleryPlusBadge";
 let galleryPlusBadge = galleryPlusBadge;
 
+[@bs.module "./PostStyles.js"] external videoRow: string = "videoRow";
+let videoRow = videoRow;
+
+[@bs.module "./PostStyles.js"] external videoContainer: string = "videoContainer";
+let videoContainer = videoContainer;
+
 [@bs.module "./PostStyles.js"] external expandableRow: string = "expandableRow";
 let expandableRow = expandableRow;
 
