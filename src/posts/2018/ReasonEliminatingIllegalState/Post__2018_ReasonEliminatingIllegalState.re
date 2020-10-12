@@ -1,6 +1,6 @@
 open PostCategory;
 
-let title = "ReasonML: Eliminating illegal state";
+let title = "ReasonML: Eliminating Illegal State";
 let slug = "reasonml-eliminating-illegal-state";
 let year = "2018";
 let date = "Mar 22";

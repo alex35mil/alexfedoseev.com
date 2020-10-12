@@ -1,6 +1,6 @@
 open PostCategory;
 
-let title = "A Year of development with Redux. Part III";
+let title = "A Year of Development with Redux. Part III";
 let slug = "year-of-development-with-redux-part-3";
 let year = "2017";
 let date = "Feb 28";
