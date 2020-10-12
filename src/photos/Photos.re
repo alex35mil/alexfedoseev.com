@@ -54,6 +54,8 @@ let photo_20201001_dsc03210: Photo.src = [%bs.raw "require('./files/20201001-DSC
 let photo_20201001_dsc03210_thumb: Photo.thumb = [%bs.raw "require('./files/20201001-DSC03210.jpg?preset=gridThumb')"];
 let photo_20201003_dsc03443: Photo.src = [%bs.raw "require('./files/20201003-DSC03443.jpg?preset=photo')"];
 let photo_20201003_dsc03443_thumb: Photo.thumb = [%bs.raw "require('./files/20201003-DSC03443.jpg?preset=gridThumb')"];
+let photo_20201010_dsc03628: Photo.src = [%bs.raw "require('./files/20201010-DSC03628.jpg?preset=photo')"];
+let photo_20201010_dsc03628_thumb: Photo.thumb = [%bs.raw "require('./files/20201010-DSC03628.jpg?preset=gridThumb')"];
 let photo_dsc0144: Photo.src = [%bs.raw "require('./files/DSC_0144.jpg?preset=photo')"];
 let photo_dsc0144_thumb: Photo.thumb = [%bs.raw "require('./files/DSC_0144.jpg?preset=gridThumb')"];
 let photo_dsc0148: Photo.src = [%bs.raw "require('./files/DSC_0148.jpg?preset=photo')"];
@@ -179,6 +181,7 @@ let all = [|
   ("20201001_dsc03180"->Photo.Id.pack, photo_20201001_dsc03180, photo_20201001_dsc03180_thumb),
   ("20201001_dsc03210"->Photo.Id.pack, photo_20201001_dsc03210, photo_20201001_dsc03210_thumb),
   ("20201003_dsc03443"->Photo.Id.pack, photo_20201003_dsc03443, photo_20201003_dsc03443_thumb),
+  ("20201010_dsc03628"->Photo.Id.pack, photo_20201010_dsc03628, photo_20201010_dsc03628_thumb),
   ("dsc0144"->Photo.Id.pack, photo_dsc0144, photo_dsc0144_thumb),
   ("dsc0148"->Photo.Id.pack, photo_dsc0148, photo_dsc0148_thumb),
   ("dsc0220"->Photo.Id.pack, photo_dsc0220, photo_dsc0220_thumb),
