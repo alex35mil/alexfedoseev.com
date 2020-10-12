@@ -1,0 +1,140 @@
+<!-- Figuring out Layouts Using Systems of Linear Equations -->
+
+import {
+  a as A,
+  internalLink as InternalLink,
+} from "markdown";
+
+A few days ago, while writing <InternalLink path="/blog/travel/2020/turkey">the previous post</InternalLink>, I needed a `PhotoGallery` component to display clickable previews of a set of photos. I wanted it to be zero-API, which means I pass an array of images and it figures out a pretty layout for previews by looking at the dimensions of the images.
+
+E.g. if the first 3 images in an input array are of landscape orientation, previews should be placed like this:
+
+```
+---------------------------  -----------------
+|                         |  |  Right image  |
+|                         |  |       1       |
+|        Left image       |  -----------------
+|                         |  -----------------
+|                         |  |  Right image  |
+|                         |  |       2       |
+---------------------------  -----------------
+```
+
+> Look at examples of different layouts in <InternalLink path="/blog/travel/2020/turkey">the previous post</InternalLink>.
+
+The problem I faced was that I needed to figure out the dimensions of thumbnails based on the dimensions of original photos in each kind of layout so it looks nice and balanced. E.g. considering the layout above, row & column gaps should be equal. Both images in the right column should have equal dimensions, the sum of the hights of these two images plus a gap should be equal to the left image height, etc.
+
+As a first step, I expressed these requirements as equations:
+
+```
+liw + GAP + riw = CW
+rih * 2 + GAP = lih
+```
+
+Where lower cased identifiers are variables:
+- `liw` — Left Image Width
+- `lih` — Left Image Height
+- `riw` — Right Image Width
+- `rih` — Right Image Height
+
+And upper cased identifiers are constants:
+- `CW` — Content Width. The width of the whole content column. Constant in my case, but the system can be expressed in relative values.
+- `GAP` — Gap between the columns and rows. Predefined as well.
+
+I figured that the equations above are nothing but a system of linear equations, which can be solved using math tooling. But the issue with the system in its current state is that it has 4 variables and only 2 equations.
+
+Now, let's digress for a moment from layout and look into the math theory.
+
+A system of `n` linear equations and `m` variables, when `n < m`, can't have a single solution. It can only be reduced to a smaller number of equations. That's it. But when `n == m`, there are options: such system can have one solution, an infinite number of solutions, or no solution at all. The former system is called **consistent** and the latter—**inconsistent**.
+
+Getting back to my case, having 4 variables and 2 equations means that it's not possible to find a unique solution, because there isn't one. I need 2 more equations to be able to solve it. Luckily, there are exactly two more exist.
+
+Since I deal with images with known dimensions, I can express the latter through aspect ratio.
+
+```
+liw / lih = LIAR
+riw / rih = RIAR
+```
+
+Where:
+- `LIAR` — Left Image Aspect Ratio: derived at build time.
+- `RIAR` — Right Image Aspect Ratio: same.
+
+Perfect. Now there are 4 variables and 4 equations, which means _(there is a chance that)_ the system is solvable.
+
+```
+liw + GAP + riw = CW
+rih * 2 + GAP = lih
+liw / lih = LIAR
+riw / rih = RIAR
+```
+
+One of the ways to solve it is to use the Gaussian elimination algorithm. You can think of it as a function of a system of linear equations that returns values of variables.
+
+```
+Gaussian elimination (system of linear equations) => values of variables
+```
+
+Speaking in math terms, it takes a system of linear equations in the shape of an **augmented matrix**, which is a combination of **coefficients matrix** and **constants matrix**. And outputs the **variables matrix**—a solution (if there is one).
+
+```
+Gaussian elimination (augmented matrix) => variables matrix
+```
+
+To build an augmented matrix, the provided system should be normalized.
+
+```
+1 * liw +   0     * lih + 1 * riw +   0     * rih = CW - GAP
+0 * liw + (-1)    * lih + 0 * riw +   2     * rih = -GAP
+1 * liw + (-LIAR) * lih + 0 * riw +   0     * rih = 0
+0 * liw +   0     * lih + 1 * riw + (-RIAR) * rih = 0
+```
+
+It is the same initial system described above, but each equation contains all the variables of the system placed at the same position in each equation. If an initial equation doesn't have a variable, it means that its coefficient is equal to zero.
+
+Coefficients matrix and constants matrix can be built by extracting coefficients from the left sides and constants from the right sides of the normalized equations.
+
+```
+Coefficients matrix | Constants matrix
+--------------------|-----------------
+1   0     1   0     |  CW - GAP
+0  -1     0   2     | -GAP
+1  -LIAR  0   0     |  0
+0   0     1  -RIAR  |  0
+```
+
+Augmented matrix is a result of a concatenation of these 2 matrices:
+
+```
+1   0     1   0     CW - GAP
+0  -1     0   2    -GAP
+1  -LIAR  0   0     0
+0   0     1  -RIAR  0
+```
+
+The result of Gaussian elimination is a variables matrix filled with calculated values (if the system is consistent).
+
+```
+liw
+lih
+riw
+rih
+```
+
+The order of the values is the same as the order of variables in the normalized version of the system.
+
+Getting back from the math world to reality, in general-purpose programming languages usually, there is no such thing as a matrix. But it can be built on top of primitive data types, like arrays. The augmented matrix can be represented as an array of arrays of numbers:
+
+```
+[
+  [1,   0   , 1,   0   ,  CW - GAP],     
+  [0,  -1   , 0,   2   , -GAP     ],
+  [1,  -LIAR, 0,   0   ,  0       ],
+  [0,   0   , 1,  -RIAR,  0       ],
+]
+```
+
+Considering there is a function that implements Gaussian elimination, such array can be passed to it and the result would be an array of numbers which are the values of variables of the system.
+
+### Gaussian elimination
+I'm not going to dive into details of the algorithm here. There are dozen of links in Google on the subject. But it's worth mentioning that if you'd like to use it in your code without introducing new dependencies, there is a <A href="https://rosettacode.org/wiki/Gaussian_elimination" targetBlank>dedicated section on RosettaCode</A>, which has implementations of algorithm in a variety of languages.
