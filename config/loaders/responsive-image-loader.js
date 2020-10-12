@@ -1,6 +1,6 @@
 const path = require("path");
 const lqip = require("lqip");
-const imageSize = require("image-size");
+const sharp = require("sharp");
 const loaderUtils = require("loader-utils");
 
 const FLUID = "fluid";
@@ -56,7 +56,7 @@ module.exports.pitch = async function(request) {
     throw new Error(`[responsive-image-loader]: Fallback size is required`);
   }
 
-  const dimensions = imageSize(image);
+  const dimensions = await sharp(image).metadata();
   const sizes = normalizeSizes(preset.sizes, dimensions);
   const aspectRatio = dimensions.width / dimensions.height;
   const orientation = aspectRatio > 1 ? LANDSCAPE : aspectRatio < 1 ? PORTRAIT : SQUARE;
