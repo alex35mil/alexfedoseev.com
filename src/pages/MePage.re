@@ -40,43 +40,55 @@ let make = () =>
       </div>
       <div className=Css.row>
         <Layout.PrimarySidenote className=Css.rowLabel>
-          "Stack"->React.string
+          "Tech Stack"->React.string
         </Layout.PrimarySidenote>
         <div className=Css.content>
-          <div className=Css.contentBlock>
-            <div className=Css.contentSubheading>
-              "Languages"->React.string
-            </div>
-            <ul className=Css.ul>
-              <li> "ReasonML / OCaml"->React.string </li>
-              <li> "Rust"->React.string </li>
-              <li> "Go"->React.string </li>
-              <li className=Css.meh> "JavaScript"->React.string </li>
-              <li className=Css.meh> "Ruby"->React.string </li>
-            </ul>
-          </div>
-          <div className=Css.contentBlock>
-            <div className=Css.contentSubheading>
-              "Technologies"->React.string
-            </div>
-            <ul className=Css.ul>
-              <li> "React"->React.string </li>
-              <li className=Css.meh> "Redux"->React.string </li>
-              <li> "GraphQL"->React.string </li>
-              <li> "Docker"->React.string </li>
-              <li> "Kubernetes"->React.string </li>
-            </ul>
-          </div>
-          <div className=Css.note>
-            <sup> "*"->React.string </sup>
-            " Crossed out items is something I prefer to avoid at this point"
+          <p>
+            "I use "->React.string
+            <span className=Css.stackItem> "ReasonML"->React.string </span>
+            " / "->React.string
+            <span className=Css.stackItem> "OCaml"->React.string </span>
+            " for making web clients. "->React.string
+            <span className=Css.stackItem> "Rust"->React.string </span>
+            " for everything on a server, as well as for DevOps/infrastructure needs. And "
             ->React.string
-          </div>
+            <span className=Css.stackItem> "Swift"->React.string </span>
+            " for macOS/iOS apps."->React.string
+          </p>
+          <p>
+            "My go-to database is "->React.string
+            <span className=Css.stackItem> "PostgreSQL"->React.string </span>
+            ". Also, I have experience with "->React.string
+            <span className=Css.stackItem> "CouchDB"->React.string </span>
+            "."->React.string
+          </p>
+          <p>
+            "I deploy using "->React.string
+            <span className=Css.stackItem> "Docker"->React.string </span>
+            ", "->React.string
+            <span className=Css.stackItem> "Kubernetes"->React.string </span>
+            " & "->React.string
+            <span className=Css.stackItem> "AWS Fargate"->React.string </span>
+            "."->React.string
+          </p>
+          <p>
+            "A long time ago, I had a backend written in "->React.string
+            <span className=Css.stackItem> "Go"->React.string </span>
+            ", but due to it being unsafe in the context of GraphQL, I dropped it for Rust."
+            ->React.string
+          </p>
+          <p>
+            "In the beginning, I did "->React.string
+            <span className=Css.stackItem> "Ruby"->React.string </span>
+            " (a little) and "->React.string
+            <span className=Css.stackItem> "JavaScript"->React.string </span>
+            " (a lot). But not anymore."->React.string
+          </p>
         </div>
       </div>
       <div className=Css.row>
         <Layout.PrimarySidenote className=Css.rowLabel>
-          "Products"->React.string
+          "Projects"->React.string
         </Layout.PrimarySidenote>
         <div className=Css.content>
           <div className=Css.contentBlock>
@@ -89,11 +101,22 @@ let make = () =>
               "Project management app based on GTD methodology."->React.string
             </div>
           </div>
+          <div className=Css.contentBlock>
+            <div className=Css.contentSubheading>
+              <A href=Route.sherry target=Blank underline=Always>
+                "Sherry"->React.string
+              </A>
+            </div>
+            <div>
+              "A menubar app for macOS that simplifies file sharing via AWS S3."
+              ->React.string
+            </div>
+          </div>
         </div>
       </div>
       <div className=Css.row>
         <Layout.PrimarySidenote className=Css.rowLabel>
-          "OSS"->React.string
+          "Open Source"->React.string
         </Layout.PrimarySidenote>
         <div className=Css.content>
           <div className=Css.ossProjects>
@@ -144,7 +167,7 @@ let make = () =>
             <A
               href=Route.github
               target=Blank
-              underline=Always
+              underline=WhenInteracted
               className=Cn.(Css.link + Css.githubLink)>
               <GithubIcon size=SM color=Faded className=Css.linkIcon />
               "Github"->React.string
@@ -154,7 +177,7 @@ let make = () =>
             <A
               href=Route.twitter
               target=Blank
-              underline=Always
+              underline=WhenInteracted
               className=Cn.(Css.link + Css.twitterLink)>
               <TwitterIcon size=SM color=Faded className=Css.linkIcon />
               "Twitter"->React.string

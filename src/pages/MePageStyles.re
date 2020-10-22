@@ -33,11 +33,8 @@ let contentSubheading = contentSubheading;
 [@bs.module "./MePageStyles.js"] external ul: string = "ul";
 let ul = ul;
 
-[@bs.module "./MePageStyles.js"] external meh: string = "meh";
-let meh = meh;
-
-[@bs.module "./MePageStyles.js"] external note: string = "note";
-let note = note;
+[@bs.module "./MePageStyles.js"] external stackItem: string = "stackItem";
+let stackItem = stackItem;
 
 [@bs.module "./MePageStyles.js"] external ossProjects: string = "ossProjects";
 let ossProjects = ossProjects;

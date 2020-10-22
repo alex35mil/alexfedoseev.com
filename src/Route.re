@@ -33,6 +33,7 @@ let github = "https://github.com/AlexFedoseev"->Path.pack;
 let src = "https://github.com/alexfedoseev/alexfedoseev.com"->Path.pack;
 
 let minima = "https://minima.app"->Path.pack;
+let sherry = "https://sherryapp.github.io"->Path.pack;
 
 let reFormality = "https://github.com/MinimaHQ/re-formality"->Path.pack;
 let reDnd = "https://github.com/MinimaHQ/re-dnd"->Path.pack;

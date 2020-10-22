@@ -18,7 +18,7 @@ export const container = css`
 
   @media ${Screen.large} {
     grid-template-columns: ${Layout.largeScreenContentWidth}px;
-    grid-row-gap: ${Layout.largeScreenRowGap}px;
+    grid-row-gap: 40px;
   }
 `;
 
@@ -164,22 +164,11 @@ export const ul = css`
   }
 `;
 
-export const meh = css`
-  color: ${Theme.fadedTextColor};
+export const stackItem = css`
   transition-property: color;
   transition-duration: ${Transition.moderate};
   transition-timing-function: ${Transition.timingFunction};
-  font-style: italic;
-  text-decoration: line-through;
-`;
-
-export const note = css`
-  color: ${Theme.fadedTextColor};
-  transition-property: color;
-  transition-duration: ${Transition.moderate};
-  transition-timing-function: ${Transition.timingFunction};
-  font-size: 0.8em;
-  font-style: italic;
+  font-weight: ${Font.bold};
 `;
 
 export const ossProjects = css`
@@ -270,6 +259,11 @@ export const link = css`
 `;
 
 export const linkIcon = css`
+  @media ${Screen.small} {
+    width: 20px;
+    height: 20px;
+  }
+
   @media ${Screen.large} {
     align-self: center;
   }
