@@ -1,0 +1,406 @@
+<!-- Cool Things You Can Do with First-Class Modules in ReasonReact -->
+
+import {
+  a as A,
+  note as Note,
+  crossPostNote as CrossPostNote,
+} from "markdown";
+
+After the years of working with [ReScript](https://rescript-lang.org) ([formerly known as BuckleScript](https://rescript-lang.org/blog/bucklescript-is-rebranding)), I find its module system to be one of the best. The more I used the language, the more extensively I used its modules. One of the critical parts of the ecosystem that leverages it heavily is ReasonReact. This post is about not so widely known advanced feature of the language, that helps to build handy abstractions over ReasonReact components.
+
+## Components as props
+It is common in React.js apps, passing around components via props. Since in JS, a React component is a function (or class, which is just a special kind of function), it's trivial to pass it around. In ReasonReact, components are modules, which makes component-via-props pattern hardly usable.
+
+One of the possible solutions is to replace a component with a function that produces `React.element`.
+
+Consider a `Button` component that renders an abstract `icon`. Instead of expecting an icon component, it can expect a function that takes some input (like size, color, etc.) and returns `React.element`.
+
+```rescript
+@react.component
+let make = (
+  ~size: Size.t,
+  ~renderIcon: (~size: Size.t) => React.element,
+  ~onClick,
+  ~children,
+) => {
+  <button
+    className={
+      switch size {
+      | SM => "sm"
+      | MD => "md"
+      }
+    }
+    onClick
+  >
+    {renderIcon(~size)}
+    {children}
+  </button>
+}
+```
+
+And then it can be used like this:
+
+```rescript
+<Button icon={(~size) => <BinIcon size />}>
+  {"Delete"->React.string}
+</Button>
+```
+
+It's kind of okay. But when such prop is used often across the app, proxying props gets more and more annoying. It gets even more annoying when there are multiple arguments to pass: size, color, className, etc.
+
+What I want is that I could provide an icon component and the `Button` internally could arrange all the rest for me.
+
+```rescript
+<Button icon={BinIcon}>
+  {"Delete"->React.string}
+</Button>
+```
+
+Turned out, it's possible with one constraint and a little bit of additional work.
+
+### First-class modules
+As mentioned, a ReasonReact component is a module. In ReScript, modules exist in separate language space from common types and functions. It's not possible to take a module as-is and pass it as an argument to a function. So `<Button icon={BinIcon}>` wouldn't work.
+
+Luckily, OCaml has an advanced feature called [first-class modules](https://dev.realworldocaml.org/first-class-modules.html). It allows to take a module, pack it into a special container that can exist in a functions space. I.e. it can be passed to or returned from a general function.
+
+But there is one constraint exposed. Whenever a first-class module pops up, you need to have its type at hand. Let's look at the example.
+
+In an app, there might be different `Human` modules, each contains a human's age. For example:
+
+```rescript
+module Teenager = {
+  let age = 17
+}
+```
+
+The task is to implement an `age` function, which takes such a module and returns containing age.
+
+To be able to pass a module to a function, it needs to be turned into a first-class module. Let's see how modules can be packed into and unpacked from a first-class module container:
+
+```rescript
+// Packing
+let human = module(Teenager)
+
+// Unpacking
+let module(Teenager) = human
+```
+
+A naive implementation of the `age` function would be:
+
+```rescript
+let age = human => {
+  // Unpacking a module
+  let module(Human) = human
+  // Now it's possible to access internals of the module
+  Human.age
+}
+```
+
+But it wouldn't work because type inference won't kick in when it comes to first-class modules. Such argument must be explicitly annotated to let the compiler know what this thing is. Hence we need to define a type for a `Human` module.
+
+If you ever did interface files (`.mli`/`.rei`/`.resi`), it will be familiar to you.
+
+```rescript
+module type Human = {
+  let age: int
+}
+```
+
+The final implementation of the `age` function is:
+
+```rescript
+let age = (human: module(Human)) => {
+  let module(Human) = human
+  Human.age
+}
+
+module(Teenager)->age // returns 17
+```
+
+Now, let's apply this to the button with icon case.
+
+### Back to the Button
+As you might already figured, in ReasonReact, it wouldn't be possible to pack _any_ icon component with _any_ set of props into a first-class module. To be able to pass an icon to the `Button`, the former must conform to a strict interface. E.g., an icon component must accept `size` prop and return `React.element`.
+
+```rescript
+module type Icon = {
+  @react.component
+  let make: (~size: Size.t) => React.element
+}
+```
+
+With this constraint, it's possible to implement the `Button` the way we want it.
+
+```rescript
+module Button = {
+  @react.component
+  let make = (~size: Size.t, ~icon: module(Icon), ~onClick, ~children) => {
+    let module(Icon) = icon
+
+    <button
+      className={
+        switch size {
+        | SM => "sm"
+        | MD => "md"
+        }
+      }
+      onClick
+    >
+      <Icon size />
+      children
+    </button>
+  }
+}
+```
+
+And here we have it on the application side of things:
+
+```rescript
+module BinIcon = {
+  @react.component
+  let make = (~size) => {
+    <Svg size> <path /> </Svg>
+  }
+}
+
+<Button size=MD icon=module(BinIcon)>
+  {"Delete"->React.string}
+</Button>
+```
+
+## Loading assets using dynamic imports
+Another use-case where first-class modules give a huge helping hand is dynamic asset loading. To optimize the size of the downloaded code, JS apps use dynamic `import()` for loading JS chunks on demand. While it's trivial to bind to `import()` function itself, using the result it returns is far less so.
+
+```rescript
+module Module = {
+  @val external load: string => Promise.t<'a> = "import"
+}
+
+Module.load("./path/to/Component.bs.js") // compiles to `import("./path/to/Component.bs.js")`
+```
+
+Regarding UI, a pattern is similar to data fetching: a user requests a specific UI, an app starts fetching JS chunk with feedback in UI, e.g. in the form of a Spinner. And when it's loaded, renders loaded UI on the screen.
+
+Under the hood, when a promise with a loaded asset gets resolved, the latter will be classified as a first-class module that contains a React component.
+
+So the API of the loader would be:
+
+```rescript
+<MyChunkLoader>
+  {(module(MyChunk)) => <MyChunk />}
+</MyChunkLoader>
+```
+
+Where `MyChunk` is a React component:
+
+```rescript
+// @file: MyChunk.res
+
+@react.component
+let make = () => {
+  <div> {"Hi!"->React.string} </div>
+}
+```
+
+Before making an abstraction for loading any type of module, let's implement `MyChunkLoader` for this specific use case first.
+
+To be able to load and render a module, it needs a defined type since we're dealing with first-class modules.
+
+```rescript
+module type MyChunk = {
+  @react.component
+  let make: unit => React.element // component without props
+}
+```
+
+Then we can implement `MyChunkLoader` for this component:
+
+```rescript
+type state =
+  | Loading
+  | Ok(module(MyChunk))
+  | Error
+
+type action =
+  | Render(module(MyChunk))
+  | Fail
+
+let reducer = (_state, action) =>
+  switch action {
+  | Render(component) => Ok(component)
+  | Fail => Error
+  }
+
+@react.component
+let make = (~children: module(MyChunk) => React.element) => {
+  let (state, dispatch) = reducer->React.useReducer(Loading)
+
+  React.useEffect0(() => {
+    Module.load("./MyChunk.bs.js")
+      ->Promise.result
+      ->Promise.wait(x =>
+        switch x {
+        | Ok(component) => Render(component)->dispatch
+        | Error(_) => Fail->dispatch
+        }
+      )
+    None
+  })
+
+  switch state {
+  | Loading => "Loading..."->React.string
+  | Ok(component) => component->children
+  | Error => "Oh no"->React.string
+  }
+}
+```
+
+<Note>
+  A note on Promises. In apps and articles, I use <A href="https://gist.github.com/alexfedoseev/99053e44b508ee5250a64ac7d99a7dcd">a slightly modified version of standard ReScript's Js.Promise module</A> due to standard one is being a bit awkward to use.
+</Note>
+
+Even though this implementation works for this specific use-case, it wouldn't compile for another component that expects props. To make it work with an abstract component let's start with extracting parts specific to `MyChunk` into a separate module: `MyChunk` module type and `loader` function.
+
+```rescript
+module MyLoadableChunk = {
+  module type t = {
+    @react.component
+    let make: unit => React.element
+  }
+
+  // Pay attention that we load generated `.bs.js` asset, not the original `.res` source
+  let loader = () => Module.load("./MyChunk.bs.js")
+}
+```
+
+The idea is to create an abstraction (call it `Loadable`) which accepts such spec module and returns an implementation similar to `MyChunkLoader` but for provided spec:
+
+```rescript
+module MyChunkLoader = Loadable(MyLoadableChunk)
+```
+
+In ReScript, the thing that takes module(s) and returns a new module constructed from the input called [functor](https://rescript-lang.org/docs/manual/latest/module#module-functions-functors). It is a function of a modules space. So the `Loadable` bit in the snippet above should be a functor.
+
+The first step is to describe a type of an input module:
+
+```rescript
+module type Component = {
+  // Type of the module the abstraction will be loading
+  module type t
+  // Function that invokes loading and returns a Promise with first-class module
+  let loader: unit => Promise.t<module(t)>
+}
+```
+
+And the second step is to wrap the initial implementation of `MyChunkLoader` into a functor:
+
+```rescript
+// @file: Loadable.res
+
+module Make = (Component: Component) => {
+  type state =
+    | Loading
+    | Ok(module(Component.t))
+    | Error
+
+  type action =
+    | Render(module(Component.t))
+    | Fail
+
+  let reducer = (_state, action) =>
+    switch action {
+    | Render(component) => Ok(component)
+    | Fail => Error
+    }
+
+  @react.component
+  let make = (~children: module(Component.t) => React.element) => {
+    let (state, dispatch) = reducer->React.useReducer(Loading)
+
+    React.useEffect0(() => {
+      Component.loader()
+        ->Promise.result
+        ->Promise.wait(x =>
+          switch x {
+          | Ok(component) => Render(component)->dispatch
+          | Error(_) => Fail->dispatch
+          }
+        )
+      None
+    })
+
+    switch state {
+    | Loading => "Loading..."->React.string
+    | Ok(component) => component->children
+    | Error => "Oh no"->React.string
+    }
+  }
+}
+```
+
+Now we have everything in place to load `MyChunk.res` dynamically using `Loadable` functor. Create `MyChunkLoader.res` next to the `MyChunk.res`:
+
+```rescript
+// @file: MyChunkLoader.res
+
+module Component = {
+  module type t = {
+    @react.component
+    let make: unit => React.element
+  }
+  let loader = () => Module.load("./MyChunk.bs.js")
+}
+
+include Loadable.Make(Component)
+```
+
+One more important improvement that should be made is to avoid manual typing of the loadable module since it's error-prone. God bless OCaml, we can infer a module type from the implementation using `module type of` construction:
+
+```rescript
+// @file: MyChunkLoader.res
+
+module Component = {
+  module type t = module type of MyChunk
+  let loader = () => Module.load("./MyChunk.bs.js")
+}
+
+include Loadable.Make(Component)
+```
+
+It should be working now.
+
+```rescript
+<MyChunkLoader>
+  {(module(MyChunk)) => <MyChunk />}
+</MyChunkLoader>
+```
+
+### Loading non-ReScript assets
+If you want to load a non-ReScript asset, such as a React component written in JS, the steps would be the same except instead of having `MyChunk.res` with ReScript implementation there will be `JsChunk.res` with a binding to JS implementation:
+
+```rescript
+// @file: JsChunk.res
+
+@module("./JsChunk.jsx") @react.component
+external make: unit => React.element = "default"
+```
+
+### Bonus
+Using this technique, it's possible to load not only ReScript or JS assets, but anything that you can render in your environment. E.g., if you have Markdown files, you can load them dynamically and render right in a ReScript app using [MDX](https://mdxjs.com):
+
+```rescript
+// @file: MdxChunk.res
+
+@module("./MdxChunk.mdx") @react.component
+external make: unit => React.element = "default"
+```
+
+<Note>
+  You can find code examples in <A href="https://github.com/shakacode/rescript-first-class-modules-usage">this repository</A>.
+</Note>
+
+---
+
+_This post is based on my work on the [Minima](https://minima.app) app._
+
+_The writing of this post was sponsored by [ShakaCode](https://www.shakacode.com)._

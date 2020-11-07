@@ -10,6 +10,15 @@ type entry = {
 
 let all = [|
   // 2020
+  Post__2020_CoolThingsYouCanDoWithFirstClassModulesInReasonReact.{
+    title,
+    slug,
+    year,
+    date,
+    category,
+    cover,
+    loader,
+  },
   Post__2020_FiguringOutLayoutsUsingSole.{
     title,
     slug,
