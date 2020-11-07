@@ -209,11 +209,12 @@ module Code = {
     let language =
       React.useMemo0(() =>
         className->Option.map(cn => {
-          let language = cn->Js.String.replaceByRe(languageRegExp, "", _);
-          let label =
-            switch (language) {
-            | "reason" => "re"
-            | _ => language
+          let label = cn->Js.String.replaceByRe(languageRegExp, "", _);
+          let language =
+            switch (label) {
+            // Looks like Reason syntax works pretty well
+            | "rescript" => "reason"
+            | _ => label
             };
           (language, label);
         })
