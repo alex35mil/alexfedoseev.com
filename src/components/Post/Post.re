@@ -648,6 +648,11 @@ module PhotoGallery = {
             Some({src: {orientation: `portrait}} as photo1),
             Some({src: {orientation: `landscape}} as photo2),
             Some({src: {orientation: `portrait | `square}}) | None,
+          )
+        | (
+            Some({src: {orientation: `portrait | `square}} as photo1),
+            Some({src: {orientation: `portrait | `square}} as photo2),
+            None,
           ) => {
             layout:
               LPS1_LPS1({

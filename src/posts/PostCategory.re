@@ -1,22 +1,25 @@
 type t =
   | Dev
-  | Travel;
+  | Travel
+  | Productivity;
 
 let toString =
   fun
   | Dev => "dev"
-  | Travel => "travel";
+  | Travel => "travel"
+  | Productivity => "productivity";
 
 let fromString =
   fun
   | "dev" => Ok(Dev)
   | "travel" => Ok(Travel)
+  | "productivity" => Ok(Productivity)
   | _ => Error();
 
 let (==) = (x1, x2) =>
   switch (x1, x2) {
   | (Dev, Dev)
-  | (Travel, Travel) => true
-  | (Dev, Travel)
-  | (Travel, Dev) => false
+  | (Travel, Travel)
+  | (Productivity, Productivity) => true
+  | _ => false
   };

@@ -1,0 +1,280 @@
+import {
+  a as A,
+  note as Note,
+  highlight as Highlight,
+  inlineImage as InlineImage,
+  photoGallery as PhotoGallery,
+} from "markdown";
+
+import intro from "./images/00-intro.jpg?preset=inline";
+import spoiler from "./images/01-spoiler.jpg?preset=inline";
+import createTable from "./images/02-create-table.png?preset=inline";
+import adjustProperties from "./images/03-adjust-properties.png?preset=inline";
+import wrapCells from "./images/04-wrap-cells.png?preset=inline";
+import initialTable from "./images/05-initial-table.png?preset=inline";
+import firstEntry from "./images/06-first-entry.png?preset=inline";
+import secondEntry from "./images/07-second-entry.png?preset=inline";
+import createAtRelation from "./images/08-create-at-relation.png?preset=inline";
+import configureAtRelation from "./images/09-configure-at-relation.png?preset=inline";
+import createdAtRelation from "./images/10-created-at-relation.png?preset=inline";
+import containsProperty from "./images/11-contains-property.png?preset=inline";
+import setAtValue from "./images/12-set-at-value.png?preset=inline";
+import containsValueSet from "./images/13-contains-value-set.png?preset=inline";
+import tableWithStorage from "./images/14-table-with-storage.png?preset=inline";
+import sorting from "./images/15-sorting.png?preset=inline";
+import itemWithAccessories from "./images/16-item-with-accessories.png?preset=inline";
+import boxIdInName from "./images/17-box-id-in-name.png?preset=inline";
+import additionalViews from "./images/18-additional-views.png?preset=inline";
+import hardware1_src from "./images/20210313-DSC04347.jpg?preset=photo";
+import hardware1_thumb from "./images/20210313-DSC04347.jpg?preset=postThumb";
+import hardware2_src from "./images/20210328-IMG_4264.jpg?preset=photo";
+import hardware2_thumb from "./images/20210328-IMG_4264.jpg?preset=postThumb";
+import boxWithKeycapPuller from "./images/20210404-IMG_4290.jpg?preset=inline";
+import zipStorageBagWithTag from "./images/20210411-IMG_4331.jpg?preset=inline";
+
+At the time when I was taking pictures with my phone, I rarely had a problem finding or identifying my stuff. But ever since I went into photography, things went out of hand pretty quickly. Every new piece of gear comes with a number of small accessories that I need once in a lifetime, but when I need it, I have no idea where it is or even how does it look like.
+
+<InlineImage
+  src={intro}
+  placement="fill"
+/>
+
+The time has come to put things in order. Once and for all.
+
+## Goals
+1. When I need something, I should spend little to no time looking for the thing.
+1. There shouldn’t be any random unidentifiable things floating around.
+
+## Database
+I use [Notion](https://www.notion.so) as a database of things.
+
+Quick spoiler how items in a database look like:
+
+<InlineImage
+  src={spoiler}
+  placement="fill"
+  caption="2 items from the database"
+/>
+
+The example database, that we will start building in a sec, is shared here:
+
+<Highlight>
+  <A href="https://www.notion.so/alexfedoseev/680862f4a6b546ac811c378578eb43a6?v=64462a83f6774906a660b686d654c8eb">notion.so/alexfedoseev/680862f...</A>
+</Highlight>
+
+You can fork it, poke it and use it as a starting point for your own thing.
+
+### Creating a database
+Create a new page called **Inventory** and make it a database with default `Table` view:
+
+<InlineImage
+  src={createTable}
+  placement="bleed"
+/>
+
+Adjust initial properties:
+
+<InlineImage
+  src={adjustProperties}
+  placement="center"
+/>
+
+- **Name**: a name of an item. This property should be created by a Notion and can be left as is.
+- **Tag**: this property should be created for you as well. The only change I made is I turned its name from a plural (_Tags_) to a singular since I assign at most one tag to each item. E.g. `Tech`, `Photo`, `Travel`, etc.
+- **URL**: a new property of type `URL` to store URL of a product page to quickly access manuals, to re-order item, etc.
+
+You can also turn off wrapping cells, so URLs wouldn't break the table's layout.
+
+<InlineImage
+  src={wrapCells}
+  placement="center"
+  caption="A menu under the `...` button"
+/>
+
+The initial table should look like this.
+
+<InlineImage
+  src={initialTable}
+  placement="bleed"
+/>
+
+### Where the heck is this thing?
+The primary goal of the database is to quickly provide information on where can I find a specific item. The Notion's feature called `Relations` will help us with it.
+
+Let's create the first entry.
+
+- Name: `Keychron K3 Keyboard`
+- Tag: `Tech`
+- URL: `https://www.keychron.com/products/keychron-k3-wireless-mechanical-keyboard`
+
+<InlineImage
+  src={firstEntry}
+  placement="bleed"
+/>
+
+This database is going to contain not only things like laptops, keyboards, cables, etc. but also entries where these things are located, such as containers, closets, desks, etc. Since the keyboard we just created is located on the work desk, let's create its entry next.
+
+- Name: `Work Desk`
+- Tag: `Spot`
+- URL: `-`
+
+<InlineImage
+  src={secondEntry}
+  placement="bleed"
+/>
+
+Once all the base stuff is created, the next step would be to relate 2 created entries to each other. I.e. the `Keyboard` is at the `Work Desk` and the `Work Desk` contains the `Keyboard`.
+
+Add a new `@` property of type `Relation`:
+
+<InlineImage
+  src={createAtRelation}
+  placement="center"
+/>
+
+In the appeared window, choose the database that we're in — **Inventory**. And then pick an option **Create a new property**.
+
+<InlineImage
+  src={configureAtRelation}
+  placement="center"
+/>
+
+After you confirmed creation by clicking `Create relation` button, you should see two new properties created: `@` and `Related to Inventory (@)`.
+
+<InlineImage
+  src={createdAtRelation}
+  placement="center"
+/>
+
+Rename the `Related to Inventory (@)` one to `Contains`.
+
+<InlineImage
+  src={containsProperty}
+  placement="center"
+/>
+
+Open the `Keychron K3 Keyboard` item and update its `@` field: click on it and select `Work Desk`.
+
+<InlineImage
+  src={setAtValue}
+  placement="bleed"
+/>
+
+Next, open the `Work Desk` entry and you should see that field `Contains` is set to value `Keychron K3 Keyboard` automatically.
+
+<InlineImage
+  src={containsValueSet}
+  placement="bleed"
+/>
+
+It doesn't matter which field you set, `@` or `Contains`, once one of the fields receives a value, the related field will be properly linked automatically.
+
+### Accessories
+One more useful relation I have in my database is the one that indicates that item `X` is an accessory of item `Y` (or other way around, `Y` has an accessory `X`). This way I can easily see that this device is compatible with the following cables or can be charged using the following batteries etc.
+
+Such relation can be added using exactly the same technique as used for `@` / `Contains` fields. In the same way as `@` was added, add new relation property called `Accessories` and, when it's done, rename auto-created `Related to Inventory (Accessories)` property to `Accessory of`.
+
+### Storage
+I want things I don't use often (like 90% of the stuff I have) to be hidden from sight but at the same time are easy to find when I need them. It would require some hardware.
+
+- Boxes. I use Ikea's.
+  - [Rabbla](https://www.ikea.com/us/en/p/rabbla-box-with-compartments-90348124/), if a box is in an interior.
+  - [Samla](https://www.ikea.com/us/en/p/samla-box-clear-30102974/), if it's hidden in a closet.
+- Sticky tags
+- Permanent markers
+- Zip storage bags
+
+<PhotoGallery
+  caption="Hardware"
+  photos={[
+    {id: "hardware1", src: hardware1_src, thumb: hardware1_thumb},
+    {id: "hardware2", src: hardware2_src, thumb: hardware2_thumb},
+  ]}
+/>
+
+Each box has its own unique identifier. It might be a simple number or letter, such as `1`, `2`, `3` or `A`, `B`, `C`, but I prefer generating random combinations, so in case if at some point I will want to re-shuffle boxes, I won't be suffering from `|1| |3| |2| |4|` situation.
+
+<Note>
+  I suggest generating a list of unique random identifiers and take IDs out of it as you go. You can use any <A href="https://www.google.com/search?q=random+string+generator+online">online service</A> out there to get such list.
+</Note>
+
+The workflow I settled on looks like this:
+
+1. Figure out, what should live in a specific box and where this box should be located.
+1. Add all items that will be placed in the box to the database.
+1. Take an identifier from a generated list and put it on a sticky tag using a permanent marker.
+1. Slap this tag on the box.
+1. Add entry corresponding to this box to the database.
+1. Fill in `@` field for the added box.
+1. Add each item that lives in the box to the `Contains` field of this box in the database.
+1. Repeat with the next box.
+
+Let's apply this workflow to the following use-case. Keychron keyboard comes with several accessories including a keycap puller. I don't need it often and I definitely don't want things like this to hang around my work desk.
+
+1. There is an empty box that is inside the storage near my work desk (the latter has a corresponding entry in the database named `Work Desk Storage`).
+1. Add `Keychron K3 Keyboard Keycap Puller` entry to the database.
+1. Take `ABC` identifier from a generated list and put it on a sticky tag using a permanent marker.
+1. Slap this tag on the box.
+1. Add this box to the database as `Rabbla Small Container: ABC`.
+1. Set its `@` field to the `Work Desk Storage` entry.
+1. Add `Keychron K3 Keyboard Keycap Puller` to the `Contains` field of `Rabbla Small Container: ABC` box in the database.
+
+The result would be something like this:
+
+<InlineImage
+  src={tableWithStorage}
+  placement="bleed"
+/>
+
+Now, if you need this puller:
+
+1. Go to the database.
+1. Search for the `keycap puller`.
+1. See that it's in the `Rabbla Small Container: ABC` which is in the `Work Desk Storage`.
+
+<InlineImage
+  src={boxWithKeycapPuller}
+  placement="center"
+  caption="Here it is!"
+/>
+
+### Big boxes
+Big boxes fit more stuff and can be more convenient to store than a bunch of smaller boxes. But in a large box, things are more difficult to organize. E.g. I want to store accessories of 2 different backpacks in a single box plus several other things, but I don't want them to mix with each other. To sort it out, I use zip storage bags and the same old sticky tags. Each group of accessories goes into its own zip storage bag and the tag with the name of the item gets slapped to the bag.
+
+<InlineImage
+  src={zipStorageBagWithTag}
+  placement="center"
+/>
+
+### ... and one more thing ©
+Use sorting. I sort my tables by `Tag` and by `Name`.
+
+<InlineImage
+  src={sorting}
+  placement="center"
+/>
+
+Prefix all accessories with the name of the item whose accessory this item is. E.g. `Keychron K3 Keyboard Keycap Puller`. So in the table, all related items are grouped together.
+
+<InlineImage
+  src={itemWithAccessories}
+  placement="center"
+/>
+
+Place a box ID right in the name (instead of stand-alone ID property) so it's easier to spot a specific box in a relation list.
+
+<InlineImage
+  src={boxIdInName}
+  placement="fill"
+/>
+
+Create additional views with filters, such as for items with missing `@`, so you can easily spot them and clean up a mess later.
+
+<InlineImage
+  src={additionalViews}
+  placement="bleed"
+/>
+
+---
+
+It took me around 3 weekends to get things sorted. Worth it!

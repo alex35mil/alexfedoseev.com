@@ -9,6 +9,8 @@ type entry = {
 };
 
 let all = [|
+  // 2021
+  Post__2020_HomeInventory.{title, slug, year, date, category, cover, loader},
   // 2020
   Post__2020_CoolThingsYouCanDoWithFirstClassModulesInReasonReact.{
     title,
