@@ -1,0 +1,211 @@
+---
+title: A Year of Development with Redux. Part III
+description: Our experience using Redux.js in production.
+category: Dev
+---
+
+In the last post of this series, I’ll demonstrate writing UI code as a set of **interactions** and share how this facilitates integrating Redux and [Flow](https://flow.org).
+
+## Interactions
+When I look at UI code, I want two things to be as obvious as possible:
+
+1. What interactions are possible here (e.g., `A`, `B` & `C`).
+1. If interaction `A` has happened, what changes did it make to the application state?
+
+The clarity of these points is the key to the long and happy development of any UI application.
+
+When my interactions were split between the `actions.js` and `reducer.js` modules, in order to read or write code, I was having to constantly switch back and forth between the two. Things were even worse if multiple reducers were involved. I realized that I should reorganize the code around the interactions, because either implementing a new or working on an existing one, I’m always working **in the context of interaction**, not action creators or reducers.
+
+<P>
+  Based on this, I reorganized my folders into <InternalLink path="/blog/dev/2017/year-of-development-with-redux-part-2">UI units</InternalLink>, like this one:
+</P>
+
+```
+|- components/                 # representation
+  |-- index.jsx
+  |-- index.css
+|- interactions/               # modules w/ interactions
+  |-- modalToggle.js
+  |-- mapZoomLevelUpdate.js
+  |-- formStateUpdate.js
+  |-- serverStateUpdate.js
+|- selectors/                  # data selectors
+  |-- ...
+|- state.js                    # state definition
+|- actions.js                  # list of action creators
+|- reducer.js                  # list of action handlers
+|- index.js                    # container w/ `connect`
+```
+
+The main idea here is to represent **interactions as modules**.
+
+## Easy case
+The simplest possible case is when a synchronous action is dispatched and only one reducer should respond. For example, the interaction module below defines a behavior of modal dialog:
+
+```js
+// @file: interactions/modalToggle.js
+
+const MODAL_SHOW = "MODAL_SHOW";
+const MODAL_HIDE = "MODAL_HIDE";
+
+// --- Show modal
+
+// Action creator
+export const showModal = () => ({ type: MODAL_SHOW });
+
+// Action handler
+export const onModalShow = {
+  [MODAL_SHOW]: state => state.set("isVisible", true),
+};
+
+
+// --- Hide modal
+
+// Action creator
+export const hideModal = () => ({ type: MODAL_HIDE });
+
+// Action handler
+export const onModalHide = {
+  [MODAL_HIDE]: state => state.set("isVisible", false),
+};
+```
+
+The reducer module no longer contains any logic, it’s just an index of interactions:
+
+```js
+// @file: reducer.js
+
+import state from "./state";
+
+import { onModalShow, onModalHide } from "./interactions/modalToggle";
+// ...
+
+export default createReducer(state, {
+  ...onModalShow,
+  ...onModalHide,
+  ...onMapZoomLevelUpdate,
+  ...onFormStateUpdate,
+  ...onServerStateUpdate,
+});
+```
+
+<Note>
+  Notice the <C>createReducer</C> helper from <A href="http://redux.js.org/docs/recipes/ReducingBoilerplate.html#generating-reducers">Redux’s recipes</A>. It makes it possible to have an exact mapping of a dispatched action from an action creator to the action handler in the reducer. It’ll be required for accurate flow typings.
+</Note>
+
+## Advanced case
+Let’s say you requested to `PATCH` an entity and the server responded with `200 OK`. At this point to respond on the single dispatch, you must apply 2 changes to the app state:
+
+- reset UI unit store (turn off spinner, reset form state, etc.)
+- update the entity in the data store
+
+<Note>
+  UPDATE: To handle updates of the multiple stores in response to a single action use <A href="https://github.com/shakacode/redux-tree"><C>redux-tree</C></A>.
+</Note>
+
+The main wins here:
+
+- **Changing things is easy**
+  <br />
+  All the changes in the app caused by the interaction are gathered in one place that’s easy to find, easy to reason about, and easy to change, move or remove. If a modal must be converted to inline element or a Google map must be removed: in each case, you’re dealing with _files_ and _folders_ dedicated to a given interaction instead of chunks of code scattered around disparate action and reducer modules.
+- **Better focus**
+  <br />
+  When you’re working on google map interactions, you’re focused only on code related to the google map interactions. There aren’t any distractions from unrelated code.
+
+Check out examples on GitHub with live demos: [redux-interactions](https://github.com/shakacode/redux-interactions)
+
+## Flow
+One additional benefit here is the ability to accurately type Redux parts with Flow. Thanks to [Atom](https://atom.io), I can view Flow errors in the real-time in my editor. And thanks to [Nuclide](https://nuclide.io) for superior Flow integration.
+
+Here is the example app I’ll refer to during the rest of this post: [redux-interactions/flow](https://github.com/shakacode/redux-interactions/tree/master/examples/flow-interactions)
+
+<Note>
+  This is a dummy app, where you pick the blog post and edit its title. It uses thunks to handle asynchronicity and immutable <C>Records</C> as state containers. You can check out its <A href="http://redux-flow-interactions.surge.sh">live version</A>.
+</Note>
+
+### Building State type
+The whole `State` type consists of the many small parts:
+
+- [Entity store types](https://github.com/shakacode/redux-interactions/blob/master/examples/flow-interactions/src/app/entities/posts/state.js) (e.g. store that holds loaded posts)
+- [UI unit store types](https://github.com/shakacode/redux-interactions/blob/master/examples/flow-interactions/src/app/ui/state.js) (e.g. store that holds state of the form UI)
+
+Each part is defined in its context, thus all details are encapsulated. Each store is defined as an Immutable `Record`. In the end, all of the store types are [combined in global State type](https://github.com/shakacode/redux-interactions/blob/master/examples/flow-interactions/src/app/tree.js).
+
+```
+state:
+  entities:
+    - postsStore
+    - commentsStore
+    - ...
+  ui:
+    postsSection:
+      - dataFetchStore
+      - postEditStore
+      - ...
+```
+
+### Typing Redux parts
+When `State` is defined, we can [type other Redux parts](https://github.com/shakacode/redux-interactions/blob/master/examples/flow-interactions/src/app/types.js).
+
+Instead of defining an `Action` via a union type as suggested in [official example](https://github.com/reactjs/redux/blob/master/examples/todos-flow/src/types/index.js):
+
+```js
+type Action =
+  | { type: ACTION_TYPE_1, payload: string }
+  | { type: ACTION_TYPE_2 };
+```
+
+It’s defined as just `$Subtype` of string:
+
+```js
+type Action = { type: $Subtype<string> };
+```
+
+Yes, it’s less accurate _here_, but it will be very accurate in the interactions, as you will see below.
+
+### Typing interactions and selectors
+At this point we can implement typings for all redux parts
+
+- [interactions](https://github.com/shakacode/redux-interactions/blob/master/examples/flow-interactions/src/app/ui/interactions/postSelect.js)
+- [selectors](https://github.com/shakacode/redux-interactions/blob/master/examples/flow-interactions/src/app/ui/selectors/getLeafData.js)
+
+Here’s an example of the Flow warnings in action, when I refactor state property name from `postId` to `id`:
+
+<AnimatedGif
+  img={flowAnimatedGif}
+  placement="bleed"
+  caption="Refactoring with Flow"
+/>
+
+### Typing action creators in representational components
+Sadly, Flow can’t infer types of action creators defined in interaction modules. But it’s possible to import types of JS entities, e.g.:
+
+```js
+import typeof { updateState as UpdateState } from "../interactions/stateUpdate";
+
+type Props = {|
+  updateState: UpdateState,
+|};
+```
+
+There are some more limitations, see the [README](https://github.com/shakacode/redux-interactions/tree/master/examples/flow-interactions) for details.
+
+---
+
+Thanks for reading this, more great stuff coming soon. Cheers!
+
+
+<!-- ----------------------------------------------------------------------- -->
+
+import {
+  p as P,
+  a as A,
+  note as Note,
+  internalLink as InternalLink,
+  inlineCode as C,
+  highlight as Highlight,
+  expandable as Expandable,
+  animatedGif as AnimatedGif,
+} from "markdown";
+
+import flowAnimatedGif from "images/posts/2017-02-28--year-of-development-with-redux-part-3/flow.gif?preset=basic";

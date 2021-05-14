@@ -1,0 +1,11 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "blog/*": ["app/pages/blog/*"],
+      "images/*": ["cdn/images/*"],
+      "fonts/*": ["app/styles/fonts/*"],
+      "markdown": ["app/pages/blog/modules/Markdown.bs.js"]
+    }
+  }
+}

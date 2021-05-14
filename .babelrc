@@ -1,5 +1,8 @@
 {
-  "presets": ["@babel/preset-env", "@babel/preset-react"],
+  "presets": [
+    "next/babel",
+    "@linaria"
+  ],
   "plugins": [
     "@babel/plugin-syntax-dynamic-import",
     [
@@ -9,12 +12,5 @@
         "css": false
       }
     ]
-  ],
-  "env": {
-    "development": {
-      "plugins": [
-        "react-hot-loader/babel"
-      ]
-    }
-  }
+  ]
 }

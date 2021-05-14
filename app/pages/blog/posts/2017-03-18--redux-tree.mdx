@@ -1,0 +1,119 @@
+---
+title: Redux Tree
+description: An alternative way to manage a state in Redux.js.
+category: Dev
+---
+
+There are two ways of thinking of about UI: in terms of **state** or in terms of **interactions**.
+
+## State-based model
+
+This pattern is common in the Redux community. In this style of thinking, the building blocks of the app are reducers. Each reducer is tightly coupled to a specific part of the state. It decides how to respond to actions from the outside. It has full control over its part of the state, and that’s its only concern.
+
+The main take away here is that **state is a smart essence**.
+
+## Interactions-based model
+
+In this model, application state is represented as an **inert tree**.
+
+```
+state:
+  entities:
+    posts: { index, entities }
+    comments: { entities }
+  ui:
+    postsList: { processingPosts }
+    ...
+```
+
+<Note>
+  The state tree is a combination of <C>branches</C> and <C>leaves</C>. A branch doesn’t hold any
+  state itself but is a grouping of leaves that each hold chunks of the application state. For
+  example, the branch <C>state.entities</C> groups the states of the <C>posts</C> leaf,{" "}
+  <C>comments</C> leaf, etc.
+</Note>
+
+When a user interacts with the UI, the application changes its state in response. As opposed to a reducers-based model, state is a passive data container here. And interactions are the ones in charge.
+
+Let’s say a user manages his posts and removes one of them by clicking the “Delete” button. What’s happening under the hood? The state of this UI part is stored in the `state.ui.postsList` leaf. Clicking on the button, a user triggers an action creator and the app starts a request to the server. In response to this action, `postId` is added to the `processingPosts` set to show the spinner in the UI. It requires a change of the single `ui.postsList` leaf. Let’s describe it in the interaction module:
+
+```js
+// Action creator: returns request action
+const requestAction = postId => ({
+  type: "POST_DELETE_REQUESTED",
+  postId,
+});
+
+// Action handler: reduces the state of the single leaf
+const onRequest = {
+  POST_DELETE_REQUESTED: (state, { postId }) =>
+    state.update("processingPosts", processingPosts => processingPosts.add(postId)),
+};
+```
+
+When a server responds with a success:
+
+- `postId` must be removed from the `processingPosts`
+- post entity must be removed from the `entities.posts` leaf
+
+This action entails changing 2 different leaves:
+
+```js
+// Action creator: returns success action
+const successAction = postId => ({
+  type: "POST_DELETE_SUCCEEDED",
+  postId,
+});
+
+// Action handlers: passing array of the reducers for this action type
+//                  to apply sequence of the changes to the state tree
+const onSuccess = {
+  POST_DELETE_SUCCEEDED: [
+    // 1. hide spinner
+    (state, { postId }) =>
+      state.update("processingPosts", processingPosts => processingPosts.delete(postId)),
+
+    // 2. remove post entity
+    {
+      leaf: ["entities", "posts"], // <= keypath to the leaf of the state
+      reduce: (postsEntitiesState, { postId }) =>
+        postsEntitiesState
+          .updateIn(["index"], index => index.delete(postId))
+          .updateIn(["entities"], entities => entities.delete(postId)),
+    },
+  ],
+};
+```
+
+Notice how easy it is to follow what’s going on here because the logic of a single interaction is contained entirely in a single module. Try it and you will see how easy it is writing [code like this](https://github.com/shakacode/redux-tree/blob/master/example/src/app/ui/PostsList/interactions/postDelete.js).
+
+The key point is that an interaction decides which part(s) of the state will be updated in response to the action.
+
+## Introducing redux-tree
+
+<Highlight>
+  <A href="https://github.com/shakacode/redux-tree">github.com/shakacode/redux-tree</A>
+</Highlight>
+
+Under the hood, `redux-tree` is an alternative version of Redux’s `combineReducers`, which makes it possible to represent changes to the state as a sequence of functions. This allows describing interactions in a very concise and consistent manner.
+
+It’s super easy to integrate `redux-tree` into existing codebases as it supports classic reducers (so incremental adoption is absolutely possible) and it should be compatible with the most of the packages from Redux ecosystem. The main change it introduces is how Redux _internally_ iterates over the reducers.
+
+In the initial release of `redux-tree`, state is represented as an Immutable Record. We use Immutable a lot in our apps: it makes it easier to handle deep updates and prevent state mutations, Record allows access to properties using dot notation (as opposed to getters), and it’s possible to strongly type the state tree with Flow. So, [`immutable-js`](http://facebook.github.io/immutable-js/) is required (at least for now).
+
+Check out:
+
+- [redux-interactions](https://github.com/shakacode/redux-interactions)
+- [redux-tree](https://github.com/shakacode/redux-tree)
+
+And let me know how it works for you!
+
+
+<!-- ----------------------------------------------------------------------- -->
+
+import {
+  a as A,
+  note as Note,
+  inlineCode as C,
+  highlight as Highlight,
+} from "markdown";

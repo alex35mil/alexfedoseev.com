@@ -1,0 +1,35 @@
+[package]
+name = "alexfedoseev-com"
+version = "0.0.1"
+edition = "2018"
+authors = ["Alex Fedoseev <alex@fedoseev.mx>"]
+
+[[bin]]
+name = "af"
+path = "./cli/main.rs"
+
+[dependencies]
+tokio = { version = "1", features = ["rt-multi-thread", "macros", "fs", "signal"] }
+clap = "3.0.0-beta.2"
+steward = "=0.0.3"
+rusoto_core = "0.46.0"
+rusoto_s3 = "0.46.0"
+rusoto_ecr = "0.46.0"
+rusoto_ecs = "0.46.0"
+serde = "1.0.125"
+json = { package = "serde_json", version = "1.0.64" }
+base64 = "0.13.0"
+hex = "0.4.3"
+md5 = "0.7.0"
+hmac = "0.10.1"
+sha2 = "0.9.3"
+rand = "0.8.3"
+lazy_static = "1.4.0"
+async-recursion = "0.3.2"
+pathdiff = "0.2.0"
+indoc = "1.0"
+console = "0.14.1"
+indicatif = "0.15.0"
+anyhow = "1.0"
+thiserror = "1.0"
+dotenv = "0.15.0"

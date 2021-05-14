@@ -1,0 +1,52 @@
+@font-face {
+  font-family: "Noto Sans";
+  font-style: normal;
+  font-weight: 700;
+  src: local("Noto Sans Bold"), local("NotoSans-Bold"),
+       url("~fonts/noto-sans-v8-latin-700.woff2") format("woff2"),
+       url("~fonts/noto-sans-v8-latin-700.woff") format("woff");
+}
+
+* {
+  box-sizing: border-box;
+  transform-origin: 50% 50% 0;
+  margin: 0;
+  padding: 0;
+  outline-width: 0;
+  outline-style: none;
+  outline-offset: 0;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-tap-highlight-color: transparent;
+}
+
+*:focus:not(:focus-visible) {
+  outline: none;
+}
+
+html {
+  min-height: 100%;
+}
+
+html,
+body,
+#__next {
+  display: grid;
+  position: relative;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: var(--bg-color); /* ${Theme.bgColor} */
+  transition-property: background-color;
+  transition-duration: 250ms; /* ${Transition.moderate} */
+  transition-timing-function: ease-in-out; /* ${Transition.timingFunction} */
+  font-family: Menlo, Consolas, Courier New, monospace; /* ${Font.mono} */
+  font-size: 18px; /* ${Font.size} */
+  font-weight: 400; /* ${Font.normal} */
+  line-height: 1.5; /* ${Font.lineHeight} */
+}

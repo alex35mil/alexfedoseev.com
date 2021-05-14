@@ -1,0 +1,10 @@
+let blue = "#29d"
+let orange = "#ee8e00"
+let beige = "#f5f2f0"
+let white = "#fff"
+
+let twitter = "#1da1f2"
+let github = "#333"
+let instagram = "#e1306c"
+let facebook = "#3b5998"
+let linkedin = "#0077b5"

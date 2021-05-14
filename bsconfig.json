@@ -1,19 +1,24 @@
 {
   "name": "alexfedoseev.com",
   "sources": [
-    { "dir": "src", "subdirs": true }
+    { "dir": "app", "subdirs": true }
   ],
   "bs-dependencies": [
-    "reason-react",
-    "re-classnames",
-    "bs-webapi",
-    "bs-nprogress"
+    "@rescript/react",
+    "rescript-classnames",
+    "bs-webapi"
   ],
   "refmt": 3,
   "reason": {
     "react-jsx": 3
   },
-  "bsc-flags": ["-open Belt"],
+  "bsc-flags": [
+    "-open Belt",
+    "-open Cx"
+  ],
+  "ppx-flags": [
+    "rescript-linaria/ppx"
+  ],
   "suffix": ".bs.js",
   "package-specs": {
     "module": "es6",

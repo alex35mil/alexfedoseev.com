@@ -1,0 +1,112 @@
+---
+title: A Year of Development with Redux. Part I
+description: Our experience using Redux.js in production.
+category: Dev
+---
+
+I spent the past year working on the primary product of [ShakaCode](http://www.shakacode.com) and I’d like to share three biggest insights that I gained during this journey.
+
+## The App
+We’ve been working on a service called [Friends & Guests](https://www.friendsandguests.com). It is a vacation rental listing site which puts the relationships between hosts and guests first. It’s like Airbnb or VRBO, with social connections for referrals, guest discovery, and optional privacy.
+
+The app is backed by Rails with [`react_on_rails`](https://github.com/shakacode/react_on_rails) gem and UIs are built with React & Redux. We’re not fully a SPA yet, but each big section of the site is JS app and acts like mini-SPA.
+
+On the frontend we’re using:
+- [React](https://facebook.github.io/react)
+- [Redux](http://redux.js.org)
+- [Immutable](https://facebook.github.io/immutable-js)
+- [Reselect](https://github.com/reactjs/reselect)
+- [normalizr](https://github.com/paularmstrong/normalizr)
+
+and bunch of other great libs, non-related to this post.
+
+The section I’ve been mainly working on is the listings management interface, where the host can create a listing, edit it, manage privacy settings, photos and do other listings related things. This part of the JavaScript app consists of 3 sections:
+
+- [Wizard](https://cl.ly/iZba/Wizard.jpg)
+- [Listing Edit Screen](https://cl.ly/iZMq/Listing.jpg)
+- [Listings Index](https://cl.ly/iYpq/Listings.jpg)
+
+In our app, we try to persist the state on the server as much as we can. For example, when the host started the wizard or edited listing’s draft and left the site for a while — state is stored on the server, and he can get back to the same state anytime he likes. Edit Screen works similar to Medium’s posts: each listing has a draft record, which the host can edit and it won’t go live until host published it.
+
+## Insight #1
+In a vanilla React app when 2 UI components are located in different parts of UI and need same data, the only way to provide the data for both is to store it in stateful component on top of the render tree and pass it down via `props`.
+
+Similar pattern was used to implement Listings UI, but using Redux. We had a number of stores like `listingsStore`, `photosStore` etc. (To clarify: we have one redux store, but we call slices of the state, that are being transformed by reducers, each a store). Every store contained entities, form state for each entity, statuses (e.g. `isProcessing`) etc. From the store, data is combined via selectors and passed down to components — right from the top of the render tree. Like this:
+
+<InlineImage
+  src={topDownImage}
+  placement="bleed"
+/>
+
+Oh my, that was a bad idea! The render tree was nailed by data props and action creators. Every keystroke in the form field was causing re-render of the whole tree. In addition to that, there were debounced updates to persist input data on the server. The waterfalls of props and re-rendering resulted in a huge performance issue.
+
+To solve this we reconsidered the vanilla React pattern and used features of Redux. Instead of connecting view layer to the state at the top of the UI render tree, we removed top level containers and connected each interactive element (e.g. text input, publish button) or element, that needs data, to Redux state on its own. Thus most of the containers appeared at the tips of the render tree. Like this:
+
+<InlineImage
+  src={sideImage}
+  placement="fill"
+/>
+
+We split our stores on 2 types:
+- Data stores
+- View layer stores
+
+Data stores don’t know anything about UI. They hold only persisted data, and they provide the data to many connected view layer components via their selectors. Basically, it’s our database on the client.
+
+Usually, it’s shaped like this:
+
+```js
+const dataStore = Map({
+  index: Set([1, 2, 3]), // Set or OrderedSet of ids
+  entities: Map({
+    1: Map({ id: 1, … }),
+    2: Map({ id: 2, … }),
+    3: Map({ id: 3, … }),
+  }),
+});
+```
+
+<Expandable label="Tip: Normalize your ids">
+  <P>
+    If you use <C>Immutable</C>, <C>normalizr</C> and integer server ids, then make the type of these ids consistent across the client side app to deal only with numeric values.
+  </P>
+  <Ol>
+    <Li>
+      In selectors, convert stringified id (from url params) to int. Thus, the view layer will receive numeric values.
+    </Li>
+    <Li>
+      Create a wrapper for the normalize() method, which converts stringified keys of immutable Map to ints. Thus, you can safely use <C>state.getIn(['entities', entityId])</C> where entityId is an int.
+    </Li>
+  </Ol>
+</Expandable>
+
+For each interactive element in the UI we created its own reducer, selectors and / or set of action creators. And finally, this element was placed in its own container, where it connects to Redux store.
+
+With this change each form field keystroke will cause a re-render to only a tiny bit of the UI. At the same time, we are able to share the state of the form with others interested in these updates parts of UI. We just need to connect those container components to the store and fetch the required data via selectors.
+
+### Keep connected parts small
+This will help to avoid pernicious coupling. Rule of Thumb: if the distance between the point where prop is being passed and where it’s actually being used is more than 2 components deep, then consider changing the setup of containers and dumb components.
+
+This pattern makes UI code highly maintainable as each connected part is small and exists in isolation: it can be easily changed, moved or deleted with very low risks to break anything.
+
+---
+
+This change greatly improved a performance of the app but introduced some new issues, which are the subject of the <InternalLink path="/blog/dev/2017/year-of-development-with-redux-part-2">Part II</InternalLink>.
+
+Stay tuned!
+
+
+<!-- ----------------------------------------------------------------------- -->
+
+import {
+  p as P,
+  ol as Ol,
+  li as Li,
+  inlineCode as C,
+  inlineImage as InlineImage,
+  internalLink as InternalLink,
+  expandable as Expandable,
+} from "markdown";
+
+import topDownImage from "images/posts/2017-01-10--year-of-development-with-redux-part-1/01-top-down.png?preset=postContent";
+import sideImage from "images/posts/2017-01-10--year-of-development-with-redux-part-1/02-side.png?preset=postContent";

@@ -1,0 +1,25 @@
+/* Since we build a static html,
+ * duplicating theme colors here to avoid flash on initial render
+ */
+:root {
+  --theme: dark;
+  --bg-color: #333;
+  --text-color: #acacac;
+  --faded-text-color: #888;
+  --faded-icon-color: #888;
+  --line-color: #555;
+  --logo-color: #ccc;
+  --avatar-border-color: #aaa;
+  --github-hover-color: #555;
+  --post-sidenote-color: #888;
+  --post-expandable-content-bg-color: #3c3c3c;
+  --post-footer-nav-link-hover-bg-color: rgba(255, 255, 255, 0.02);
+  --badge-text-color: #d2d2d2;
+  --badge-bg-color: #6f6f6f;
+  --spinner-color: #595959;
+  --code-color: #c1c1c1;
+  --code-bg-color: #3c3c3c;
+  --code-label-bg-color: #757575;
+  --code-token-keyword-color: #0095d5;
+  --code-token-constant-color: #c91178;
+}
