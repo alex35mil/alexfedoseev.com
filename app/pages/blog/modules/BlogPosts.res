@@ -8,6 +8,16 @@ let dependencies: Js.Dict.t<Dependency.t> = {
 
   Js.Dict.fromArray([
     (
+      "2021-05-15--error-not-error",
+      {
+        component: dynamic(
+          () => Module.load("blog/posts/2021-05-15--error-not-error.mdx"),
+          spinner,
+        ),
+        cover: None,
+      },
+    ),
+    (
       "2021-04-11--home-inventory",
       {
         component: dynamic(() => Module.load("blog/posts/2021-04-11--home-inventory.mdx"), spinner),

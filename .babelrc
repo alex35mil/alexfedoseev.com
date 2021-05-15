@@ -8,7 +8,7 @@
     [
       "babel-plugin-prismjs",
       {
-        "languages": ["reason", "js", "jsx", "shell", "nginx"],
+        "languages": ["reason", "rust", "js", "jsx", "shell", "nginx"],
         "css": false
       }
     ]

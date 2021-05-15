@@ -1,0 +1,44 @@
+---
+title: Error Not Error
+description: A note on the stderr UNIX stream.
+category: Dev
+---
+
+I stumbled on a piece of my old code of some CLI utility and remembered what a mess caused my unawareness of this specificity of UNIX streams (I'm not sure if it applies to Windows).
+
+This is really counterintuitive but the `stderr` UNIX stream is not for errors only. It is for everything except the main result of a program.
+
+- Want to print a debug information? Send it to `stderr`.
+- Want to ask for a confirmation? Send it to `stderr`.
+- Want to print a progress? Send it to `stderr`.
+- Want to print a non-critical warning? Send it to `stderr`.
+- Want to print an error? Send it to `stderr`.
+
+The only case when you should print to `stdout` is when you have the final result of your program and only this result should go there.
+
+For example, if your program performs a file search, a list of the found files should go to `stdout`.
+
+If your program uploads specified files to a server and you want to print an informational message that all files were successfully uploaded, it should go to `stderr`.
+
+Why? Because users of your program should be able to pipe the results.
+
+Let's say you built a CLI program `answer` that answers the "ultimate question of life, the universe, and everything" (in Rust, of course).
+
+```rust
+println!("42");         // the main result, prints to stdout
+eprintln!("Answered!"); // informational message, prints to stderr
+```
+
+When you run it and pipe the results to `pbcopy` (macOS utility that puts data into a clipboard):
+
+```sh
+answer | pbcopy
+```
+
+In your terminal you will see:
+
+```
+Answered!
+```
+
+But in your clipboard, there will be `42`. Because `pbcopy` received data from `stdout` of your program via its `stdin` and placed it into your clipboard.
