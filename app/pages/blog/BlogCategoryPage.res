@@ -36,7 +36,7 @@ let getStaticPaths = () => {
 
 module Css = BlogCategoryPageStyles
 
-let metaImage: Image.basic = %raw("require('images/meta-blog.png?preset=basic')")
+@module("images/meta-blog.png?preset=basic") external metaImage: Image.basic = "default"
 
 @react.component
 let default = (~category: string, ~posts: BlogPosts.byYear) => {

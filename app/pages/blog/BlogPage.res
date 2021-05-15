@@ -12,7 +12,7 @@ let getStaticProps = _ => {
 
 module Css = BlogPageStyles
 
-let metaImage: Image.basic = %raw("require('images/meta-blog.png?preset=basic')")
+@module("images/meta-blog.png?preset=basic") external metaImage: Image.basic = "default"
 
 @react.component
 let default = (~posts: BlogPosts.byYear) => {

@@ -5,7 +5,7 @@ type error = [
 
 module Css = ErrorPageStyles
 
-let metaImage: Image.basic = %raw("require('images/meta.png?preset=basic')")
+@module("images/meta.png?preset=basic") external metaImage: Image.basic = "default"
 
 @react.component
 let default = (~error: error) => {

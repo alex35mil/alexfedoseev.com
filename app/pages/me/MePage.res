@@ -1,6 +1,6 @@
 module Css = MePageStyles
 
-let metaImage: Image.basic = %raw("require('images/meta-profile.png?preset=basic')")
+@module("images/meta-profile.png?preset=basic") external metaImage: Image.basic = "default"
 
 @react.component
 let default = () => {

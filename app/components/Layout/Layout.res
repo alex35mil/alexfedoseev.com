@@ -1,5 +1,8 @@
 module Css = LayoutStyles
 
+@module("images/sign-light.png?preset=basic") external signLight: Image.basic = "default"
+@module("images/sign-dark.png?preset=basic") external signDark: Image.basic = "default"
+
 @react.component
 let make = (~children) => {
   let router = Router.useRouter()
@@ -62,15 +65,8 @@ let make = (~children) => {
       <div className=Css.footerCopy>
         <span className=Css.footerText> {j`©`->React.string} </span>
         {switch theme {
-        | Light =>
-          <img
-            src=%raw("require('images/sign-light.png?preset=basic').src")
-            className=Css.copySignature
-          />
-        | Dark =>
-          <img
-            src=%raw("require('images/sign-dark.png?preset=basic').src") className=Css.copySignature
-          />
+        | Light => <img src=signLight.src className=Css.copySignature />
+        | Dark => <img src=signDark.src className=Css.copySignature />
         }}
         <span className=Css.footerText>
           {

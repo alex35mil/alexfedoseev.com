@@ -2,6 +2,18 @@ open BlogPost
 
 let spinner = Next.Dynamic.options(~loading=() => <Spinner />, ())
 
+@module("images/posts/2015-09-12--isomorphic-react-with-rails/cover.jpg?preset=postCover")
+external isomorphicReactWithRails_2015_09_12_cover: Image.fluid = "default"
+
+@module("images/posts/2017-03-18--redux-tree/cover.jpg?preset=postCover")
+external reduxTree_2017_03_18_cover: Image.fluid = "default"
+
+@module("images/posts/2017-08-10--tableau/cover.jpg?preset=postCover")
+external tableau_2017_08_10_cover: Image.fluid = "default"
+
+@module("images/posts/2020-10-08--turkey/20201001-DSC03210.jpg?preset=postCover")
+external turkey_2020_10_08_cover: Image.fluid = "default"
+
 let dependencies: Js.Dict.t<Dependency.t> = {
   open Dependency
   open Next.Dynamic
@@ -55,9 +67,7 @@ let dependencies: Js.Dict.t<Dependency.t> = {
       {
         component: dynamic(() => Module.load("blog/posts/2020-10-08--turkey.mdx"), spinner),
         cover: Some({
-          src: Module.require(
-            "images/posts/2020-10-08--turkey/20201001-DSC03210.jpg?preset=postCover",
-          ),
+          src: turkey_2020_10_08_cover,
           credit: None,
         }),
       },
@@ -114,7 +124,7 @@ let dependencies: Js.Dict.t<Dependency.t> = {
       {
         component: dynamic(() => Module.load("blog/posts/2017-08-10--tableau.mdx"), spinner),
         cover: Some({
-          src: Module.require("images/posts/2017-08-10--tableau/cover.jpg?preset=postCover"),
+          src: tableau_2017_08_10_cover,
           credit: None,
         }),
       },
@@ -124,7 +134,7 @@ let dependencies: Js.Dict.t<Dependency.t> = {
       {
         component: dynamic(() => Module.load("blog/posts/2017-03-18--redux-tree.mdx"), spinner),
         cover: Some({
-          src: Module.require("images/posts/2017-03-18--redux-tree/cover.jpg?preset=postCover"),
+          src: reduxTree_2017_03_18_cover,
           credit: Some({
             text: "veeterzy.com",
             url: Some("http://veeterzy.com"),
@@ -187,9 +197,7 @@ let dependencies: Js.Dict.t<Dependency.t> = {
           spinner,
         ),
         cover: Some({
-          src: Module.require(
-            "images/posts/2015-09-12--isomorphic-react-with-rails/cover.jpg?preset=postCover",
-          ),
+          src: isomorphicReactWithRails_2015_09_12_cover,
           credit: Some({
             text: "Blueprint of Victory",
             url: Some(

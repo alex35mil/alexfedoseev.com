@@ -46,7 +46,7 @@ let initialBox = box => {
   }->initialBox
 }
 
-let metaImage: Image.basic = %raw("require('images/meta-photo.png?preset=basic')")
+@module("images/meta-photo.png?preset=basic") external metaImage: Image.basic = "default"
 
 @react.component
 let default = () => {
@@ -142,8 +142,8 @@ let default = () => {
     switch PhotoSwipe.pidFromUrl() {
     | None => ()
     | Some(Ok(pid)) =>
-      let pid = pid->Photo.Id.pack
-      switch entries->Js.Array2.findIndex(((id, _, _, _)) => id->Photo.Id.eq(pid)) {
+      let pid = pid->Image.Id.pack
+      switch entries->Js.Array2.findIndex(((id, _, _, _)) => id->Image.Id.eq(pid)) {
       | -1 => router->Router.push(Route.photo)
       | _ as index =>
         gallery.init(
@@ -173,7 +173,7 @@ let default = () => {
       ->Array.mapWithIndex((index, (id, _, thumb, box)) =>
         <Thumb
           id
-          key={id->Photo.Id.toString}
+          key={id->Image.Id.toString}
           src=thumb
           box={switch screen {
           | None => box->initialBox

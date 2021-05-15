@@ -1,52 +1,8 @@
 module Css = PhotoStyles
 
-type id
-
-module Id = {
-  external pack: string => id = "%identity"
-  external toString: id => string = "%identity"
-  let eq = (x1, x2) => x1->toString == x2->toString
-}
-
-type rec src = {
-  srcset: srcset,
-  fallback: string,
-  placeholder: string,
-  width: int,
-  height: int,
-  aspectRatio: float,
-  orientation: orientation,
-}
-and srcset = {
-  sm: densities,
-  md: densities,
-  lg: densities,
-  xl: densities,
-}
-and densities = {
-  @as("@1x")
-  x1: density,
-  @as("@2x")
-  x2: density,
-  @as("@3x")
-  x3: density,
-}
-and density = {
-  src: string,
-  width: float,
-  height: float,
-}
-and orientation = [#landscape | #portrait | #square]
-
 module Thumb = {
-  type src
-
-  @get external width: src => int = "width"
-  @get external height: src => int = "height"
-  @get external aspectRatio: src => float = "aspectRatio"
-  @get @scope("srcset") external thumb: src => string = "thumb"
-  @get external fallback: src => string = "fallback"
-  @get external placeholder: src => string = "placeholder"
+  type rec src = Image.fixed<srcset>
+  and srcset = {thumb: string}
 
   type state =
     | Loading
@@ -64,9 +20,17 @@ module Thumb = {
     }
 
   @react.component
-  let make = (~id, ~src, ~className, ~controlStyle=?, ~figureStyle=?, ~imgStyle=?, ~onClick) => {
+  let make = (
+    ~id,
+    ~src: src,
+    ~className,
+    ~controlStyle=?,
+    ~figureStyle=?,
+    ~imgStyle=?,
+    ~onClick,
+  ) => {
     let photo = React.useRef(Js.Nullable.null)
-    let placeholder = src->placeholder
+    let placeholder = src.placeholder
 
     let baseFigureStyle = React.useMemo1(
       () =>
@@ -102,10 +66,10 @@ module Thumb = {
           ReactDOM.Style.combine(style, baseFigureStyle)
         )}>
         <img
-          id={id->Id.toString}
+          id={id->Image.Id.toString}
           ref={photo->ReactDOM.Ref.domRef}
-          src={src->fallback}
-          srcSet={src->thumb}
+          src={src.fallback}
+          srcSet={src.srcset.thumb}
           className={cx([
             Css.image,
             switch state {

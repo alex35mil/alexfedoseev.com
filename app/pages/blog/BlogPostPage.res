@@ -54,7 +54,7 @@ let getStaticPaths = () => {
   })
 }
 
-let defaultMetaImage: Image.basic = %raw("require('images/meta-blog.png?preset=basic')")
+@module("images/meta-blog.png?preset=basic") external defaultMetaImage: Image.basic = "default"
 
 @react.component
 let default = (
@@ -72,7 +72,7 @@ let default = (
       description=Custom(post.description)
       image={switch dep.cover {
       | None => defaultMetaImage.src
-      | Some(cover) => cover.src->BlogPost.Cover.fallback
+      | Some(cover) => cover.src.fallback
       }}
       ogType=#article
     />

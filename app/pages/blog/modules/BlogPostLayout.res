@@ -271,10 +271,9 @@ module CoverImage = {
     }
 
   @react.component
-  let make = (~src, ~credit: option<BlogPost.Cover.credit>, ~title: string) => {
+  let make = (~src: Image.fluid, ~credit: option<BlogPost.Cover.credit>, ~title: string) => {
     let screen = React.useContext(ScreenContext.ctx)
     let image = React.useRef(Js.Nullable.null)
-    let placeholder = src->BlogPost.Cover.placeholder
 
     let (state, dispatch) = reducer->React.useReducer({status: Loading, parallaxFactor: 0.})
 
@@ -318,7 +317,7 @@ module CoverImage = {
       <figure
         className=Css.coverImageFigure
         style={ReactDOM.Style.make(
-          ~backgroundImage=j`url("$placeholder")`,
+          ~backgroundImage=`url("${src.placeholder}")`,
           ~backgroundSize="cover",
           ~backgroundRepeat="no-repeat",
           ~backgroundPosition="50% 50%",
@@ -327,8 +326,8 @@ module CoverImage = {
         <img
           sizes="100vw"
           ref={image->ReactDOM.Ref.domRef}
-          src={src->BlogPost.Cover.fallback}
-          srcSet={src->BlogPost.Cover.srcset}
+          src={src.fallback}
+          srcSet={src.srcset}
           className={cx([
             Css.image,
             Css.coverImage,
@@ -463,8 +462,8 @@ module PhotoGallery = {
   open Px
 
   type photo = {
-    id: Photo.id,
-    src: Photo.src,
+    id: Image.id,
+    src: Image.raw,
     thumb: Photo.thumb,
     caption: option<string>,
   }
@@ -851,11 +850,11 @@ module PhotoGallery = {
 
     let getThumbBoundsFn = React.useCallback1(index => {
       let photo = photos->Array.getUnsafe(index)
-      open Web.Dom
-      document
-      ->Document.getElementById(photo.id->Photo.Id.toString, _)
+
+      Web.Dom.document
+      ->Web.Dom.Document.getElementById(photo.id->Image.Id.toString, _)
       ->Option.map(container => {
-        let container = container->Element.getBoundingClientRect
+        let container = container->Web.Dom.Element.getBoundingClientRect
         PhotoSwipe.ThumbBounds.make(
           ~x={
             open Web.Dom
@@ -879,8 +878,8 @@ module PhotoGallery = {
       switch PhotoSwipe.pidFromUrl() {
       | None => ()
       | Some(Ok(pid)) =>
-        let pid = pid->Photo.Id.pack
-        switch photos->Js.Array2.findIndex(photo => photo.id->Photo.Id.eq(pid)) {
+        let pid = pid->Image.Id.pack
+        switch photos->Js.Array2.findIndex(photo => photo.id->Image.Id.eq(pid)) {
         | -1 => ()
         | _ as index =>
           gallery.init(
@@ -899,7 +898,7 @@ module PhotoGallery = {
         {layout.thumbs
         ->Array.mapWithIndex((index, photo) =>
           <Photo.Thumb
-            key={photo.id->Photo.Id.toString}
+            key={photo.id->Image.Id.toString}
             id=photo.id
             src=photo.thumb
             className=Css.galleryThumb

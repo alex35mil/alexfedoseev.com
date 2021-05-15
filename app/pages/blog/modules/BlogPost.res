@@ -110,18 +110,13 @@ type category = Category.t
 
 module Cover = {
   type rec t = {
-    src: src,
+    src: Image.fluid,
     credit: option<credit>,
   }
-  and src
   and credit = {
     text: string,
     url: option<string>,
   }
-
-  @get external srcset: src => string = "srcset"
-  @get external fallback: src => string = "fallback"
-  @get external placeholder: src => string = "placeholder"
 }
 
 type cover = Cover.t

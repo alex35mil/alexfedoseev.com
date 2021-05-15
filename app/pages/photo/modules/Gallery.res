@@ -17,14 +17,14 @@ module Photo = {
 
   @obj
   external make: (
-    ~pid: Photo.id,
-    ~srcset: Photo.srcset,
+    ~pid: Image.id,
+    ~srcset: Image.Raw.srcset,
     ~msrc: string,
     ~title: string=?,
     unit,
   ) => t = ""
 
-  @get external srcset: t => Photo.srcset = "srcset"
+  @get external srcset: t => Image.Raw.srcset = "srcset"
 
   @set external setSrc: (t, string) => unit = "src"
   @set external setWidth: (t, float) => unit = "w"

@@ -1,12 +1,8 @@
 module Css = MainPageStyles
 
 module Photo = {
-  type photo
-
-  let photo: photo = %raw("require('images/me.png?preset=basicWithPlaceholder')")
-
-  @get external src: photo => string = "src"
-  @get external placeholder: photo => string = "placeholder"
+  @module("images/me.png?preset=basicWithPlaceholder")
+  external photo: Image.basicWithPlaceholder = "default"
 
   type state =
     | Loading
@@ -48,7 +44,7 @@ module Photo = {
         className={cx([Css.photo, Css.photoPlaceholder])}
         style={React.useMemo0(() =>
           ReactDOM.Style.make(
-            ~backgroundImage=`url(${photo->placeholder})`,
+            ~backgroundImage=`url(${photo.placeholder})`,
             ~backgroundSize="cover",
             ~backgroundRepeat="no-repeat",
             ~backgroundPosition="50% 50%",
@@ -57,7 +53,7 @@ module Photo = {
         )}
       />
       <img
-        src={photo->src}
+        src={photo.src}
         ref={photoRef->ReactDOM.Ref.domRef}
         className={cx([
           Css.photo,
@@ -73,7 +69,7 @@ module Photo = {
   }
 }
 
-let metaImage: Image.basic = %raw("require('images/meta.png?preset=basic')")
+@module("images/meta.png?preset=basic") external metaImage: Image.basic = "default"
 
 @react.component
 let default = () => {

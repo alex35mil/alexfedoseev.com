@@ -78,24 +78,28 @@ pub mod gallery {
         }
 
         pub fn full_size_require(&self) -> String {
-            format!(
-                "let {name}: Photo.src = %bs.raw(\"require('{path}?preset=photo')\")",
+            let external = format!(
+                r#"@module("{path}?preset=photo") external {name}: Image.raw = "default""#,
                 name = self.full_size_binding(),
                 path = self.rel_path(),
-            )
+            );
+            let binding = format!(r#"let {name} = {name}"#, name = self.full_size_binding(),);
+            format!("{}\n{}", external, binding)
         }
 
         pub fn thumb_require(&self) -> String {
-            format!(
-                "let {name}: Photo.thumb = %bs.raw(\"require('{path}?preset=galleryThumb')\")",
+            let external = format!(
+                r#"@module("{path}?preset=galleryThumb") external {name}: Photo.thumb = "default""#,
                 name = self.thumb_binding(),
                 path = self.rel_path(),
-            )
+            );
+            let binding = format!(r#"let {name} = {name}"#, name = self.thumb_binding(),);
+            format!("{}\n{}", external, binding)
         }
 
         pub fn array_item(&self) -> String {
             format!(
-                "  (\"{id}\"->Photo.Id.pack, {full_size}, {thumb}),",
+                r#"  ("{id}"->Image.Id.pack, {full_size}, {thumb}),"#,
                 id = self.id,
                 full_size = self.full_size_binding(),
                 thumb = self.thumb_binding()
