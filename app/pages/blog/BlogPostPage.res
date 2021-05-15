@@ -82,7 +82,6 @@ let default = (
         title=post.title
         date=post.date
         category=post.category
-        slug=post.slug
         cover=dep.cover
         prevPost={prevPost->Js.Null.toOption}
         nextPost={nextPost->Js.Null.toOption}>

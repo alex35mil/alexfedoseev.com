@@ -1,18 +1,5 @@
 module Css = BlogPostLayoutStyles
 
-module PostContext = {
-  type t = {
-    year: string,
-    category: BlogPost.category,
-    slug: string,
-  }
-
-  include ReactContext.Make({
-    type context = t
-    let defaultValue = {year: "", category: ""->Obj.magic, slug: ""}
-  })
-}
-
 module PhotoGalleryContext = {
   type t = {container: React.ref<Js.nullable<Dom.element>>}
 
@@ -171,6 +158,7 @@ module Code = {
       className->Option.map(cn => {
         let label = cn->Js.String.replaceByRe(languageRegExp, "", _)
         let language = switch label {
+        | "sh" => "shell"
         // Looks like Reason syntax works pretty well
         | "rescript" => "reason"
         | _ => label
@@ -203,9 +191,7 @@ module Code = {
     )
     let code = React.useMemo0(() =>
       switch language {
-      | Some((language, _)) =>
-        open Prism
-        source->highlight(language->Language.get, language)
+      | Some((language, _)) => source->Prism.highlight(language->Prism.Language.get, language)
       | None => source
       }
     )
@@ -1092,7 +1078,6 @@ module Footer = {
 let make = (
   ~title,
   ~category,
-  ~slug,
   ~cover: option<BlogPost.cover>,
   ~date,
   ~prevPost,
@@ -1101,27 +1086,25 @@ let make = (
 ) => {
   let galleryContainer = React.useRef(Js.Nullable.null)
 
-  <PostContext.Provider value={year: date->BlogPost.Date.year, category: category, slug: slug}>
-    <PhotoGalleryContext.Provider value={container: galleryContainer}>
-      {<>
-        <div className=Css.container>
-          {switch cover {
-          | None => <H1> {title->React.string} </H1>
-          | Some(cover) => <CoverImage src=cover.src credit=cover.credit title />
-          }}
-          <div className=Css.details>
-            {"Posted in "->React.string}
-            <Link path={category->Route.blogCategory} underline=Always className=Css.categoryLink>
-              {category->BlogPost.Category.format->React.string}
-            </Link>
-            {` · `->React.string}
-            {date->BlogPost.Date.format->React.string}
-          </div>
-          <div className=Css.content> children </div>
-          <Footer title prevPost nextPost />
+  <PhotoGalleryContext.Provider value={container: galleryContainer}>
+    {<>
+      <div className=Css.container>
+        {switch cover {
+        | None => <H1> {title->React.string} </H1>
+        | Some(cover) => <CoverImage src=cover.src credit=cover.credit title />
+        }}
+        <div className=Css.details>
+          {"Posted in "->React.string}
+          <Link path={category->Route.blogCategory} underline=Always className=Css.categoryLink>
+            {category->BlogPost.Category.format->React.string}
+          </Link>
+          {` · `->React.string}
+          {date->BlogPost.Date.format->React.string}
         </div>
-        <Gallery ref=galleryContainer />
-      </>}
-    </PhotoGalleryContext.Provider>
-  </PostContext.Provider>
+        <div className=Css.content> children </div>
+        <Footer title prevPost nextPost />
+      </div>
+      <Gallery ref=galleryContainer />
+    </>}
+  </PhotoGalleryContext.Provider>
 }
