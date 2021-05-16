@@ -116,4 +116,4 @@ const config = {
   },
 };
 
-module.exports = withTM(withLinaria(withMDX(config)));
+module.exports = withLinaria(withMDX(withTM(config)));
