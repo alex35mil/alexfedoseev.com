@@ -455,6 +455,7 @@ impl ProgressBar {
                 ))
                 .progress_chars("=> "),
         );
+        self.bar.enable_steady_tick(120);
     }
 
     pub fn update(&mut self, progress: usize) {
