@@ -28,8 +28,8 @@ let sherry: t
 let reFormality: t
 let reDnd: t
 let reCss: t
-let reClassnames: t
-let reDebouncer: t
-let bsLog: t
+let rescriptClassnames: t
+let rescriptDebouncer: t
+let rescriptLogger: t
 let steward: t
 let conform: t

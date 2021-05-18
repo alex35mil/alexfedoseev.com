@@ -1,6 +1,6 @@
 ---
-title: Safe Routing in ReasonML
-description: How to approach a routing in ReasonML.
+title: Safe Routing in ReScript
+description: How to approach a routing in ReScript.
 category: Dev
 ---
 
@@ -23,8 +23,8 @@ Before we get started, here is the link to the example apps, in case you want to
 
 There are 2 key modules you should pay attention to:
 
-- `Route.re`: application routes
-- `Router.re`: router specific code
+- `Route.res`: application routes
+- `Router.res`: router specific code
 
 Now, let’s dive into details.
 
@@ -34,73 +34,72 @@ This step is one of the very first steps performed on an application start. To s
 
 Since current route might have only one value at the given moment in time, this is a perfect case for a variant:
 
-```reason
-// @file: Route.re
+```rescript
+// @file: Route.res
 
 type t =
   | Main
   | Posts
-  | Post({slug: string});
+  | Post({slug: string})
 ```
 
-To convert browser url into this type, we will use a router that comes with `reason-react` (honestly, this is all you need to handle routing in your web apps).
+To convert browser url into this type, we will use a router that comes with `@rescript/react` (honestly, this is all you need to handle routing in your web apps).
 
-It provides a hook `ReasonReactRouter.useUrl()` which returns `url` record:
+It provides a hook `RescriptReactRouter.useUrl()` which returns `url` record:
 
-```reason
+```rescript
 type url = {
-  path: list(string),
+  path: list<string>,
   // ... other props like hash, search etc.
-};
+}
 ```
 
-Let’s implement a function `Route.fromUrl` that takes `ReasonReactRouter.url` and returns `option(Route.t)`.
+Let’s implement a function `Route.fromUrl` that takes `RescriptReactRouter.url` and returns `option<Route.t>`.
 
-```reason
-// @file: Route.re
+```rescript
+// @file: Route.res
 
 type t =
   | Main
   | Posts
-  | Post({slug: string});
+  | Post({slug: string})
 
-let fromUrl = (url: ReasonReactRouter.url) =>
-  switch (url.path) {
-  | [] => Main->Some
-  | ["posts"] => Posts->Some
-  | ["posts", slug] => Post({slug: slug})->Some
+let fromUrl = (url: RescriptReactRouter.url) =>
+  switch url.path {
+  | list{} => Main->Some
+  | list{"posts"} => Posts->Some
+  | list{"posts", slug} => Post({slug: slug})->Some
   | _ => None // 404
-  };
+  }
 ```
 
-Alright, now we can deserialize url that comes from a browser into our own safe type. We can wrap `ReasonReactRouter.useUrl` hook into a thin application-specific hook that would produce app route:
+Alright, now we can deserialize url that comes from a browser into our own safe type. We can wrap `RescriptReactRouter.useUrl` hook into a thin application-specific hook that would produce app route:
 
-```reason
-// @file: Router.re
+```rescript
+// @file: Router.res
 
-let useRouter = () => ReasonReactRouter.useUrl()->Route.fromUrl;
+let useRouter = () => RescriptReactRouter.useUrl()->Route.fromUrl
 ```
 
 And finally, we can render the app:
 
-```reason
-// @file: App.re
+```rescript
+// @file: App.res
 
-[@react.component]
+@react.component
 let make = () => {
-  let route = Router.useRouter();
+  let route = Router.useRouter()
 
-  switch (route) {
+  switch route {
   | Some(Main) => <Main />
   | Some(Posts) => <Posts />
   | Some(Post({slug})) => <Post slug />
   | None => <NotFound />
-  };
-};
+  }
+}
 ```
 
 ## Navigation
-
 Now when we rendered UI, we should provide a way to navigate from one screen to another. In general, there are 2 ways navigation can be approached:
 
 1. via HTML links
@@ -114,53 +113,52 @@ Therefore, the task is reduced to the implementation of 2 handlers:
 I can offer two ways to solve this problem: one is more concise but with additional runtime overhead, and another one is faster performance-wise but requires additional type. Let’s start with the former.
 
 ### Using single type for matching and navigation
-
 If your app doesn't have a lot of links, this approach should be good to go. We already have `Route.t` type implemented. To be able to dispatch it to a browser, we need to implement `toString` function that would take `Route.t` and return a url string that browser expects.
 
-```reason
-// @file: Route.re
+```rescript
+// @file: Route.res
 
 let toString = route =>
-  switch (route) {
+  switch route {
   | Main => "/"
   | Posts => "/posts"
-  | Post({slug}) => {j|/posts/$(slug)|j}
-  };
+  | Post({slug}) => `/posts/${slug}`
+  }
 ```
 
 And this is all we need to implement `Router.Link` component and `Router.push` function.
 
-```reason
-// @file: Router.re
+```rescript
+// @file: Router.res
 
-let push = (route: Route.t) => route->Route.toString->ReasonReactRouter.push;
+let push = (route: Route.t) => route->Route.toString->RescriptReactRouter.push
 
 module Link = {
-  [@react.component]
+  @react.component
   let make = (~route: Route.t, ~children) => {
-    let location = route->Route.toString;
+    let location = route->Route.toString
 
     <a
       href=location
       onClick={event =>
         // Simplified implementation of handler
         // See example repository for the full version
-        event->ReactEvent.Mouse.preventDefault;
-        location->ReasonReactRouter.push;
+        event->ReactEvent.Mouse.preventDefault
+        location->RescriptReactRouter.push
       }>
       children
-    </a>;
-  };
-};
+    </a>
+  }
+}
 ```
 
 Note that both these functions accept `Route.t` type instead of arbitrary `string`, which makes it impossible to dispatch a wrong url through these interfaces.
 
 A link in the app would look like this:
 
-```reason
+```rescript
 <Router.Link route=Posts>
-  "Posts"->React.string
+  {"Posts"->React.string}
 </Router.Link>
 ```
 
@@ -170,22 +168,22 @@ This approach has one downside though. If you render a lot of links, you might n
 
 <P>
   This approach is similar to the one we discussed in{" "}
-  <InternalLink path="/blog/dev/2020/reasonml-safe-identifiers">“Safe Identifiers”</InternalLink> post.
+  <InternalLink path="/blog/dev/2020/safe-identifiers-in-rescript">“Safe Identifiers”</InternalLink> post.
   We can skip the serialization step and make it zero-cost. The trade-off is that we must introduce
   a new type and handle packing/unpacking.
 </P>
 
-```reason
-// @file: Route.t
+```rescript
+// @file: Route.res
 
-type t';
+type t'
 
-external make: string => t' = "%identity";
-external toString: t' => string = "%identity";
+external make: string => t' = "%identity"
+external toString: t' => string = "%identity"
 
-let main = "/"->make;
-let posts = "/posts"->make;
-let post = (~slug: string) => {j|/posts/$(slug)|j}->make;
+let main = "/"->make
+let posts = "/posts"->make
+let post = (~slug: string) => `/posts/${slug}`->make
 ```
 
 Here, we introduced abstract type `t'`. This is the type that would be accepted by `Router.Link` component and `Router.push` function instead of `Route.t` variant. And this is the only change to `Router` module implementation.
@@ -194,31 +192,31 @@ Inside the `Route` module, we pack every URL string into `Route.t'`, so only URL
 
 Finishing touch to make implementation completely safe is creating `Route.rei` interface file, in which we remove `make` function thus it won’t be exposed to the rest of the app and it won’t be possible to create `Route.t'` outside of the `Route` module.
 
-```reason
-// @file: Route.rei
+```rescript
+// @file: Route.resi
 
 type t =
   | Main
   | Posts
-  | Post({slug: string});
+  | Post({slug: string})
 
-let fromUrl: ReasonReactRouter.url => option(t);
+let fromUrl: RescriptReactRouter.url => option<t>
 
-type t';
+type t'
 
 // No `make` external here
-external toString: t' => string = "%identity";
+external toString: t' => string = "%identity"
 
-let main: t';
-let posts: t';
-let post: (~slug: string) => t';
+let main: t'
+let posts: t'
+let post: (~slug: string) => t'
 ```
 
 Now you can render links as following:
 
-```reason
+```rescript
 <Router.Link route=Route.posts>
-  "Posts"->React.string
+  {"Posts"->React.string}
 </Router.Link>
 ```
 

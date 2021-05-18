@@ -1,5 +1,12 @@
 {
   "public": false,
   "cleanUrls": true,
-  "trailingSlash": false
+  "trailingSlash": false,
+  "redirects": [
+    { "source": "/blog/dev/2018/reasonml-modules", "destination": "/blog/dev/2018/rescript-modules" },
+    { "source": "/blog/dev/2018/eliminating-illegal-state-in-reasonml", "destination": "/blog/dev/2018/eliminating-illegal-state-in-rescript" },
+    { "source": "/blog/dev/2020/safe-identifiers-in-reasonml", "destination": "/blog/dev/2020/safe-identifiers-in-rescript" },
+    { "source": "/blog/dev/2020/safe-routing-in-reasonml", "destination": "/blog/dev/2020/safe-routing-in-rescript" },
+    { "source": "/blog/dev/2020/cool-things-you-can-do-with-first-class-modules-in-reason-react", "destination": "/blog/dev/2020/cool-things-you-can-do-with-first-class-modules-in-rescript-react" }
+  ]
 }

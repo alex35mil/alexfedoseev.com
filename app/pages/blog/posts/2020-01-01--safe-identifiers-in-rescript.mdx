@@ -1,6 +1,6 @@
 ---
-title: Safe Identifiers in ReasonML
-description: How to approach identifiers in ReasonML.
+title: Safe Identifiers in ReScript
+description: How to approach identifiers in ReScript.
 category: Dev
 ---
 
@@ -8,59 +8,59 @@ Pretty much each entity in our apps has special field that uniquely identifies i
 
 Consider `todo` entity of the following type:
 
-```reason
+```rescript
 type todo = {
   id: int,
   title: string,
-};
+}
 ```
 
 As a first step to make its identifier safer, let's create `TodoId` module and move type of `todo.id` to this module:
 
-```reason
+```rescript
 module TodoId = {
-  type t = int;
-};
+  type t = int
+}
 
 type todo = {
   id: TodoId.t,
   title: string,
-};
+}
 ```
 
 With this change, we didn't gain any additional safety yet since compiler still resolves the type of identifier to `int`. Basically, we just aliased it in our code but nothing has changed for compiler. To gain extra safety, we must hide underlying type of `TodoId.t` from the rest of the app and make this type _opaque_.
 
-```reason
-module TodoId: {type t;} = {
-  type t = int;
-};
+```rescript
+module TodoId: {type t} = {
+  type t = int
+}
 ```
 
 Spot the difference: in this version we annotated `TodoId` module. And within this annotation, type `t` doesn't have any special type assigned, it is opaque to the rest of the app. Though inside the module it is still aliased to `int`, but only internals of `TodoId` module are aware of it.
 
 How it affects a program flow:
 
-```reason
+```rescript
 // Before
-let x = todo.id + 1; // Compiles
+let x = todo.id + 1 // Compiles
 
 // After
-let x = todo.id + 1; // Error: This expression has type TodoId.t but an expression was expected of type int
+let x = todo.id + 1 // Error: This expression has type TodoId.t but an expression was expected of type int
 ```
 
 Now we have compile time guarantees that todo identifier can never be confused with any other identifier or arbitrary `int`.
 
 As we will have to be dealing with conversion of raw value of identifier (from int or json or whatever) to the opaque type and back, `TodoId` module is going to contain such functions as `make`, `toInt`, `toString`, `fromJson`, `toJson`. Let's implement `make` function and restructure `TodoId` module a bit so we don't have to annotate all of its content.
 
-```reason
+```rescript
 module TodoId = {
-  module Id: {type t;} = {
-    type t = int;
-  };
+  module Id: {type t} = {
+    type t = int
+  }
 
-  type t = Id.t;
-  external make: int => t = "%identity";
-};
+  type t = Id.t
+  external make: int => t = "%identity"
+}
 ```
 
 What we did here is hidden implementation of todo identifier in `Id` submodule and implemented `make` function which casts `int` to `t` using `"%identity"` external. Now, `TodoId.make(1)` would produce entity of `TodoId.t` type.
@@ -71,24 +71,56 @@ As a side note, `make` function doesn't have any runtime footprint and gets eras
 
 If you find using `%identity` too hacky for your taste, you can get away with another approach that doesn't involve `external` and has pretty much the same runtime cost (just a tiny bit of additional code in the output).
 
-```reason
+```rescript
 module TodoId = {
   module Id: {
-    type t;
-    let make: int => t;
+    type t
+    let make: int => t
   } = {
-    type t = int;
-    let make = x => x;
-  };
+    type t = int
+    let make = x => x
+  }
 
-  type t = Id.t;
-  let make = Id.make;
-};
+  type t = Id.t
+  let make = Id.make
+}
 ```
 
-As you can see, we added `make` function to `Id` module which simply does nothing on the runtime level: it accepts argument and returns it back to a caller. The interesting part is in annotation: `let make: int => t;`. Here we hint to compiler that this function takes `int` and returns `t`. Since `t` _is_ `int` inside the `Id` module, it makes perfect sense to compiler. And since implementation of `t` is not exposed, `make` casts `int` to `t` on the type level for the rest of the app.
+As you can see, we added `make` function to `Id` module which simply does nothing on the runtime level: it accepts argument and returns it back to a caller. The interesting part is in annotation: `let make: int => t`. Here we hint to compiler that this function takes `int` and returns `t`. Since `t` _is_ `int` inside the `Id` module, it makes perfect sense to compiler. And since implementation of `t` is not exposed, `make` casts `int` to `t` on the type level for the rest of the app.
 
 `TodoId.make(1)` still doesn't have any runtime footprint, but since we used `let` binding for `make` function, this function would be rendered in the output.
+
+## Making an implementation reusable
+Usually, apps have a bunch of different identifiers, and repeating such implementation for each kind of id is tedious. But we can abstract away this logic into a _functor_.
+
+<Note>
+  Functor is a function in a modules space. When you call a functor it returns a new module. More on functors in the <A href="https://rescript-lang.org/docs/manual/latest/module#module-functions-functors">official documentation</A>.
+</Note>
+
+```rescript
+// @file: Id.res
+
+module Make = () => {
+  module Id: {type t} = {
+    type t = int
+  }
+
+  type t = Id.t
+
+  external make: int => t = "%identity"
+  external toInt: t => int = "%identity"
+  let toString = ...
+  let toJson = ...
+  let fromJson = ...
+}
+```
+
+Then you can create `*Id` modules simply by calling a functor:
+
+```rescript
+module TodoId = Id.Make()
+module TodoListId = Id.Make()
+```
 
 ---
 
@@ -102,5 +134,6 @@ As you can see, we added `make` function to `Id` module which simply does nothin
 
 import {
   a as A,
+  note as Note,
   crossPostNote as CrossPostNote,
 } from "markdown";

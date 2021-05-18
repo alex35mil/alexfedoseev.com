@@ -1,13 +1,13 @@
 ---
-title: Cool Things You Can Do with First-Class Modules in ReasonReact
+title: Cool Things You Can Do with First-Class Modules in ReScriptReact
 description: Practical introduction into one of the advanced features of ReScript.
 category: Dev
 ---
 
-After the years of working with [ReScript](https://rescript-lang.org) ([formerly known as BuckleScript](https://rescript-lang.org/blog/bucklescript-is-rebranding)), I find its module system to be one of the best. The more I used the language, the more extensively I used its modules. One of the critical parts of the ecosystem that leverages it heavily is ReasonReact. This post is about not so widely known advanced feature of the language, that helps to build handy abstractions over ReasonReact components.
+After the years of working with [ReScript](https://rescript-lang.org) ([formerly known as BuckleScript](https://rescript-lang.org/blog/bucklescript-is-rebranding)), I find its module system to be one of the best. The more I used the language, the more extensively I used its modules. One of the critical parts of the ecosystem that leverages it heavily is ReScriptReact. This post is about not so widely known advanced feature of the language, that helps to build handy abstractions over ReScriptReact components.
 
 ## Components as props
-It is common in React.js apps, passing around components via props. Since in JS, a React component is a function (or class, which is just a special kind of function), it's trivial to pass it around. In ReasonReact, components are modules, which makes component-via-props pattern hardly usable.
+It is common in React.js apps, passing around components via props. Since in JS, a React component is a function (or class, which is just a special kind of function), it's trivial to pass it around. In ReScriptReact, components are modules, which makes component-via-props pattern hardly usable.
 
 One of the possible solutions is to replace a component with a function that produces `React.element`.
 
@@ -57,7 +57,7 @@ What I want is that I could provide an icon component and the `Button` internall
 Turned out, it's possible with one constraint and a little bit of additional work.
 
 ### First-class modules
-As mentioned, a ReasonReact component is a module. In ReScript, modules exist in separate language space from common types and functions. It's not possible to take a module as-is and pass it as an argument to a function. So `<Button icon={BinIcon}>` wouldn't work.
+As mentioned, a ReScriptReact component is a module. In ReScript, modules exist in separate language space from common types and functions. It's not possible to take a module as-is and pass it as an argument to a function. So `<Button icon={BinIcon}>` wouldn't work.
 
 Luckily, OCaml has an advanced feature called [first-class modules](https://dev.realworldocaml.org/first-class-modules.html). It allows to take a module, pack it into a special container that can exist in a functions space. I.e. it can be passed to or returned from a general function.
 
@@ -118,7 +118,7 @@ module(Teenager)->age // returns 17
 Now, let's apply this to the button with icon case.
 
 ### Back to the Button
-As you might already figured, in ReasonReact, it wouldn't be possible to pack _any_ icon component with _any_ set of props into a first-class module. To be able to pass an icon to the `Button`, the former must conform to a strict interface. E.g., an icon component must accept `size` prop and return `React.element`.
+As you might already figured, in ReScriptReact, it wouldn't be possible to pack _any_ icon component with _any_ set of props into a first-class module. To be able to pass an icon to the `Button`, the former must conform to a strict interface. E.g., an icon component must accept `size` prop and return `React.element`.
 
 ```rescript
 module type Icon = {

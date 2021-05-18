@@ -37,7 +37,7 @@ let default = () => {
         <div className=Css.content>
           <p>
             {"I use "->React.string}
-            <span className=Css.stackItem> {"ReasonML"->React.string} </span>
+            <span className=Css.stackItem> {"ReScript"->React.string} </span>
             {" / "->React.string}
             <span className=Css.stackItem> {"OCaml"->React.string} </span>
             {" for making web clients. "->React.string}
@@ -108,41 +108,43 @@ let default = () => {
                 {"re-formality"->React.string}
               </A>
             </div>
-            <div> {"Forms management for ReasonML."->React.string} </div>
+            <div> {"Forms management for ReScript."->React.string} </div>
           </div>
           <div className=Css.contentBlock>
             <div className=Css.contentSubheading>
               <A href=Route.reDnd target=Blank underline=Always> {"re-dnd"->React.string} </A>
             </div>
-            <div> {"Drag'n'Drop solution for ReasonML."->React.string} </div>
+            <div> {"Drag'n'Drop solution for ReScript."->React.string} </div>
           </div>
           <div className=Css.contentBlock>
             <div className=Css.contentSubheading>
               <A href=Route.reCss target=Blank underline=Always> {"re-css"->React.string} </A>
             </div>
-            <div> {"Typed CSS spec for ReasonML."->React.string} </div>
+            <div> {"Typed CSS spec for ReScript."->React.string} </div>
           </div>
           <div className=Css.contentBlock>
             <div className=Css.contentSubheading>
-              <A href=Route.reClassnames target=Blank underline=Always>
-                {"re-classnames"->React.string}
+              <A href=Route.rescriptClassnames target=Blank underline=Always>
+                {"rescript-classnames"->React.string}
               </A>
             </div>
-            <div> {"Classnames utility for ReasonML."->React.string} </div>
+            <div> {"Classnames utility for ReScript."->React.string} </div>
           </div>
           <div className=Css.contentBlock>
             <div className=Css.contentSubheading>
-              <A href=Route.reDebouncer target=Blank underline=Always>
-                {"re-debouncer"->React.string}
+              <A href=Route.rescriptDebouncer target=Blank underline=Always>
+                {"rescript-debouncer"->React.string}
               </A>
             </div>
-            <div> {"Debouncer for ReasonML."->React.string} </div>
+            <div> {"Debouncer for ReScript."->React.string} </div>
           </div>
           <div className=Css.contentBlock>
             <div className=Css.contentSubheading>
-              <A href=Route.bsLog target=Blank underline=Always> {"bs-log"->React.string} </A>
+              <A href=Route.rescriptLogger target=Blank underline=Always>
+                {"rescript-logger"->React.string}
+              </A>
             </div>
-            <div> {"Logging solution for ReasonML."->React.string} </div>
+            <div> {"Logging solution for ReScript."->React.string} </div>
           </div>
           <div className=Css.contentBlock>
             <div className=Css.contentSubheading>

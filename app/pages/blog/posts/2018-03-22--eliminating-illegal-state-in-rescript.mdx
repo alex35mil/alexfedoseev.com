@@ -1,10 +1,10 @@
 ---
-title: Eliminating Illegal State in ReasonML
-description: Rock-solid state representation in ReasonML.
+title: Eliminating Illegal State in ReScript
+description: Rock-solid state representation in ReScript.
 category: Dev
 ---
 
-Next thing I’d like to share is how [ReasonML](https://reasonml.github.io) helps in making illegal states unrepresentable in our apps.
+Next thing I’d like to share is how [ReScript](https://rescript-lang.org) helps in making illegal states unrepresentable in our apps.
 
 Here’s the common pattern of shaping a state in JS:
 
@@ -70,31 +70,31 @@ I look at the code above and I’m just sad.
 ## The light
 First of all, let me introduce you to the thing called `variant`.
 
-```reason
+```rescript
 type status =
-| Loading
-| Ready
-| Error;
+  | Loading
+  | Ready
+  | Error
 ```
 
 This is type similar to `enum` in TS except its parts are not strings (nor any other data type you familiar with from JS). These things called `tags` (or `constructors`).
 
 Now the magic moment: every `tag` can hold its own payload!
 
-```reason
-type status =
-| Loading
-| Ready('data)
-| Error('error);
+```rescript
+type status<'data, 'error> =
+  | Loading
+  | Ready('data)
+  | Error('error)
 ```
 
-If you’re not there yet, here’s the code (mixing Reason & JS just for clarity’s sake!):
+If you’re not there yet, here’s the code (mixing ReScript & JS just for clarity’s sake!):
 
-```reason
-type Status =
-| Loading
-| Ready('data)
-| Error('error);
+```rescript
+type Status<'data, 'error> =
+  | Loading
+  | Ready('data)
+  | Error('error);
 
 type State = {status: Status};
 
@@ -121,6 +121,6 @@ class Foo extends React.Component {
 }
 ```
 
-How beautiful is that! There’s no way to get into an illegal state in this component. Everything is type safe. Combine it with “everything is an expression” in Reason and you can use pattern matching at any point of your JSX render tree (spot `switch` as a child of `<Layout />`).
+How beautiful is that! There’s no way to get into an illegal state in this component. Everything is type safe. Combine it with “everything is an expression” in ReScript and you can use pattern matching at any point of your JSX render tree (spot `switch` as a child of `<Layout />`).
 
-You know [what to do](https://reasonml.github.io/docs/en/quickstart-javascript.html).
+You know [what to do](https://rescript-lang.org/docs/manual/latest/introduction).

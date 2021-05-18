@@ -43,12 +43,12 @@ let dependencies: Js.Dict.t<Dependency.t> = {
       },
     ),
     (
-      "2020-10-31--cool-things-you-can-do-with-first-class-modules-in-reason-react",
+      "2020-10-31--cool-things-you-can-do-with-first-class-modules-in-rescript-react",
       {
         component: dynamic(
           () =>
             Module.load(
-              "blog/posts/2020-10-31--cool-things-you-can-do-with-first-class-modules-in-reason-react.mdx",
+              "blog/posts/2020-10-31--cool-things-you-can-do-with-first-class-modules-in-rescript-react.mdx",
             ),
           loading(),
         ),
@@ -79,20 +79,20 @@ let dependencies: Js.Dict.t<Dependency.t> = {
       },
     ),
     (
-      "2020-01-04--safe-routing-in-reasonml",
+      "2020-01-04--safe-routing-in-rescript",
       {
         component: dynamic(
-          () => Module.load("blog/posts/2020-01-04--safe-routing-in-reasonml.mdx"),
+          () => Module.load("blog/posts/2020-01-04--safe-routing-in-rescript.mdx"),
           loading(),
         ),
         cover: None,
       },
     ),
     (
-      "2020-01-01--safe-identifiers-in-reasonml",
+      "2020-01-01--safe-identifiers-in-rescript",
       {
         component: dynamic(
-          () => Module.load("blog/posts/2020-01-01--safe-identifiers-in-reasonml.mdx"),
+          () => Module.load("blog/posts/2020-01-01--safe-identifiers-in-rescript.mdx"),
           loading(),
         ),
         cover: None,
@@ -106,20 +106,20 @@ let dependencies: Js.Dict.t<Dependency.t> = {
       },
     ),
     (
-      "2018-03-22--eliminating-illegal-state-in-reasonml",
+      "2018-03-22--eliminating-illegal-state-in-rescript",
       {
         component: dynamic(
-          () => Module.load("blog/posts/2018-03-22--eliminating-illegal-state-in-reasonml.mdx"),
+          () => Module.load("blog/posts/2018-03-22--eliminating-illegal-state-in-rescript.mdx"),
           loading(),
         ),
         cover: None,
       },
     ),
     (
-      "2018-03-13--reasonml-modules",
+      "2018-03-13--rescript-modules",
       {
         component: dynamic(
-          () => Module.load("blog/posts/2018-03-13--reasonml-modules.mdx"),
+          () => Module.load("blog/posts/2018-03-13--rescript-modules.mdx"),
           loading(),
         ),
         cover: None,
