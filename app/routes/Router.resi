@@ -1,7 +1,6 @@
-type t
+type t = Next.Router.t
 
 let route: t => Route.t
-let asPath: t => string
 
 @module("next/router") external useRouter: unit => t = "useRouter"
 

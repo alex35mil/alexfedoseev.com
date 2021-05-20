@@ -36,6 +36,7 @@ const config = {
     WEB_DOMAIN: process.env.WEB_DOMAIN,
     TWITTER_HANDLE: process.env.TWITTER_HANDLE,
     FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID,
+    GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
   },
   future: {webpack5: true},
   webpack: (config, options) => {

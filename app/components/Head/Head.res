@@ -56,7 +56,7 @@ let make = (
     <meta property="og:description" content=description />
     <meta property="og:image" content=image />
     <meta property="article:author" content={Route.facebook->Route.unpack} />
-    <meta property="og:url" content={`https://${Env.webDomain}${router->Router.asPath}`} />
+    <meta property="og:url" content={`https://${Env.webDomain}${router.asPath}`} />
     <meta property="fb:app_id" content={Env.facebookAppId} />
     <link rel="shortcut icon" href="/favicon.ico" />
   </Next.Head>

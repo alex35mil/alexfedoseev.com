@@ -8,4 +8,7 @@ external twitterHandle: string = "TWITTER_HANDLE"
 external facebookAppId: string = "FACEBOOK_APP_ID"
 
 @val @scope(("process", "env"))
+external gaMeasurementId: string = "GA_MEASUREMENT_ID"
+
+@val @scope(("process", "env"))
 external blogPostsDir: string = "BLOG_POSTS_DIR"
