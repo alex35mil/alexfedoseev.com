@@ -2,8 +2,6 @@ include %css(
   let largeScreen = "(min-width: 801px)"
   let smallScreen = "(max-width: 800px)"
 
-  let photoSize = 130
-
   let container = css`
     display: grid;
     grid-template-rows: 1fr max-content 1fr;
@@ -39,6 +37,7 @@ include %css(
     display: flex;
   `
 
+  let photoSize = 130
   let photoBorderSize = 4
 
   let photoContainer = css`
@@ -46,48 +45,19 @@ include %css(
     position: relative;
     box-sizing: content-box;
     border-width: ${photoBorderSize}px;
+    border-radius: 50%;
     border-style: solid;
-    border-color: transparent;
+    border-color: ${Theme.avatarBorderColor};
     width: ${photoSize}px;
     height: ${photoSize}px;
+    overflow: hidden;
   `
 
   let photo = css`
-    display: flex;
-    position: absolute;
-    top: -${photoBorderSize}px;
-    left: -${photoBorderSize}px;
-    box-sizing: content-box;
-    border-width: ${photoBorderSize}px;
-    border-style: solid;
-    border-color: ${Theme.avatarBorderColor};
+    border-width: 0;
     border-radius: 50%;
     width: ${photoSize}px;
     height: ${photoSize}px;
-    background-color: ${Theme.bgColor};
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    background-size: contain;
-  `
-
-  let photoPlaceholder = css`
-    transition: none;
-  `
-
-  let photoOriginal = css`
-    transition-property: filter, opacity;
-    transition-duration: 400ms;
-    transition-timing-function: ${Transition.timingFunction};
-  `
-
-  let loadingPhoto = css`
-    filter: blur(5px);
-    opacity: 0;
-  `
-
-  let loadedPhoto = css`
-    filter: blur(0);
-    opacity: 1;
   `
 
   let line = css`

@@ -50,3 +50,39 @@ body {
   font-weight: 400; /* ${Font.normal} */
   line-height: 1.5; /* ${Font.lineHeight} */
 }
+
+:root {
+  --dpr: 2; /* fallback */
+}
+
+@media only screen and (-webkit-device-pixel-ratio: 1) {
+  :root {
+    --dpr: 1;
+  }
+}
+
+@media only screen and (-webkit-device-pixel-ratio: 2) {
+  :root {
+    --dpr: 2;
+  }
+}
+
+@media only screen and (-webkit-device-pixel-ratio: 3) {
+  :root {
+    --dpr: 3;
+  }
+}
+
+@media only screen and (max-width: 780px) {
+  :root {
+    --small-screen: 1;
+    --large-screen: 0;
+  }
+}
+
+@media only screen and (min-width: 781px) {
+  :root {
+    --small-screen: 0;
+    --large-screen: 1;
+  }
+}

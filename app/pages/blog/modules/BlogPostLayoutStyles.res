@@ -434,23 +434,6 @@ include %css(
     text-align: center;
   `
 
-  let image = css`
-    /* NOTE: Do not add transform to this list since it's used in inline style */
-    transition-property: filter, opacity;
-    transition-duration: 0.2s;
-    transition-timing-function: linear;
-  `
-
-  let loadingImage = css`
-    filter: blur(5px);
-    opacity: 0;
-  `
-
-  let loadedImage = css`
-    filter: blur(0);
-    opacity: 1;
-  `
-
   let coverImageHeight = "60vh"
 
   let coverImageRow = css`
@@ -485,6 +468,17 @@ include %css(
     width: 100%;
     background-color: rgba(0, 0, 0, 0.2);
     box-shadow: inset 0 0 8em #000;
+  `
+
+  let coverImageContainer = css`
+    @media ${Screen.small} {
+      height: 100%;
+    }
+
+    @media ${Screen.large} {
+      width: 100%;
+      height: ${coverImageHeight};
+    }
   `
 
   let coverImage = css`
@@ -558,14 +552,14 @@ include %css(
     position: relative;
   `
 
+  let inlineImagePlacementCenterMaxWidth = 0.9
   let inlineImagePlacementCenter = css`
     @media ${Screen.small} {
-      width: 100%;
+      max-width: 100%;
     }
 
     @media ${Screen.large} {
-      width: auto;
-      max-width: 90%;
+      max-width: ${inlineImagePlacementCenterMaxWidth * 100}%;
     }
   `
 

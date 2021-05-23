@@ -8,10 +8,9 @@ const exec = util.promisify(cp.exec);
 
 const { ENV, BIN, IMAGES_DIR } = process.env;
 
-const PRESET = {
-  BASIC: "basic",
-  FLUID: "fluid",
-  FIXED: "fixed",
+const SRCSET = {
+  W: "w",
+  X: "x",
   RAW: "raw",
 };
 
@@ -48,212 +47,162 @@ module.exports.pitch = async function(request) {
   let preset = options.presets[query.preset];
 
   if (!preset) {
-    throw new Error(`[image-loader] Preset is not provided in webpack config`);
+    throw new Error(`[image-loader] Preset is not specified in the webpack config`);
   }
 
-  if (!preset.type) {
-    throw new Error(`[image-loader] Preset type is required`);
+  if (preset.srcsets === undefined) {
+    throw new Error(`[image-loader] srcsets is not set. Check preset "${query.preset}".`);
   }
 
-  if (!Object.values(PRESET).includes(preset.type)) {
-    throw new Error(`[image-loader] Unknown preset type "${preset.type}"`);
+  if (preset.srcsets === true) {
+    throw new Error(`[image-loader] srcsets can't be set to true. It must be either an array of srcsets or false. Check preset "${query.preset}".`);
   }
 
-  if (preset.type === PRESET.BASIC) {
-    return await exportBasic(loc, preset, dimensions);
+  let placeholder = preset.placeholder ? await renderPlaceholder(loc) : null;
+
+  if (preset.srcsets === false) {
+    let url = await signUrl(loc, {width: dimensions.width, height: dimensions.height});
+    return `module.exports = { src: ${JSON.stringify(url)}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height} }`;
   }
 
-  if (!preset.fallback) {
-    throw new Error(`[image-loader] Fallback size is required`);
+  let srcsets = {};
+  let fallback = "";
+
+  let dprs = DPR.ALL();
+
+  for (let srcset of preset.srcsets) {
+    if (!srcset.type) {
+      throw new Error(`[image-loader] srcset type is required. Check preset "${query.preset}".`);
+    }
+
+    switch (srcset.type) {
+      case SRCSET.X:
+        let size = normalizeSize(srcset.size, dimensions);
+
+        let urls = await Promise.all(
+          dprs.map(dpr => signUrl(loc, calculateSize(size.value, size.dimension, dimensions, dpr))),
+        );
+        let result = zip(urls, dprs).map(([url, dpr]) => dpr === 1 ? url : `${url} ${dpr}x`).join(", ");
+
+        if (srcset.fallback) {
+          if (!!fallback) {
+            throw new Error(`[image-loader] Multiple fallbacks. Check preset "${query.preset}".`);
+          }
+
+          fallback = urls[0];
+        }
+
+        if (!!srcsets[size.label]) {
+          throw new Error(`[image-loader] Duplicated label "${size.label}". Check preset "${query.preset}".`);
+        }
+
+        srcsets[size.label] = result;
+
+        break;
+
+      case SRCSET.W:
+        if (!srcset.label) {
+          throw new Error(`[image-loader] srcset with type "w" must have a label. Check preset "${query.preset}".`);
+        }
+
+        let results = [];
+
+        for (let item of srcset.widths) {
+          let width = normalizeWidth(item);
+
+          let urls = await Promise.all(
+            dprs.map(dpr => signUrl(loc, calculateSize(width.value, DIMENSION.WIDTH, dimensions, dpr))),
+          );
+          let result = zip(urls, dprs).map(([url, dpr]) => `${url} ${width.value * dpr}w`).join(", ");
+
+          if (width.fallback) {
+            if (!!fallback) {
+              throw new Error(`[image-loader] Multiple fallbacks. Check preset "${query.preset}".`);
+            }
+
+            fallback = urls[0];
+          }
+
+          results.push(result);
+        }
+
+        if (!!srcsets[srcset.label]) {
+          throw new Error(`[image-loader] Duplicated label "${srcset.label}". Check preset "${query.preset}".`);
+        }
+
+        srcsets[srcset.label] = results.join(", ");
+
+        break;
+
+      case SRCSET.RAW:
+        let dprset = {};
+
+        for (let dpr of dprs) {
+          let size = calculateSize(srcset.width, DIMENSION.WIDTH, dimensions, dpr);
+          let src = await signUrl(loc, size);
+          dprset[DPR.KEY(dpr)] = { ...size, src };
+        }
+
+        if (srcset.fallback) {
+          if (!!fallback) {
+            throw new Error(`[image-loader] Multiple fallbacks. Check preset "${query.preset}".`);
+          }
+
+          fallback = dprset[DPR.KEY(1)].src;
+        }
+
+        if (!srcset.label) {
+          throw new Error(`[image-loader] srcset with type "raw" must have a label. Check preset "${query.preset}".`);
+        }
+
+        if (!!srcsets[srcset.label]) {
+          throw new Error(`[image-loader] Duplicated label "${srcset.label}". Check preset "${query.preset}".`);
+        }
+
+        srcsets[srcset.label] = dprset;
+
+        break;
+      default:
+        throw new Error(`[image-loader] Unknown srcset type "${srcset.type}". Check preset "${query.preset}".`);
+    }
   }
 
-  let sizes = normalizeSizes(preset.sizes, dimensions);
+  if (!fallback) {
+    throw new Error(`[image-loader] Fallback size wasn't set. Check preset "${query.preset}".`);
+  }
+
   let aspectRatio = dimensions.width / dimensions.height;
   let orientation = aspectRatio > 1 ? ORIENTATION.LANDSCAPE : aspectRatio < 1 ? ORIENTATION.PORTRAIT : ORIENTATION.SQUARE;
 
-  let sources = sizes.reduce(
-    (dict, size) => ({
-      ...dict,
-      [size.label]: {
-        value: size.value,
-        dimension: size.dimension,
-      },
-    }),
-    {},
-  );
-
-  switch (preset.type) {
-    case PRESET.FIXED:
-      return await exportFixed(
-        loc,
-        preset,
-        sources,
-        dimensions,
-        aspectRatio,
-        orientation,
-      );
-    case PRESET.FLUID:
-      return await exportFluid(
-        loc,
-        preset,
-        sources,
-        dimensions,
-        aspectRatio,
-        orientation,
-      );
-    case PRESET.RAW:
-      return await exportRaw(
-        loc,
-        preset,
-        sources,
-        dimensions,
-        aspectRatio,
-        orientation,
-      );
-    default:
-      throw new Error(`[image-loader] Unknown preset type "${preset.type}"`);
-  }
-}
-
-async function exportBasic(loc, preset, dimensions) {
-  let url = await signUrl(loc, {width: dimensions.width, height: dimensions.height});
-  let placeholder = await renderPlaceholder(loc, preset.placeholder);
-  return `module.exports = ${JSON.stringify({src: url, placeholder})}`;
-}
-
-async function exportFixed(
-  loc,
-  preset,
-  sources,
-  dimensions,
-  aspectRatio,
-  orientation,
-) {
-  let dprs = DPR.ALL();
-  let srcs = Object.entries(sources);
-  let presetFallback = preset.fallback.toString();
-
-  let srcset = {};
-  let fallback = "";
-
-  for (let i = 0; i < srcs.length; i++) {
-    let [label, source] = srcs[i];
-    let urls = await Promise.all(
-      dprs.map(dpr => signUrl(loc, calculateSize(source.value, source.dimension, dimensions, dpr))),
-    );
-    let html = zip(urls, dprs).map(([url, dpr]) => dpr === 1 ? url : `${url} ${dpr}x`).join(", ");
-
-    if (label === presetFallback) fallback = urls[0];
-    srcset[label] = html;
-  }
-
-  if (!fallback) {
-    throw new Error(`[image-loader] Fallback image wasn't set: ${loc} (${preset.type})`);
-  }
-
-  let placeholder = await renderPlaceholder(loc, preset.placeholder);
-
-  return `module.exports = { srcset: ${JSON.stringify(srcset)}, fallback: ${JSON.stringify(fallback)}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio}, orientation: "${orientation}" }`;
-}
-
-async function exportFluid(
-  loc,
-  preset,
-  sources,
-  dimensions,
-  aspectRatio,
-  orientation,
-) {
-  let dprs = DPR.ALL();
-  let srcs = Object.entries(sources);
-  let presetFallback = preset.fallback.toString();
-
-  let srcset = [];
-  let fallback = "";
-
-  for (let i = 0; i < srcs.length; i++) {
-    let [label, source] = srcs[i];
-
-    if (source.dimension === DIMENSION.HEIGHT) {
-      throw new Error(`[image-loader] Fliud images must have dimension "width". Label: "${label}"`);
-    }
-    let urls = await Promise.all(
-      dprs.map(dpr => signUrl(loc, calculateSize(source.value, source.dimension, dimensions, dpr))),
-    );
-    let html = zip(urls, dprs).map(([url, dpr]) => `${url} ${source.value * dpr}w`).join(", ");
-
-    if (label === presetFallback) fallback = urls[0];
-    srcset.push(html);
-  }
-
-  if (!fallback) {
-    throw new Error(`[image-loader] Fallback image wasn't set: ${loc} (${preset.type})`);
-  }
-
-  let placeholder = await renderPlaceholder(loc, preset.placeholder);
-
-  return `module.exports = { srcset: ${JSON.stringify(srcset.join(", "))}, fallback: ${JSON.stringify(fallback)}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio}, orientation: "${orientation}" }`;
-}
-
-async function exportRaw(
-  loc,
-  preset,
-  sources,
-  dimensions,
-  aspectRatio,
-  orientation,
-) {
-  let dprs = DPR.ALL();
-  let srcs = Object.entries(sources);
-  let presetFallback = preset.fallback.toString();
-
-  let srcset = {};
-  let fallback = "";
-
-  for (let i = 0; i < srcs.length; i++) {
-    let [label, source] = srcs[i];
-
-    let dprset = {};
-
-    for (let dpr of dprs) {
-      let size = calculateSize(source.value, source.dimension, dimensions, dpr);
-      let src = await signUrl(loc, size);
-      dprset[DPR.KEY(dpr)] = { ...size, src };
-    }
-
-    if (label === presetFallback) fallback = dprset[DPR.KEY(1)].src;
-    srcset[label] = dprset;
-  }
-
-  if (!fallback) {
-    throw new Error(`[image-loader] Fallback image wasn't set: ${loc} (${preset.type})`);
-  }
-
-  let placeholder = await renderPlaceholder(loc, preset.placeholder);
-
-  return `module.exports = { srcset: ${JSON.stringify(srcset)}, fallback: ${JSON.stringify(fallback)}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio}, orientation: "${orientation}" }`;
+  return `module.exports = { srcsets: ${JSON.stringify(srcsets)}, fallback: ${JSON.stringify(fallback)}, placeholder: ${placeholder}, width: ${dimensions.width}, height: ${dimensions.height}, aspectRatio: ${aspectRatio}, orientation: "${orientation}" }`;
 }
 
 const zip = (a, b) => a.map((k, i) => [k, b[i]]);
 
-function normalizeSizes(sizes, dimensions) {
-  return sizes.map(entry => {
-    if (typeof entry === "number") {
-      return { label: entry.toString(), dimension: DIMENSION.WIDTH, value: entry };
+function normalizeSize(size, dimensions) {
+  if (typeof size === "number") {
+    return { label: size.toString(), dimension: DIMENSION.WIDTH, value: size };
+  } else {
+    if (size.width && !size.height) {
+      return { label: size.label, dimension: DIMENSION.WIDTH, value: size.width };
+    } else if (!size.width && size.height) {
+      return { label: size.label, dimension: DIMENSION.HEIGHT, value: size.height };
+    } else if (size.width && size.height) {
+      return dimensions.width > dimensions.height
+        ? { label: size.label, dimension: DIMENSION.WIDTH, value: size.width }
+        : { label: size.label, dimension: DIMENSION.HEIGHT, value: size.height };
     } else {
-      if (entry.width && !entry.height) {
-        return { label: entry.label, dimension: DIMENSION.WIDTH, value: entry.width };
-      } else if (!entry.width && entry.height) {
-        return { label: entry.label, dimension: DIMENSION.HEIGHT, value: entry.height };
-      } else if (entry.width && entry.height) {
-        return dimensions.width > dimensions.height
-          ? { label: entry.label, dimension: DIMENSION.WIDTH, value: entry.width }
-          : { label: entry.label, dimension: DIMENSION.HEIGHT, value: entry.height };
-      } else {
-        throw new Error(`[image-loader] Invalid size object: ${JSON.stringify(entry)}`);
-      }
+      throw new Error(`[image-loader] Invalid size object: ${JSON.stringify(size)}`);
     }
-  });
+  }
+}
+
+function normalizeWidth(width) {
+  if (typeof width === "number") {
+    return { value: width, fallback: false };
+  } else {
+    return width;
+  }
 }
 
 function calculateSize(value, dimension, dimensions, dpr) {
@@ -297,8 +246,7 @@ async function signUrl(loc, {width, height}) {
   }
 }
 
-async function renderPlaceholder(loc, opts) {
-  if (!opts) return null;
+async function renderPlaceholder(loc) {
   try {
     let { stdout } = await exec(`${BIN} img render-placeholder ${loc}`);
     let svg = encodeURIComponent(stdout.trim());

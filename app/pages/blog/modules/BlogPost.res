@@ -110,7 +110,7 @@ type category = Category.t
 
 module Cover = {
   type rec t = {
-    src: Image.fluid,
+    src: Image.responsive<Image.postCover>,
     credit: option<credit>,
   }
   and credit = {

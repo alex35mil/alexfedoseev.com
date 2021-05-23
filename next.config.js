@@ -4,6 +4,7 @@ const bsconfig = require("./bsconfig.json");
 
 const withTM = require("next-transpile-modules")(["rescript"].concat(bsconfig["bs-dependencies"]));
 const withMDX = require("./config/withMdx");
+const withImages = require("./config/withImages");
 const withLinaria = require("./config/withLinaria");
 
 // There is an issue where webpack doesn't detect npm packages within node_modules when
@@ -52,69 +53,8 @@ const config = {
     config.resolveLoader.alias["image-loader"] = path.join(ROOT, "config", "image-loader.js");
     config.resolveLoader.alias["mdx-loader"] = path.join(ROOT, "config", "mdx-loader.js");
 
-    config.module.rules.push({
-      test: /images\/.*\.(jpe?g|png|gif|webp)$/,
-      use: [
-        {
-          loader: "image-loader",
-          options: {
-            presets: {
-              basic: {
-                type: "basic",
-                placeholder: false,
-              },
-              basicWithPlaceholder: {
-                type: "basic",
-                placeholder: true,
-              },
-              photo: {
-                type: "raw",
-                sizes: [
-                  { label: "sm", width: 830 },
-                  { label: "md", width: 1024 },
-                  { label: "lg", width: 1500 },
-                  { label: "xl", width: 2500 },
-                ],
-                fallback: "md",
-                placeholder: true,
-              },
-              postCover: {
-                type: "fluid",
-                sizes: [840, 1024, 1366, 1920, 2560],
-                fallback: 1366, // also, used for social meta tags
-                placeholder: true,
-              },
-              postContent: {
-                type: "fixed",
-                sizes: [880],
-                fallback: 880,
-                placeholder: true,
-              },
-              // TODO: Optimize more
-              postThumb: {
-                type: "fixed",
-                sizes: [
-                  { label: "thumb", width: 600, height: 500 },
-                ],
-                fallback: "thumb",
-                placeholder: true,
-              },
-              galleryThumb: {
-                type: "fixed",
-                sizes: [
-                  { label: "thumb", width: 350, height: 290 },
-                ],
-                fallback: "thumb",
-                placeholder: true,
-              },
-            },
-          },
-        },
-      ],
-    });
-
     return config
   },
 };
 
-module.exports = withLinaria(withMDX(withTM(config)));
+module.exports = withLinaria(withMDX(withImages(withTM(config))));

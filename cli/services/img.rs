@@ -79,7 +79,7 @@ pub mod gallery {
 
         pub fn full_size_require(&self) -> String {
             let external = format!(
-                r#"@module("{path}?preset=photo") external {name}: Image.raw = "default""#,
+                r#"@module("{path}?preset=photo") external {name}: Image.responsive<Image.photo> = "default""#,
                 name = self.full_size_binding(),
                 path = self.rel_path(),
             );
@@ -89,7 +89,7 @@ pub mod gallery {
 
         pub fn thumb_require(&self) -> String {
             let external = format!(
-                r#"@module("{path}?preset=galleryThumb") external {name}: Photo.thumb = "default""#,
+                r#"@module("{path}?preset=galleryThumb") external {name}: Image.responsive<Image.galleryThumb> = "default""#,
                 name = self.thumb_binding(),
                 path = self.rel_path(),
             );

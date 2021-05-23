@@ -247,102 +247,58 @@ module Highlight = {
 }
 
 module CoverImage = {
-  type status =
-    | Loading
-    | Loaded
+  type state = {parallaxFactor: float}
 
-  type state = {
-    status: status,
-    parallaxFactor: float,
-  }
+  type action = UpdateParallaxFactor(float)
 
-  type action =
-    | ShowImage
-    | UpdateParallaxFactor(float)
-
-  let reducer = (state, action) =>
+  let reducer = (_state, action) =>
     switch action {
-    | ShowImage =>
-      switch state.status {
-      | Loading => {...state, status: Loaded}
-      | Loaded => state
-      }
-    | UpdateParallaxFactor(parallaxFactor) => {...state, parallaxFactor: parallaxFactor}
+    | UpdateParallaxFactor(parallaxFactor) => {parallaxFactor: parallaxFactor}
     }
 
+  let initialState = {parallaxFactor: 0.}
+
   @react.component
-  let make = (~src: Image.fluid, ~credit: option<BlogPost.Cover.credit>, ~title: string) => {
-    let screen = React.useContext(ScreenContext.ctx)
-    let image = React.useRef(Js.Nullable.null)
+  let make = (
+    ~src: Image.responsive<Image.postCover>,
+    ~credit: option<BlogPost.Cover.credit>,
+    ~title: string,
+  ) => {
+    let imageRef = React.useRef(Js.Nullable.null)
 
-    let (state, dispatch) = reducer->React.useReducer({status: Loading, parallaxFactor: 0.})
+    let (state, dispatch) = reducer->React.useReducer(initialState)
 
-    React.useEffect0(() => {
-      switch image.current->Js.Nullable.toOption {
-      | Some(image)
-        if {
+    React.useEffect0(() =>
+      Subscription.onScroll(_ => {
+        let scrolled = {
           open Web.Dom
-          image->htmlImageElementFromElement->HtmlImageElement.complete
-        } =>
-        ShowImage->dispatch
-      | Some(_)
-      | None => ()
-      }
-      None
-    })
-
-    React.useEffect2(() =>
-      switch screen {
-      | None
-      | Some(Small) =>
-        None
-      | Some(Large) =>
-        Subscription.onScroll(_ =>
-          switch state.status {
-          | Loading => ()
-          | Loaded =>
-            let scrolled = {
-              open Web.Dom
-              window->Window.pageYOffset
-            }
-            if scrolled > 0. && scrolled < 1500. {
-              UpdateParallaxFactor(scrolled /. 3.)->dispatch
-            }
-          }
-        )
-      }
-    , (state.status, screen))
+          window->Window.pageYOffset
+        }
+        if scrolled > 0. && scrolled < 1500. {
+          UpdateParallaxFactor(scrolled /. 3.)->dispatch
+        }
+      })
+    )
 
     <ExpandedRow className=Css.coverImageRow>
-      <figure
-        className=Css.coverImageFigure
-        style={ReactDOM.Style.make(
-          ~backgroundImage=`url("${src.placeholder}")`,
-          ~backgroundSize="cover",
-          ~backgroundRepeat="no-repeat",
-          ~backgroundPosition="50% 50%",
-          (),
-        )}>
-        <img
+      <figure className=Css.coverImageFigure>
+        <Image
+          load=Eager
+          size=Scaled({
+            containerClassName: Some(Css.coverImageContainer),
+            imgClassName: Some(Css.coverImage),
+            imgStyle: Some(
+              ReactDOM.Style.make(
+                ~transform=`translate3d(0px, ${state.parallaxFactor->Float.toString}px, 0px) scale(1.1)`, // also, scaling up a bit so placeholder isn't exposed on scroll
+                (),
+              ),
+            ),
+          })
           sizes="100vw"
-          ref={image->ReactDOM.Ref.domRef}
+          imgRef={imageRef}
           src={src.fallback}
-          srcSet={src.srcset}
-          className={cx([
-            Css.image,
-            Css.coverImage,
-            switch state.status {
-            | Loading => Css.loadingImage
-            | Loaded => Css.loadedImage
-            },
-          ])}
-          style={ReactDOM.Style.make(
-            ~transform="translate3d(0px, " ++
-            (state.parallaxFactor->Int.fromFloat->Int.toString ++
-            "px, 0px)"),
-            (),
-          )}
-          onLoad={_ => ShowImage->dispatch}
+          srcSet={src.srcsets.fluid}
+          loader=Placeholder({src: src.placeholder, transition: Moderate})
         />
         <div className=Css.coverImageOverlay />
         <div className=Css.coverImageTitleContainer>
@@ -381,43 +337,54 @@ module InlineImagePlacement = {
     | Fill
     | Bleed
 
-  let className = (placement, ~src) =>
+  let className = (placement, ~width, ~ident) =>
     switch placement {
-    | "center" => Css.inlineImagePlacementCenter
-    | "fill" => Css.inlineImagePlacementFill
-    | "bleed" => Css.inlineImagePlacementBleed
+    | "center" =>
+      let style = {
+        let largeScreenLayoutWidth = Float.toString(
+          LayoutParams.largeScreenContentWidth->Float.fromInt *.
+            Css.inlineImagePlacementCenterMaxWidth,
+        )
+        let smallScreenLayoutWidth = "100%"
+        let layoutWidth = `calc(${largeScreenLayoutWidth}px * ${Screen.largeScreenVar} + ${smallScreenLayoutWidth} * ${Screen.smallScreenVar})`
+        let imgWidth = `calc(${width->Int.toString}px / ${Screen.dprVar})`
+        Some(ReactDOM.Style.make(~width=`min(${layoutWidth}, ${imgWidth})`, ()))
+      }
+      (Css.inlineImagePlacementCenter, style)
+    | "fill" => (Css.inlineImagePlacementFill, None)
+    | "bleed" => (Css.inlineImagePlacementBleed, None)
     | _ as placement =>
-      Js.Console.warn(j`[WARNING] Invalid InlineImage placement: \`$placement\` for image "$src"`)
-      Css.inlineImagePlacementFill
+      Js.Console.warn(
+        `[WARNING] Invalid InlineImage placement \`${placement}\` for image "${ident}"`,
+      )
+      (Css.inlineImagePlacementFill, None)
     }
 }
 
 module InlineImage = {
-  module Src = {
-    type t
-    type srcset
-
-    @get external srcset: t => srcset = "srcset"
-    @get external srcs: srcset => string = "880"
-    @get external fallback: t => string = "fallback"
-    @get external placeholder: t => string = "placeholder"
-  }
+  type rec src = Image.responsive<Image.postContent>
 
   @react.component
-  let make = (~src, ~placement, ~caption=?) => {
-    let placementClassName = React.useMemo1(
-      () => placement->InlineImagePlacement.className(~src),
+  let make = (~src: src, ~placement, ~caption=?) => {
+    let (placementClassName, placementStyle) = React.useMemo1(
+      () => placement->InlineImagePlacement.className(~ident=src.fallback, ~width=src.width),
       [placement],
     )
 
     <Row className=Css.inlineImageRow>
       <figure className=Css.inlineImageFigure>
-        <img
-          src={src->Src.fallback}
-          srcSet={src->Src.srcset->Src.srcs}
-          alt=?caption
-          className={cx([Css.inlineImage, placementClassName])}
-        />
+        <div className={cx([Css.inlineImage, placementClassName])} style=?placementStyle>
+          <Image
+            size=Original({
+              width: src.width,
+              height: src.height,
+            })
+            src={src.fallback}
+            srcSet={src.srcsets.w880}
+            alt=?caption
+            loader=Spinner({transition: Fast})
+          />
+        </div>
         {switch caption {
         | Some(caption) =>
           <figcaption className=Css.mediaCaption> {caption->React.string} </figcaption>
@@ -429,25 +396,26 @@ module InlineImage = {
 }
 
 module AnimatedGif = {
-  module Img = {
-    type t
-
-    @get external src: t => string = "src"
-    @get external placeholder: t => string = "placeholder"
-  }
-
   @react.component
-  let make = (~img, ~placement, ~caption) => {
-    let placementClassName = React.useMemo1(
-      () => placement->InlineImagePlacement.className(~src=img->Img.src),
+  let make = (~img: Image.basic, ~placement, ~caption) => {
+    let (placementClassName, placementStyle) = React.useMemo1(
+      () => placement->InlineImagePlacement.className(~ident=img.src, ~width=img.width),
       [placement],
     )
 
     <Row className=Css.inlineImageRow>
       <figure className=Css.inlineImageFigure>
-        <img
-          src={img->Img.src} alt=?caption className={cx([Css.inlineImage, placementClassName])}
-        />
+        <div className={cx([Css.inlineImage, placementClassName])} style=?placementStyle>
+          <Image
+            size=Original({
+              width: img.width,
+              height: img.height,
+            })
+            src={img.src}
+            alt=?caption
+            loader=Spinner({transition: Fast})
+          />
+        </div>
         {switch caption {
         | Some(caption) =>
           <figcaption className=Css.mediaCaption> {caption->React.string} </figcaption>
@@ -461,11 +429,42 @@ module AnimatedGif = {
 module PhotoGallery = {
   open Px
 
-  type photo = {
+  type photo<'thumb> = {
     id: Image.id,
-    src: Image.raw,
-    thumb: Photo.thumb,
+    src: Image.responsive<Image.photo>,
+    thumb: 'thumb,
     caption: option<string>,
+  }
+
+  type thumbs = Image.responsive<Image.postThumb>
+
+  type thumb = {
+    src: Image.responsive<string>,
+    size: Image.size,
+    sizes: option<string>,
+  }
+
+  let withThumb = (
+    photo: photo<thumbs>,
+    ~size=Image.Scaled({
+      containerClassName: None,
+      imgStyle: None,
+      imgClassName: None,
+    }),
+    ~sizes=?,
+    pick: Image.postThumb => string,
+  ): photo<thumb> => {
+    id: photo.id,
+    src: photo.src,
+    thumb: {
+      src: {
+        ...photo.thumb,
+        srcsets: photo.thumb.srcsets->pick,
+      },
+      size: size,
+      sizes: sizes,
+    },
+    caption: photo.caption,
   }
 
   module Layout = {
@@ -478,12 +477,12 @@ module PhotoGallery = {
 
     type guessed = {
       layout: t,
-      thumbs: array<photo>,
+      thumbs: array<photo<thumb>>,
       plus: option<int>,
     }
 
     type result = {
-      thumbs: array<photo>,
+      thumbs: array<photo<thumb>>,
       plus: option<int>,
       style: ReactDOM.Style.t,
       className: string,
@@ -492,14 +491,23 @@ module PhotoGallery = {
     let contentWidth = LayoutParams.largeScreenContentWidth->Float.fromInt
     let gap = 10.
 
-    let guess = (photos: array<photo>, ~screen: option<Screen.screen>) =>
+    let guess = (photos: array<photo<thumbs>>, ~screen: option<Screen.screen>) =>
       switch screen {
       | None
       | Some(Small) =>
         let photo = photos->Array.getUnsafe(0)
         {
           layout: SmallScreen,
-          thumbs: [photo],
+          thumbs: [
+            photo->withThumb(
+              ~size=Original({
+                width: photo.thumb.width,
+                height: photo.thumb.height,
+              }),
+              ~sizes="100vw",
+              srcset => srcset.fluid,
+            ),
+          ],
           plus: switch photos->Array.length - 1 {
           | 0 => None
           | x => Some(x)
@@ -512,7 +520,7 @@ module PhotoGallery = {
         switch (p1, p2, p3) {
         | (Some(photo), None, None) => {
             layout: One,
-            thumbs: [photo],
+            thumbs: [photo->withThumb(srcset => srcset.w700)],
             plus: None,
           }
 
@@ -525,7 +533,11 @@ module PhotoGallery = {
               leftAspectRatio: photo1.src.aspectRatio,
               rightAspectRatio: photo2.src.aspectRatio,
             }),
-            thumbs: [photo1, photo2, photo3],
+            thumbs: [
+              photo1->withThumb(srcset => srcset.w500),
+              photo2->withThumb(srcset => srcset.w250),
+              photo3->withThumb(srcset => srcset.w250),
+            ],
             plus: switch photos->Array.length - 3 {
             | 0 => None
             | x => Some(x)
@@ -533,31 +545,76 @@ module PhotoGallery = {
           }
 
         | (
-          Some({src: {orientation: #landscape}} as photo1),
-          Some({src: {orientation: #portrait}} as photo2),
-          Some({src: {orientation: #landscape | #portrait | #square}})
-          | None,
-        )
-        | (
-          Some({src: {orientation: #landscape}} as photo1),
-          Some({src: {orientation: #landscape}} as photo2),
-          Some({src: {orientation: #portrait | #square}}) | None,
-        )
-        | (
-          Some({src: {orientation: #portrait}} as photo1),
-          Some({src: {orientation: #landscape}} as photo2),
-          Some({src: {orientation: #portrait | #square}}) | None,
-        )
-        | (
-          Some({src: {orientation: #portrait | #square}} as photo1),
-          Some({src: {orientation: #portrait | #square}} as photo2),
-          None,
-        ) => {
+            Some({src: {orientation: #landscape}} as photo1),
+            Some({src: {orientation: #portrait}} as photo2),
+            Some({src: {orientation: #landscape | #portrait | #square}})
+            | None,
+          ) => {
             layout: LPS1_LPS1({
               leftAspectRatio: photo1.src.aspectRatio,
               rightAspectRatio: photo2.src.aspectRatio,
             }),
-            thumbs: [photo1, photo2],
+            thumbs: [
+              photo1->withThumb(srcset => srcset.w500),
+              photo2->withThumb(srcset => srcset.w250),
+            ],
+            plus: switch photos->Array.length - 2 {
+            | 0 => None
+            | x => Some(x)
+            },
+          }
+
+        | (
+            Some({src: {orientation: #landscape}} as photo1),
+            Some({src: {orientation: #landscape}} as photo2),
+            Some({src: {orientation: #portrait | #square}}) | None,
+          ) => {
+            layout: LPS1_LPS1({
+              leftAspectRatio: photo1.src.aspectRatio,
+              rightAspectRatio: photo2.src.aspectRatio,
+            }),
+            thumbs: [
+              photo1->withThumb(srcset => srcset.w350),
+              photo2->withThumb(srcset => srcset.w350),
+            ],
+            plus: switch photos->Array.length - 2 {
+            | 0 => None
+            | x => Some(x)
+            },
+          }
+
+        | (
+            Some({src: {orientation: #portrait}} as photo1),
+            Some({src: {orientation: #landscape}} as photo2),
+            Some({src: {orientation: #portrait | #square}}) | None,
+          ) => {
+            layout: LPS1_LPS1({
+              leftAspectRatio: photo1.src.aspectRatio,
+              rightAspectRatio: photo2.src.aspectRatio,
+            }),
+            thumbs: [
+              photo1->withThumb(srcset => srcset.w250),
+              photo2->withThumb(srcset => srcset.w500),
+            ],
+            plus: switch photos->Array.length - 2 {
+            | 0 => None
+            | x => Some(x)
+            },
+          }
+
+        | (
+            Some({src: {orientation: #portrait | #square}} as photo1),
+            Some({src: {orientation: #portrait | #square}} as photo2),
+            None,
+          ) => {
+            layout: LPS1_LPS1({
+              leftAspectRatio: photo1.src.aspectRatio,
+              rightAspectRatio: photo2.src.aspectRatio,
+            }),
+            thumbs: [
+              photo1->withThumb(srcset => srcset.w350),
+              photo2->withThumb(srcset => srcset.w350),
+            ],
             plus: switch photos->Array.length - 2 {
             | 0 => None
             | x => Some(x)
@@ -574,7 +631,11 @@ module PhotoGallery = {
               middleAspectRatio: photo2.src.aspectRatio,
               rightAspectRatio: photo3.src.aspectRatio,
             }),
-            thumbs: [photo1, photo2, photo3],
+            thumbs: [
+              photo1->withThumb(srcset => srcset.w250),
+              photo2->withThumb(srcset => srcset.w250),
+              photo3->withThumb(srcset => srcset.w250),
+            ],
             plus: switch photos->Array.length - 3 {
             | 0 => None
             | x => Some(x)
@@ -585,7 +646,7 @@ module PhotoGallery = {
         }
       }
 
-    let small = (thumbs: array<photo>, ~plus: option<int>) => {
+    let small = (thumbs: array<photo<thumb>>, ~plus: option<int>) => {
       let thumb = thumbs->Array.getUnsafe(0)
 
       let plus' = switch plus {
@@ -605,7 +666,7 @@ module PhotoGallery = {
       }
     }
 
-    let one = (thumbs: array<photo>, ~plus: option<int>) => {
+    let one = (thumbs: array<photo<thumb>>, ~plus: option<int>) => {
       let thumb = thumbs->Array.getUnsafe(0)
 
       let plus' = switch plus {
@@ -829,7 +890,7 @@ module PhotoGallery = {
   }
 
   @react.component
-  let make = (~photos: array<photo>, ~caption: option<string>=?) => {
+  let make = (~photos: array<photo<thumbs>>, ~caption: option<string>=?) => {
     let screen = React.useContext(ScreenContext.ctx)
 
     let {PhotoGalleryContext.container: galleryContainer} = React.useContext(
@@ -841,7 +902,7 @@ module PhotoGallery = {
         Gallery.Photo.make(
           ~pid=photo.id,
           ~msrc=photo.src.placeholder,
-          ~srcset=photo.src.srcset,
+          ~srcset=photo.src.srcsets,
           ~title=?photo.caption,
           (),
         )
@@ -896,11 +957,17 @@ module PhotoGallery = {
     <Row className=Css.galleryRow>
       <div className={cx([Css.galleryLayout, layout.className])} style=layout.style>
         {layout.thumbs
-        ->Array.mapWithIndex((index, photo) =>
-          <Photo.Thumb
+        ->Array.mapWithIndex((index, photo) => {
+          let {thumb} = photo
+
+          <Thumb
             key={photo.id->Image.Id.toString}
             id=photo.id
-            src=photo.thumb
+            srcSet=thumb.src.srcsets
+            size=thumb.size
+            sizes=?thumb.sizes
+            fallback=thumb.src.fallback
+            placeholder=thumb.src.placeholder
             className=Css.galleryThumb
             onClick={() =>
               gallery.init(
@@ -909,7 +976,7 @@ module PhotoGallery = {
                 ~getThumbBoundsFn,
               )}
           />
-        )
+        })
         ->React.array}
         {switch layout.plus {
         | Some(plus) =>

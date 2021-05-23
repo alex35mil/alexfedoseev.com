@@ -1,16 +1,16 @@
 open BlogPost
 
 @module("images/posts/2015-09-12--isomorphic-react-with-rails/cover.jpg?preset=postCover")
-external isomorphicReactWithRails_2015_09_12_cover: Image.fluid = "default"
+external isomorphicReactWithRails_2015_09_12_cover: Image.responsive<Image.postCover> = "default"
 
 @module("images/posts/2017-03-18--redux-tree/cover.jpg?preset=postCover")
-external reduxTree_2017_03_18_cover: Image.fluid = "default"
+external reduxTree_2017_03_18_cover: Image.responsive<Image.postCover> = "default"
 
 @module("images/posts/2017-08-10--tableau/cover.jpg?preset=postCover")
-external tableau_2017_08_10_cover: Image.fluid = "default"
+external tableau_2017_08_10_cover: Image.responsive<Image.postCover> = "default"
 
 @module("images/posts/2020-10-08--turkey/20201001-DSC03210.jpg?preset=postCover")
-external turkey_2020_10_08_cover: Image.fluid = "default"
+external turkey_2020_10_08_cover: Image.responsive<Image.postCover> = "default"
 
 let dependencies: Js.Dict.t<Dependency.t> = {
   open Dependency

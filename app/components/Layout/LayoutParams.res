@@ -12,5 +12,3 @@ let smallScreenLogoWidth = 110
 let smallScreenLogoHeight = Math.ceil(
   smallScreenLogoWidth->Float.fromInt *. LogoStyles.height /. LogoStyles.width,
 )
-
-let navMediumScreen = Screen.between(440, Screen.smallMaxWidth)

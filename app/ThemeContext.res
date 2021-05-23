@@ -58,6 +58,7 @@ module Dom = {
     root->setVar("--faded-icon-color", Theme.fadedIconColor)
     root->setVar("--line-color", Theme.lineColor)
     root->setVar("--logo-color", Theme.logoColor)
+    root->setVar("--sign-color", Theme.signColor)
     root->setVar("--avatar-border-color", Theme.avatarBorderColor)
     root->setVar("--github-hover-color", Theme.githubHoverColor)
     root->setVar("--post-sidenote-color", Theme.postSidenoteColor)

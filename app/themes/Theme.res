@@ -13,6 +13,7 @@ module type Colors = {
   let fadedIconColor: string
   let lineColor: string
   let logoColor: string
+  let signColor: string
   let avatarBorderColor: string
   let githubHoverColor: string
   let postSidenoteColor: string
@@ -35,6 +36,7 @@ let fadedTextColor = "var(--faded-text-color)"
 let fadedIconColor = "var(--faded-icon-color)"
 let lineColor = "var(--line-color)"
 let logoColor = "var(--logo-color)"
+let signColor = "var(--sign-color)"
 let avatarBorderColor = "var(--avatar-border-color)"
 let githubHoverColor = "var(--github-hover-color)"
 let postSidenoteColor = "var(--post-sidenote-color)"

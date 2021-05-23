@@ -18,13 +18,13 @@ module Photo = {
   @obj
   external make: (
     ~pid: Image.id,
-    ~srcset: Image.Raw.srcset,
+    ~srcset: Image.photo,
     ~msrc: string,
     ~title: string=?,
     unit,
   ) => t = ""
 
-  @get external srcset: t => Image.Raw.srcset = "srcset"
+  @get external srcset: t => Image.photo = "srcset"
 
   @set external setSrc: (t, string) => unit = "src"
   @set external setWidth: (t, float) => unit = "w"

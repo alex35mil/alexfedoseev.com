@@ -1,75 +1,9 @@
 module Css = MainPageStyles
 
-module Photo = {
-  @module("images/me.png?preset=basicWithPlaceholder")
-  external photo: Image.basicWithPlaceholder = "default"
-
-  type state =
-    | Loading
-    | Loaded
-
-  type action = ShowImage
-
-  let reducer = (state, action) =>
-    switch action {
-    | ShowImage =>
-      switch state {
-      | Loading => Loaded
-      | Loaded => state
-      }
-    }
-
-  @react.component
-  let make = () => {
-    let photoRef = React.useRef(Js.Nullable.null)
-
-    let (state, dispatch) = reducer->React.useReducer(Loading)
-
-    React.useEffect0(() => {
-      switch photoRef.current->Js.Nullable.toOption {
-      | Some(photo)
-        if {
-          open Web.Dom
-          photo->htmlImageElementFromElement->HtmlImageElement.complete
-        } =>
-        ShowImage->dispatch
-      | Some(_)
-      | None => ()
-      }
-      None
-    })
-
-    <div className=Css.photoContainer>
-      <div
-        className={cx([Css.photo, Css.photoPlaceholder])}
-        style={React.useMemo0(() =>
-          ReactDOM.Style.make(
-            ~backgroundImage=`url(${photo.placeholder})`,
-            ~backgroundSize="cover",
-            ~backgroundRepeat="no-repeat",
-            ~backgroundPosition="50% 50%",
-            (),
-          )
-        )}
-      />
-      <img
-        src={photo.src}
-        ref={photoRef->ReactDOM.Ref.domRef}
-        className={cx([
-          Css.photo,
-          Css.photoOriginal,
-          switch state {
-          | Loading => Css.loadingPhoto
-          | Loaded => Css.loadedPhoto
-          },
-        ])}
-        onLoad={_ => ShowImage->dispatch}
-      />
-    </div>
-  }
-}
-
 @module("images/meta.png?preset=basic") external metaImage: Image.basic = "default"
+
+@module("images/me.png?preset=basicWithPlaceholder")
+external photo: Image.basicWithPlaceholder = "default"
 
 @react.component
 let default = () => {
@@ -84,7 +18,16 @@ let default = () => {
     <div className=Css.container>
       <div className=Css.push />
       <div className=Css.content>
-        <Photo />
+        <Image
+          load=Eager
+          src=photo.src
+          size=Scaled({
+            containerClassName: Some(Css.photoContainer),
+            imgClassName: Some(Css.photo),
+            imgStyle: None,
+          })
+          loader=Placeholder({src: photo.placeholder, transition: Slow})
+        />
         <div className=Css.line />
         <div className=Css.headline>
           <div className=Css.logo> <Logo className=Css.logoSvg /> </div>

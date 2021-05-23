@@ -4,10 +4,23 @@ module Css = PhotoPageStyles
 
 module Thumb = {
   @react.component
-  let make = (~id, ~src, ~box, ~onClick) =>
-    <Photo.Thumb
+  let make = (~id, ~src: Image.responsive<Image.galleryThumb>, ~box, ~onClick) =>
+    <Thumb
       id
-      src
+      srcSet=src.srcsets.thumb
+      fallback=src.fallback
+      placeholder=src.placeholder
+      size=Scaled({
+        imgStyle: Some(
+          ReactDOM.Style.make(
+            ~width=box->JustifiedLayout.Box.width->px,
+            ~height=box->JustifiedLayout.Box.height->px,
+            (),
+          ),
+        ),
+        imgClassName: None,
+        containerClassName: None,
+      })
       className=Css.thumb
       controlStyle={ReactDOM.Style.make(
         ~top=box->JustifiedLayout.Box.top->px,
@@ -17,11 +30,6 @@ module Thumb = {
         (),
       )}
       figureStyle={ReactDOM.Style.make(
-        ~width=box->JustifiedLayout.Box.width->px,
-        ~height=box->JustifiedLayout.Box.height->px,
-        (),
-      )}
-      imgStyle={ReactDOM.Style.make(
         ~width=box->JustifiedLayout.Box.width->px,
         ~height=box->JustifiedLayout.Box.height->px,
         (),
@@ -113,7 +121,7 @@ let default = () => {
 
   let gallery = Gallery.useGallery(
     entries->Array.map(((id, photo, _, _)) =>
-      Gallery.Photo.make(~pid=id, ~msrc=photo.placeholder, ~srcset=photo.srcset, ())
+      Gallery.Photo.make(~pid=id, ~msrc=photo.placeholder, ~srcset=photo.srcsets, ())
     ),
   )
 

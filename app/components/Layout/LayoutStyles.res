@@ -1,4 +1,6 @@
 include %css(
+  let navMediumScreen = Screen.between(440, Screen.smallMaxWidth)
+
   let container = css`
     display: grid;
     position: relative;
@@ -94,7 +96,7 @@ include %css(
       justify-content: end;
     }
 
-    @media ${LayoutParams.navMediumScreen} {
+    @media ${navMediumScreen} {
       grid-template-columns: max-content max-content max-content;
       grid-column-gap: 14px;
       align-items: center;
@@ -281,7 +283,7 @@ include %css(
   let copySignature = css`
     display: inline-block;
     padding: 0 4px 0 10px;
-    height: 26px;
+    height: ${Sign.height}px;
   `
 
   let footerIcons = css`
