@@ -19,8 +19,6 @@ dependencies = [
  "pathdiff",
  "rand",
  "rusoto_core",
- "rusoto_ecr",
- "rusoto_ecs",
  "rusoto_s3",
  "serde",
  "serde_json",
@@ -976,34 +974,6 @@ dependencies = [
  "shlex",
  "tokio",
  "zeroize",
-]
-
-[[package]]
-name = "rusoto_ecr"
-version = "0.46.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "3ab222491e156f033926d40c663d57a6b60a5c5ec94e696e66f52a0c64d20dbf"
-dependencies = [
- "async-trait",
- "bytes",
- "futures",
- "rusoto_core",
- "serde",
- "serde_json",
-]
-
-[[package]]
-name = "rusoto_ecs"
-version = "0.46.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6659fd3919ffb5aa3593f43677c2ffa603b582f10eefa7904fdc3550d286aaef"
-dependencies = [
- "async-trait",
- "bytes",
- "futures",
- "rusoto_core",
- "serde",
- "serde_json",
 ]
 
 [[package]]

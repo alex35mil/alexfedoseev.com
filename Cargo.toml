@@ -14,8 +14,6 @@ clap = "3.0.0-beta.2"
 steward = "=0.0.3"
 rusoto_core = "0.46.0"
 rusoto_s3 = "0.46.0"
-rusoto_ecr = "0.46.0"
-rusoto_ecs = "0.46.0"
 serde = "1.0.125"
 json = { package = "serde_json", version = "1.0.64" }
 base64 = "0.13.0"
