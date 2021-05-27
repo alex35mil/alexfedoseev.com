@@ -192,7 +192,8 @@ So the API of the loader would be:
 Where `MyChunk` is a React component:
 
 ```rescript
-// @file: MyChunk.res
+@file: MyChunk.res
+---
 
 @react.component
 let make = () => {
@@ -293,7 +294,8 @@ module type Component = {
 And the second step is to wrap the initial implementation of `MyChunkLoader` into a functor:
 
 ```rescript
-// @file: Loadable.res
+@file: Loadable.res
+---
 
 module Make = (Component: Component) => {
   type state =
@@ -339,7 +341,8 @@ module Make = (Component: Component) => {
 Now we have everything in place to load `MyChunk.res` dynamically using `Loadable` functor. Create `MyChunkLoader.res` next to the `MyChunk.res`:
 
 ```rescript
-// @file: MyChunkLoader.res
+@file: MyChunkLoader.res
+---
 
 module Component = {
   module type t = {
@@ -355,7 +358,8 @@ include Loadable.Make(Component)
 One more important improvement that should be made is to avoid manual typing of the loadable module since it's error-prone. God bless OCaml, we can infer a module type from the implementation using `module type of` construction:
 
 ```rescript
-// @file: MyChunkLoader.res
+@file: MyChunkLoader.res
+---
 
 module Component = {
   module type t = module type of MyChunk
@@ -377,7 +381,8 @@ It should be working now.
 If you want to load a non-ReScript asset, such as a React component written in JS, the steps would be the same except instead of having `MyChunk.res` with ReScript implementation there will be `JsChunk.res` with a binding to JS implementation:
 
 ```rescript
-// @file: JsChunk.res
+@file: JsChunk.res
+---
 
 @module("./JsChunk.jsx") @react.component
 external make: unit => React.element = "default"
@@ -387,7 +392,8 @@ external make: unit => React.element = "default"
 Using this technique, it's possible to load not only ReScript or JS assets, but anything that you can render in your environment. E.g., if you have Markdown files, you can load them dynamically and render right in a ReScript app using [MDX](https://mdxjs.com):
 
 ```rescript
-// @file: MdxChunk.res
+@file: MdxChunk.res
+---
 
 @module("./MdxChunk.mdx") @react.component
 external make: unit => React.element = "default"

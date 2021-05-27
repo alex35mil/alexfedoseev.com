@@ -143,14 +143,26 @@ module Hr = {
 
 module Pre = {
   @react.component
-  let make = (~children) =>
-    <ExpandedRow className=Css.codeRow> <pre className=Css.pre> children </pre> </ExpandedRow>
+  let make = (~children: React.element) => {
+    // `pre` tag is rendered by Code component
+    children
+  }
 }
 
 module Code = {
-  let filePragma = "// @file: "
-  let indexOfFirstFileNameChar = filePragma->Js.String2.indexOf(":") + 2
+  let pragma = "@"
+  let maxParams = 2
+  let filePragma = `${pragma}file:`
+  let highlightPragma = `${pragma}highlight:`
+  let delimiter = "---"
+  let indexOfFirstFileNameChar = filePragma->Js.String2.indexOf(":") + 1
+  let indexOfFirstHighlightChar = highlightPragma->Js.String2.indexOf(":") + 1
   let languageRegExp = %re("/language-/")
+
+  type meta = {
+    file: option<string>,
+    highlight: option<array<int>>,
+  }
 
   @react.component
   let make = (~className, ~children as source) => {
@@ -166,55 +178,240 @@ module Code = {
         (language, label)
       })
     )
-    let (source, file) = React.useMemo0(() =>
-      if source->Js.String2.startsWith(filePragma) {
-        let indexOfFirstCodeChar = switch source->Js.String2.indexOf("\n") {
-        | -1 => None
-        | _ as x =>
-          switch source->Js.String2.charAt(x + 1) {
-          | "\n" => Some(x + 2)
-          | _ => Some(x + 1)
+
+    let (code, meta) = React.useMemo0(() => {
+      if source->Js.String2.get(0) != pragma {
+        (source->Js.String2.trim, None)
+      } else {
+        let lines = source->Js.String2.split("\n")
+
+        let meta = ref(None)
+        let code = ref("")
+        let line: ref<[#1 | #2 | #3]> = ref(#1)
+        let done = ref(false)
+
+        // barely tested but good thing it compiles to static html so bugs will be caught at build time
+        while !done.contents {
+          let text = lines->Array.get((line.contents :> int) - 1)
+          switch (text, meta.contents, line.contents) {
+          | (Some("---"), None, _) =>
+            code := source
+            done := true
+          | (
+              Some("---"),
+              Some({file: Some(_), highlight: None} | {file: None, highlight: Some(_)}),
+              #2,
+            ) =>
+            code :=
+              lines->Array.sliceToEnd((line.contents :> int) - 1 + 1)->Array.joinWith("\n", x => x)
+            done := true
+          | (Some("---"), Some({file: Some(_), highlight: Some(_)}), #3) =>
+            code :=
+              lines->Array.sliceToEnd((line.contents :> int) - 1 + 1)->Array.joinWith("\n", x => x)
+            done := true
+          | (Some(text), _, #1 as line' | #2 as line') =>
+            if text->Js.String2.startsWith(filePragma) {
+              let file =
+                text->Js.String2.sliceToEnd(~from=indexOfFirstFileNameChar)->Js.String2.trim
+              meta :=
+                switch (file, meta.contents) {
+                | ("", _) => failwith("Empty @file pragma")
+                | (file, None) => Some({file: Some(file), highlight: None})
+                | (file, Some({file: None, highlight})) =>
+                  Some({file: Some(file), highlight: highlight})
+                | (_, Some({file: Some(_), highlight: _})) => failwith("Multiple @file pragmas")
+                }
+              line :=
+                switch line' {
+                | #1 => #2
+                | #2 => #3
+                }
+            } else if text->Js.String2.startsWith(highlightPragma) {
+              let lines =
+                text
+                ->Js.String2.sliceToEnd(~from=indexOfFirstHighlightChar)
+                ->Js.String2.trim
+                ->Js.String2.split(",")
+                ->Js.Array2.reduce((acc, n) =>
+                  if n->Js.String2.includes("-") {
+                    switch n->Js.String2.split("-") {
+                    | [a, b] =>
+                      switch (a->Int.fromString, b->Int.fromString) {
+                      | (Some(a), Some(b)) =>
+                        if a > b {
+                          failwith(`Invalid line range: ${n}`)
+                        } else {
+                          acc->Js.Array2.concat(
+                            Array.make(b - a + 1, ())->Array.mapWithIndex((i, _) => a + i),
+                          )
+                        }
+                      | _ => failwith(`Invalid line range: ${n}`)
+                      }
+                    | _ => failwith(`Invalid line range: ${n}`)
+                    }
+                  } else {
+                    switch n->Int.fromString {
+                    | Some(n) => {
+                        acc->Js.Array2.push(n)->ignore
+                        acc
+                      }
+                    | None => failwith(`Invalid highlight line number: ${n}`)
+                    }
+                  }
+                , [])
+              meta :=
+                switch (lines, meta.contents) {
+                | ([], _) => failwith("Empty @highlight pragma")
+                | (lines, None) => Some({file: None, highlight: Some(lines)})
+                | (lines, Some({file, highlight: None})) =>
+                  Some({file: file, highlight: Some(lines)})
+                | (_, Some({file: _, highlight: Some(_)})) =>
+                  failwith("Multiple @highlight pragmas")
+                }
+              line :=
+                switch line' {
+                | #1 => #2
+                | #2 => #3
+                }
+            } else {
+              code := source
+              done := true
+            }
+          | (Some("---"), Some({file: Some(_), highlight: None}), #3)
+          | (Some("---"), Some({file: None, highlight: Some(_)}), #3)
+          | (Some("---"), Some({file: None, highlight: None}), #3) =>
+            failwith(
+              "There's something sketchy is going on with the code block. Might be accidental empty line.",
+            )
+          | (Some(_), Some({file: Some(_), highlight: Some(_)}), #3) =>
+            failwith("You probably forgot a delimiter in this code block.")
+          | (Some(_), Some({file: Some(_), highlight: None}), #3)
+          | (Some(_), Some({file: None, highlight: Some(_)}), #3)
+          | (Some(_), Some({file: None, highlight: None}), #3)
+          | (Some(_), None, #3) =>
+            failwith(
+              "There's something sketchy is going on with the code block. Might be accidental empty line or missing delimiter.",
+            )
+          | (None, _, _) =>
+            code := source
+            done := true
           }
         }
 
-        switch indexOfFirstCodeChar {
-        | None => (source, None)
-        | Some(x) =>
-          let trimmedSource = source->Js.String2.sliceToEnd(~from=x)
-          let file =
-            source->Js.String2.slice(~from=indexOfFirstFileNameChar, ~to_=x)->Js.String2.trim
-          (trimmedSource, Some(file))
+        switch (code.contents, meta.contents) {
+        | ("", _) => failwith("No code in the end of the loop")
+        | (code, meta) => (code->Js.String2.trim, meta)
         }
-      } else {
-        (source, None)
       }
-    )
-    let code = React.useMemo0(() =>
-      switch language {
-      | Some((language, _)) => source->Prism.highlight(language->Prism.Language.get, language)
-      | None => source
-      }
-    )
+    })
 
-    <>
-      {switch (language, file) {
-      | (Some((_, label)), None) =>
-        <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithoutFile])}>
-          <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
-        </div>
-      | (Some((_, label)), Some(file)) =>
-        <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
-          <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
-          <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
-        </div>
-      | (None, Some(file)) =>
-        <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
-          <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
-        </div>
-      | (None, None) => React.null
-      }}
-      <code className=Css.code dangerouslySetInnerHTML={"__html": code} />
-    </>
+    <ExpandedRow className=Css.codeRow>
+      <pre className=Css.pre>
+        {switch (language, meta) {
+        | (Some((_, label)), None)
+        | (Some((_, label)), Some({file: None})) =>
+          <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithoutFile])}>
+            <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
+          </div>
+        | (Some((_, label)), Some({file: Some(file)})) =>
+          <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
+            <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
+            <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
+          </div>
+        | (None, Some({file: Some(file)})) =>
+          <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
+            <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
+          </div>
+        | (None, Some({file: None}))
+        | (None, None) => React.null
+        }}
+        <code className=Css.code>
+          {switch language {
+          | Some((language, _)) =>
+            <Prism.Highlight code language>
+              {({tokens, getTokenProps}) => {
+                switch meta {
+                | None
+                | Some({highlight: None | Some([])}) =>
+                  tokens->Array.mapWithIndex((idx, line) => {
+                    <div key={idx->Int.toString} className=Css.codeLine>
+                      <div className=Css.codeLineContents>
+                        {line
+                        ->Array.mapWithIndex((idx, token) => {
+                          let {className, children} = getTokenProps({token: token, key: idx})
+                          <span key={idx->Int.toString} className> {children} </span>
+                        })
+                        ->React.array}
+                      </div>
+                    </div>
+                  })
+                | Some({highlight: Some(lines)}) =>
+                  tokens->Array.mapWithIndex((idx, line) => {
+                    <div
+                      key={idx->Int.toString}
+                      className={cx([
+                        Css.codeLine,
+                        lines->Js.Array2.includes(idx + 1)
+                          ? Css.codeLineHighlighted
+                          : Css.codeLineFaded,
+                      ])}>
+                      <div className=Css.codeLineContents>
+                        {line
+                        ->Array.mapWithIndex((idx, token) => {
+                          let {className, children} = getTokenProps({token: token, key: idx})
+                          <span key={idx->Int.toString} className> {children} </span>
+                        })
+                        ->React.array}
+                      </div>
+                    </div>
+                  })
+                }->React.array
+              }}
+            </Prism.Highlight>
+          | None => {
+              let code = code->Js.String2.split("\n")
+
+              switch meta {
+              | None
+              | Some({highlight: None | Some([])}) =>
+                code->Array.mapWithIndex((idx, line) => {
+                  <div key={idx->Int.toString} className=Css.codeLine>
+                    <div className=Css.codeLineContents>
+                      <span>
+                        {switch line {
+                        | "" => "\n"->React.string
+                        | _ => line->React.string
+                        }}
+                      </span>
+                    </div>
+                  </div>
+                })
+              | Some({highlight: Some(lines)}) =>
+                code->Array.mapWithIndex((idx, line) => {
+                  <div
+                    key={idx->Int.toString}
+                    className={cx([
+                      Css.codeLine,
+                      lines->Js.Array2.includes(idx + 1)
+                        ? Css.codeLineHighlighted
+                        : Css.codeLineFaded,
+                    ])}>
+                    <div className=Css.codeLineContents>
+                      <span>
+                        {switch line {
+                        | "" => "\n"->React.string
+                        | _ => line->React.string
+                        }}
+                      </span>
+                    </div>
+                  </div>
+                })
+              }->React.array
+            }
+          }}
+        </code>
+      </pre>
+    </ExpandedRow>
   }
 }
 

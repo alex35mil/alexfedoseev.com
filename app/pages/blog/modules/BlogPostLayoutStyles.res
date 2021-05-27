@@ -287,7 +287,7 @@ include %css(
     transition-timing-function: ${Transition.timingFunction};
 
     @media ${Screen.small} {
-      padding: ${smallScreenCodeVPad}px ${LayoutParams.smallScreenHPad}px;
+      padding: ${smallScreenCodeVPad}px 0;
       overflow-x: auto;
     }
 
@@ -307,12 +307,10 @@ include %css(
 
     @media ${Screen.small} {
       width: 100%;
-      padding-right: ${LayoutParams.smallScreenHPad}px;
     }
 
     @media ${Screen.large} {
-      width: ${LayoutParams.largeScreenContentWidth}px;
-      overflow: visible;
+      width: 100%;
     }
   `
 
@@ -321,7 +319,7 @@ include %css(
     overflow: visible;
 
     @media ${Screen.small} {
-      width: 100%;
+      width: calc(100% - ${LayoutParams.smallScreenHPad * 2}px);
     }
 
     @media ${Screen.large} {
@@ -370,6 +368,35 @@ include %css(
 
     @media ${Screen.large} {
       left: -${languageLabelHPad}px;
+    }
+  `
+
+  let codeLine = css`
+    display: flex;
+    justify-content: center;
+    width: 100%;
+    transition-property: opacity;
+    transition-duration: ${Transition.fast};
+    transition-timing-function: ${Transition.timingFunction};
+  `
+
+  let codeLineFaded = css`
+    opacity: 0.7;
+  `
+
+  let codeLineHighlighted = css`
+    background-color: ${Theme.codeHighlightedLineBgColor};
+  `
+
+  let codeLineContents = css`
+    @media ${Screen.small} {
+      width: 100%;
+      padding: 0 ${LayoutParams.smallScreenHPad}px;
+    }
+
+    @media ${Screen.large} {
+      width: ${LayoutParams.largeScreenContentWidth}px;
+      overflow: visible;
     }
   `
 

@@ -35,7 +35,8 @@ This step is one of the very first steps performed on an application start. To s
 Since current route might have only one value at the given moment in time, this is a perfect case for a variant:
 
 ```rescript
-// @file: Route.res
+@file: Route.res
+---
 
 type t =
   | Main
@@ -57,7 +58,8 @@ type url = {
 Let’s implement a function `Route.fromUrl` that takes `RescriptReactRouter.url` and returns `option<Route.t>`.
 
 ```rescript
-// @file: Route.res
+@file: Route.res
+---
 
 type t =
   | Main
@@ -76,7 +78,8 @@ let fromUrl = (url: RescriptReactRouter.url) =>
 Alright, now we can deserialize url that comes from a browser into our own safe type. We can wrap `RescriptReactRouter.useUrl` hook into a thin application-specific hook that would produce app route:
 
 ```rescript
-// @file: Router.res
+@file: Router.res
+---
 
 let useRouter = () => RescriptReactRouter.useUrl()->Route.fromUrl
 ```
@@ -84,7 +87,8 @@ let useRouter = () => RescriptReactRouter.useUrl()->Route.fromUrl
 And finally, we can render the app:
 
 ```rescript
-// @file: App.res
+@file: App.res
+---
 
 @react.component
 let make = () => {
@@ -116,7 +120,8 @@ I can offer two ways to solve this problem: one is more concise but with additio
 If your app doesn't have a lot of links, this approach should be good to go. We already have `Route.t` type implemented. To be able to dispatch it to a browser, we need to implement `toString` function that would take `Route.t` and return a url string that browser expects.
 
 ```rescript
-// @file: Route.res
+@file: Route.res
+---
 
 let toString = route =>
   switch route {
@@ -129,7 +134,8 @@ let toString = route =>
 And this is all we need to implement `Router.Link` component and `Router.push` function.
 
 ```rescript
-// @file: Router.res
+@file: Router.res
+---
 
 let push = (route: Route.t) => route->Route.toString->RescriptReactRouter.push
 
@@ -174,7 +180,8 @@ This approach has one downside though. If you render a lot of links, you might n
 </P>
 
 ```rescript
-// @file: Route.res
+@file: Route.res
+---
 
 type t'
 
@@ -193,7 +200,8 @@ Inside the `Route` module, we pack every URL string into `Route.t'`, so only URL
 Finishing touch to make implementation completely safe is creating `Route.rei` interface file, in which we remove `make` function thus it won’t be exposed to the rest of the app and it won’t be possible to create `Route.t'` outside of the `Route` module.
 
 ```rescript
-// @file: Route.resi
+@file: Route.resi
+---
 
 type t =
   | Main

@@ -21,6 +21,7 @@
   --code-color: #c1c1c1;
   --code-bg-color: #3c3c3c;
   --code-label-bg-color: #757575;
+  --code-highlighted-line-bg-color: rgba(255, 255, 255, 0.03);
   --code-token-keyword-color: #0095d5;
   --code-token-constant-color: #c91178;
 }

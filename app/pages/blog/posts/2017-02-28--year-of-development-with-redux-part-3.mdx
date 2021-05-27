@@ -43,7 +43,8 @@ The main idea here is to represent **interactions as modules**.
 The simplest possible case is when a synchronous action is dispatched and only one reducer should respond. For example, the interaction module below defines a behavior of modal dialog:
 
 ```js
-// @file: interactions/modalToggle.js
+@file: interactions/modalToggle.js
+---
 
 const MODAL_SHOW = "MODAL_SHOW";
 const MODAL_HIDE = "MODAL_HIDE";
@@ -73,7 +74,8 @@ export const onModalHide = {
 The reducer module no longer contains any logic, it’s just an index of interactions:
 
 ```js
-// @file: reducer.js
+@file: reducer.js
+---
 
 import state from "./state";
 

@@ -26,6 +26,7 @@ module type Colors = {
   let codeColor: string
   let codeBgColor: string
   let codeLabelBgColor: string
+  let codeHighlightedLineBgColor: string
   let codeTokenKeywordColor: string
   let codeTokenConstantColor: string
 }
@@ -48,5 +49,6 @@ let spinnerColor = "var(--spinner-color)"
 let codeColor = "var(--code-color)"
 let codeBgColor = "var(--code-bg-color)"
 let codeLabelBgColor = "var(--code-label-bg-color)"
+let codeHighlightedLineBgColor = "var(--code-highlighted-line-bg-color)"
 let codeTokenKeywordColor = "var(--code-token-keyword-color)"
 let codeTokenConstantColor = "var(--code-token-constant-color)"

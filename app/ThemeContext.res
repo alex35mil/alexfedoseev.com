@@ -70,6 +70,7 @@ module Dom = {
     root->setVar("--code-color", Theme.codeColor)
     root->setVar("--code-bg-color", Theme.codeBgColor)
     root->setVar("--code-label-bg-color", Theme.codeLabelBgColor)
+    root->setVar("--code-highlighted-line-bg-color", Theme.codeHighlightedLineBgColor)
     root->setVar("--code-token-keyword-color", Theme.codeTokenKeywordColor)
     root->setVar("--code-token-constant-color", Theme.codeTokenConstantColor)
   }
