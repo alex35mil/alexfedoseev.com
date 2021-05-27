@@ -28,7 +28,7 @@ include %css(
     @media ${Screen.large} {
       align-content: center;
       align-items: baseline;
-      padding-left: ${LayoutParams.largeScreenLogoWidth + LayoutParams.largeScreenColGap}px;
+      padding-left: ${LayoutParams.logoWidth + LayoutParams.largeScreenColGap}px;
       /* text-overflow: ellipsis requires non-relative width to be set */
       max-width: calc(100vw - ${LayoutParams.smallScreenHPad * 2}px);
     }
@@ -77,7 +77,7 @@ include %css(
     }
 
     @media ${Screen.large} {
-      grid-template-columns: ${LayoutParams.largeScreenLogoWidth}px max-content;
+      grid-template-columns: ${LayoutParams.logoWidth}px max-content;
       grid-template-rows: max-content;
       grid-column-gap: ${LayoutParams.largeScreenColGap}px;
       align-content: center;

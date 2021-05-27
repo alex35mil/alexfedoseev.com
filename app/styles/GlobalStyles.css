@@ -73,14 +73,14 @@ body {
   }
 }
 
-@media only screen and (max-width: 780px) {
+@media only screen and (max-width: 747px) {
   :root {
     --small-screen: 1;
     --large-screen: 0;
   }
 }
 
-@media only screen and (min-width: 781px) {
+@media only screen and (min-width: 748px) {
   :root {
     --small-screen: 0;
     --large-screen: 1;

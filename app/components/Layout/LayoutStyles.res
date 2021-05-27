@@ -31,20 +31,20 @@ include %css(
     display: grid;
 
     @media ${Screen.small} {
-      grid-template-columns: ${LayoutParams.largeScreenLogoWidth}px 1fr;
+      grid-template-columns: ${LayoutParams.logoWidth}px 1fr;
       grid-column-gap: 14px;
       justify-content: space-between;
       padding: 0 ${LayoutParams.smallScreenHPad}px;
     }
 
     @media ${navMediumScreen} {
-      grid-template-columns: ${LayoutParams.largeScreenLogoWidth}px 1fr max-content;
-      grid-column-gap: 14px;
+      grid-template-columns: ${LayoutParams.logoWidth}px 1fr max-content;
+      grid-column-gap: ${LayoutParams.largeScreenColGap}px;
       justify-content: space-between;
     }
 
     @media ${Screen.large} {
-      grid-template-columns: ${LayoutParams.largeScreenLogoWidth}px 1fr max-content;
+      grid-template-columns: ${LayoutParams.logoWidth}px 1fr max-content;
       grid-column-gap: ${LayoutParams.largeScreenColGap}px;
       width: ${LayoutParams.largeScreenContentWidth}px;
     }
@@ -76,12 +76,12 @@ include %css(
 
   let logoSvg = css`
     @media ${Screen.small} {
-      width: ${LayoutParams.smallScreenLogoWidth}px;
+      width: ${LayoutParams.logoWidth}px;
       height: ${LayoutParams.smallScreenLogoHeight}px;
     }
 
     @media ${Screen.large} {
-      width: ${LayoutParams.largeScreenLogoWidth}px;
+      width: ${LayoutParams.logoWidth}px;
       height: ${LayoutParams.largeScreenLogoHeight}px;
     }
   `

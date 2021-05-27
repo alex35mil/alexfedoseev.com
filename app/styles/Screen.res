@@ -2,7 +2,7 @@ type screen =
   | Small
   | Large
 
-let smallMaxWidth = LayoutParams.largeScreenContentWidth + 80 // if you change this, don't forget to update global css
+let smallMaxWidth = LayoutParams.largeScreenContentWidth + LayoutParams.smallScreenHPad * 2 - 1 // if you change this, don't forget to update global css
 
 let small = `only screen and (max-width: ${smallMaxWidth->Int.toString}px)`
 let large = `only screen and (min-width: ${(smallMaxWidth + 1)->Int.toString}px)`

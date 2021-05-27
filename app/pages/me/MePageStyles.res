@@ -34,7 +34,7 @@ include %css(
     }
 
     @media ${Screen.large} {
-      grid-template-columns: ${LayoutParams.largeScreenLogoWidth}px ${LayoutParams.largeScreenRightColWidth}px;
+      grid-template-columns: ${LayoutParams.logoWidth}px ${LayoutParams.largeScreenRightColWidth}px;
       grid-template-rows: max-content;
       grid-column-gap: ${LayoutParams.largeScreenColGap}px;
       align-content: start;
@@ -96,7 +96,7 @@ include %css(
     }
 
     @media ${Screen.large} {
-      grid-template-columns: ${LayoutParams.largeScreenLogoWidth}px ${LayoutParams.largeScreenRightColWidth}px;
+      grid-template-columns: ${LayoutParams.logoWidth}px ${LayoutParams.largeScreenRightColWidth}px;
       grid-template-rows: max-content;
       grid-column-gap: ${LayoutParams.largeScreenColGap}px;
       align-content: start;
