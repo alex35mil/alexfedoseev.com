@@ -23,6 +23,16 @@ let dependencies: Js.Dict.t<Dependency.t> = {
 
   Js.Dict.fromArray([
     (
+      "2021-05-29--lazy-loading-images-with-rescript",
+      {
+        component: dynamic(
+          () => Module.load("blog/posts/2021-05-29--lazy-loading-images-with-rescript.mdx"),
+          loading(),
+        ),
+        cover: None,
+      },
+    ),
+    (
       "2021-05-15--error-not-error",
       {
         component: dynamic(

@@ -1,0 +1,296 @@
+---
+title: Lazy Loading Images With ReScript
+description: Optimizing image loading using IntersectionObserver and React in ReScript.
+category: Dev
+---
+
+When users visit a web page, they are not necessarily interested in its content. If the page contains a bunch of images and a user navigates away from the first screen, it is essentially a waste of traffic, CPU, time, etc. But it can be optimized.
+
+The idea is to load images only when a user shows an intention to view them. For example, when a blog post is loaded, no images are rendered until the user starts scrolling and is at a distance of half the screen height from the top border of the image. Only then, `img` tag gets rendered and the browser starts downloading the image.
+
+In the older times, to detect if an image is near the viewport, we would use scroll listeners with a combination of DOM methods that cause page reflow, such as `getBoundingClientRect`. And it was quite rough in terms of performance.
+
+Luckily, this issue was addressed in recent years by the introduction of [`IntersectionObserver`](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API). If you don't feel like opening links, TL;DR: this new API provides a way to asynchronously observe changes in the intersection of a target element with an ancestor element or with a top-level document's viewport. In other words, you simply hook an observer and provide a callback, which will be triggered when the target element will be in (or near from) the viewport.
+
+Let's get to the implementation.
+
+## Bindings
+Starting with the ReScript bindings to `IntersectionObserver`.
+
+```rescript
+@file: IntersectionObserver.res
+---
+
+type t = Dom.intersectionObserver
+
+module Entry = {
+  type t = Dom.intersectionObserverEntry
+  @get external isIntersecting: t => bool = "isIntersecting"
+}
+
+@deriving(abstract)
+type options = {
+  @optional
+  root: Dom.element,
+  @optional
+  rootMargin: string,
+  @optional
+  threshold: float,
+}
+
+@new
+external make: (
+  array<Entry.t> => unit,
+  options
+) => t = "IntersectionObserver"
+
+@send external observe: (t, Dom.element) => unit = "observe"
+@send external disconnect: t => unit = "disconnect"
+```
+
+These bindings don't cover the whole `IntersectionObserver` API, but only bits that would be required to implement the lazy loading of images in the project. If you want, you can simplify those even more. For example, I know that across the whole project I won't be using any custom `root` or `threshold` and my `rootMargin` must be `50%`. So I reduced it to:
+
+```rescript
+@file: IntersectionObserver.res
+@highlight: 8-13
+---
+
+type t = Dom.intersectionObserver
+
+module Entry = {
+  type t = Dom.intersectionObserverEntry
+  @get external isIntersecting: t => bool = "isIntersecting"
+}
+
+@new
+external make:
+  (
+    array<Entry.t> => unit,
+    @as(json`{rootMargin: "50%"}`) _,
+  ) => t = "IntersectionObserver"
+
+@send external observe: (t, Dom.element) => unit = "observe"
+@send external disconnect: t => unit = "disconnect"
+```
+
+This way, every time `IntersectionObserver` gets instantiated in ReScript:
+
+```rescript
+IntersectionObserver.make(handler)
+```
+
+It would result in the following JavaScript code:
+
+```js
+new IntersectionObserver(handler, {rootMargin: "50%"});
+```
+
+## React component
+The state type of the component consists of three constructors:
+
+```rescript
+type state =
+  | StandBy
+  | Loading
+  | Loaded
+```
+
+We also need a few actions to be able to change the state:
+
+```rescript
+type action =
+  | StartLoadingImage
+  | ShowImage
+```
+
+When `IntersectionObserver` triggers a callback, `StartLoadingImage` action will be dispatched and UI will render an `<img />` tag with either spinner or a placeholder. `img` tag should also have an `onLoad` handler that will dispatch `ShowImage` action, which removes the spinner and shows the loaded image. And we're done.
+
+Let's glue it all together into the first iteration of the `Image` component.
+
+
+```rescript
+@file: Image.res
+---
+
+type state =
+  | StandBy
+  | Loading
+  | Loaded
+
+type action =
+  | StartLoadingImage
+  | ShowImage
+
+let reducer = (state, action) =>
+  switch action {
+  | StartLoadingImage =>
+    switch state {
+    | StandBy => Loading
+    | Loading
+    | Loaded => state
+    }
+  | ShowImage =>
+    switch state {
+    | StandBy
+    | Loading => Loaded
+    | Loaded => state
+    }
+  }
+
+  @react.component
+  let make = (~src) => {
+    let containerRef = React.useRef(Js.Nullable.null)
+
+    let (state, dispatch) = reducer->React.useReducer(StandBy)
+
+    React.useEffect1(() => {
+      switch state {
+      | StandBy =>
+        switch containerRef.current->Js.Nullable.toOption {
+        | Some(node) =>
+          let observer = IntersectionObserver.make(entries => {
+            let entry = entries->Array.getUnsafe(0)
+            if entry->IntersectionObserver.Entry.isIntersecting {
+              StartLoadingImage->dispatch
+            }
+          })
+          observer->IntersectionObserver.observe(node)
+          Some(() => observer->IntersectionObserver.disconnect)
+        | None => None
+        }
+      | Loading
+      | Loaded => None
+      }
+    }, [state])
+
+    <div ref={containerRef->ReactDOM.Ref.domRef}>
+      {switch state {
+      | StandBy => React.null
+      | Loading =>
+        <>
+          <img src onLoad={_ => ShowImage->dispatch} />
+          <Spinner /> // or placeholder
+        </>
+      | Loaded => <img src />
+      }}
+    </div>
+  }
+```
+
+Not bad for a start, but it can be improved in a few ways:
+- Sometimes images should be loaded immediately either due to SEO concerns (`<img />` tag must be in an HTML) or because they are an important part of the first screen (such as a cover image). So it would require one more input parameter.
+- In case if an image is already in the browser's cache, the `onLoad` handler might not be triggered. So it needs to be handled as well.
+
+The final version with additions:
+
+```rescript
+@file: Image.res
+@highlight: 1-4, 33, 35, 37-43, 47-66
+---
+
+// Type to handle loading mode
+type load =
+  | Eager
+  | Lazy
+
+type state =
+  | StandBy
+  | Loading
+  | Loaded
+
+type action =
+  | StartLoadingImage
+  | ShowImage
+
+let reducer = (state, action) =>
+  switch action {
+  | StartLoadingImage =>
+    switch state {
+    | StandBy => Loading
+    | Loading
+    | Loaded => state
+    }
+  | ShowImage =>
+    switch state {
+    | StandBy
+    | Loading =>
+      Loaded
+    | Loaded => state
+    }
+  }
+
+@react.component
+let make = (~src, ~load: load=Lazy) => {
+  let containerRef = React.useRef(Js.Nullable.null)
+  let imgRef = React.useRef(Js.Nullable.null)
+
+  // If image must be loaded on mount, initial state must be chaged
+  let initialState = React.useMemo0(() =>
+    switch load {
+    | Lazy => StandBy
+    | Eager => Loading
+    }
+  )
+
+  let (state, dispatch) = reducer->React.useReducer(initialState)
+
+  // On mount, handling case when image is already loaded from the cache
+  React.useEffect0(() => {
+    switch (state, imgRef.current->Js.Nullable.toOption) {
+    | (Loading, Some(img)) =>
+      if {
+        open Webapi.Dom
+        img->Obj.magic->HtmlImageElement.complete
+        // Instead of Obj.magic, you can define explicit external
+        // to cast Dom.element to Dom.htmlImageElement:
+        //
+        // external htmlImageElementFromElement:
+        // Dom.element => Dom.htmlImageElement = "%identity"
+      } {
+        ShowImage->dispatch
+      }
+    | (Loading, None)
+    | (StandBy | Loaded, Some(_) | None) => ignore()
+    }
+    None
+  })
+
+  React.useEffect1(() => {
+    switch state {
+    | StandBy =>
+      switch containerRef.current->Js.Nullable.toOption {
+      | Some(node) =>
+        let observer = IntersectionObserver.make(entries => {
+          let entry = entries->Array.getUnsafe(0)
+          if entry->IntersectionObserver.Entry.isIntersecting {
+            StartLoadingImage->dispatch
+          }
+        })
+        observer->IntersectionObserver.observe(node)
+        Some(() => observer->IntersectionObserver.disconnect)
+      | None => None
+      }
+    | Loading
+    | Loaded => None
+    }
+  }, [state])
+
+  <div ref={containerRef->ReactDOM.Ref.domRef}>
+    {switch state {
+    | StandBy => React.null
+    | Loading =>
+      <>
+        <img
+          src
+          ref={imgRef->ReactDOM.Ref.domRef}
+          onLoad={_ => ShowImage->dispatch}
+        />
+        <Spinner /> // or placeholder
+      </>
+    | Loaded => <img src ref={imgRef->ReactDOM.Ref.domRef} />
+    }}
+  </div>
+}
+```
+
+Another good UX pattern is to ensure that the size of the temporary container exactly matches the size of the loaded image in the UI to avoid layout shifts. I will touch on this topic in the next post. Take care!
