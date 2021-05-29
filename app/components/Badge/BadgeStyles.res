@@ -1,7 +1,7 @@
 include %css(
   let badge = css`
     display: inline-block;
-    padding: 1px 3px;
+    padding: 2px 4px;
     color: ${Theme.badgeTextColor};
     background-color: ${Theme.badgeBgColor};
     border-radius: 2px;
@@ -10,6 +10,7 @@ include %css(
     transition-property: color, background-color;
     transition-duration: ${Transition.moderate};
     transition-timing-function: ${Transition.timingFunction};
+    text-transform: lowercase;
   `
 
   let hover = css`
