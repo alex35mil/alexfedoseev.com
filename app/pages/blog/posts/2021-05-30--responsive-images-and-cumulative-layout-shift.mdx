@@ -1,0 +1,193 @@
+---
+title: Responsive Images and Cumulative Layout Shift
+description: Solving cumulative layout shift issue caused by responsive images in layouts.
+category: Dev
+---
+
+One of the annoying issues this blog had until recently was **Cumulative Layout Shift** (CLS) caused by responsive images. You probably already encountered a situation, when you arrive on a page and start reading its content while the page is still being loaded. And all of a sudden text jumps. This happens because when an image above the text has fully loaded and the browser rendered it, the page content below the image gets pushed by an amount equal to the height of the image.
+
+In fixed layouts, it can be solved by setting `width` and `height` attributes on the `img` tag, but it wouldn't work for responsive layouts where images are of variable size.
+
+I researched how people solve it these days and ended up with a list of 2 options:
+1. [`aspect-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/aspect-ratio) CSS property
+1. [padding-bottom hack](https://alistapart.com/article/creating-intrinsic-ratios-for-video/)
+
+Even though option #1 solves the issue perfectly, its browser support is still lacking. So only option #2 remained. Well, it's not that bad. If you're ok with the requirements, it's not that much of a hustle to implement it.
+
+The requirements are:
+1. `width` and `height` of images must be known.
+1. `img` tag must be wrapped in a container.
+1. A parent element of this combo must have defined `width` (either relative or absolute, but not `auto`).
+
+The trick is to set the `height` of the container to zero and then apply a `padding-bottom` value equal to `img.height / img.width` ratio (in percents).
+
+So a CSS would be:
+
+```css
+.container {
+  position: relative;
+  height: 0;
+  overflow: hidden;
+  /* `padding-bottom` will be set via `style` attribute */
+}
+
+.image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+```
+
+And a React component:
+
+```rescript
+type img = {
+  src: string,
+  width: float,
+  height: float,
+}
+
+@module("images/img.jpg") external img: img = "default"
+
+let paddingBottom = img.height /. img.width
+
+<div
+  className="container"
+  style=ReactDOM.Style.make(~paddingBottom=`${paddingBottom *. 100.}%` , ())
+>
+  <img src=img.src className="image" />
+</div>
+```
+
+When rendered, this component takes up all the available space within a parent container with the correct height.
+
+This is an old-known trick that doesn't worth another post. But there was one puzzle I had to solve, that I haven't seen being solved on the internet. So it might be useful for some lost soul out there.
+
+So, in my large screen layout for a blog post I have three kinds of images:
+1. `bleed`: image is a little bit wider than the main column.
+1. `fill`: image's width is equal to the main column's width.
+1. `center`: image is narrower than the main column.
+
+The first two worked perfectly as both had `width` property defined:
+
+```css
+.bleed {
+  width: calc(100% + 200px);
+}
+
+.fill {
+  width: 100%;
+}
+```
+
+But the third one — `center` — had issues as it had `width` set to `auto`:
+
+```css
+.center {
+  width: auto;
+  max-width: 90%;
+}
+```
+
+The idea is that if an image is smaller than 90% of the layout's width, it should not be enlarged and have its own width. Otherwise, pixels would show up. And if the image is wider than 90% of the layout's width, it fills exactly this space.
+
+The first step in fixing it was to move `width` definition to `style` tag.
+
+<Note>
+  Note that ReScript code is simplified to reduce unrelated noise.
+</Note>
+
+```css
+.center {
+  max-width: 90%;
+}
+```
+
+```rescript
+let style = `${img.width}px`
+```
+
+Then, I had to limit the `width` to 90% of the layout's width:
+
+```rescript
+let layoutWidth = 700
+let maxImgWidth = layoutWidth * 0.9
+let style =
+  img.width <= maxImgWidth
+  ? `${img.width}px`
+  : `${maxImgWidth}px`
+```
+
+Seems ok, but not really. The problem with this style is that it doesn't consider DPR and on screens with DPR > 1 pixels pop up. I couldn't use `window.devicePixelRatio` since the site is statically rendered, so this API isn't applicable here. And I couldn't use media queries in the `style` attribute, so I'm out of luck with [`-webkit-device-pixel-ratio`](https://developer.mozilla.org/en-US/docs/Web/CSS/@media/-webkit-device-pixel-ratio) here as well. After googling around if it's possible to get current DPR via CSS APIs, the answer was "no". I pretty much gave up, shut down my laptop, and went for a dog walk. Where it hit me: I can't get the exact value of current DPR via CSS, but I have `-webkit-device-pixel-ratio`, `min` CSS function, **and CSS variables**!
+
+```css
+:root {
+  --dpr: 2; /* fallback */
+}
+
+@media only screen and (-webkit-device-pixel-ratio: 1) {
+  :root {
+    --dpr: 1;
+  }
+}
+
+@media only screen and (-webkit-device-pixel-ratio: 2) {
+  :root {
+    --dpr: 2;
+  }
+}
+
+@media only screen and (-webkit-device-pixel-ratio: 3) {
+  :root {
+    --dpr: 3;
+  }
+}
+```
+
+```rescript
+let layoutWidth = 700
+let maxImgWidth = layoutWidth * 0.9
+let imgWidth = `calc(${img.width}px / ${var(--dpr)})`
+let style = `min(${imgWidth}px, ${maxImgWidth}px)`
+```
+
+And this worked. Until I started testing responsiveness. On small screens, the max width must be calculated differently. So I had to set a few more CSS vars and do a weird arithmetics:
+
+```css
+@media only screen and (max-width: 747px) {
+  :root {
+    --sm-screen: 1;
+    --lg-screen: 0;
+  }
+}
+
+@media only screen and (min-width: 748px) {
+  :root {
+    --sm-screen: 0;
+    --lg-screen: 1;
+  }
+}
+```
+
+```rescript
+@highlight: 1-5
+---
+let lgScreenLayoutWidth = 700
+let smScreenLayoutWidth = "100%"
+let lgScreenMaxImageWidth = `${lgScreenLayoutWidth * 0.9}px * var(--lg-screen)`
+let smScreenMaxImageWidth = `${smScreenLayoutWidth} * var(--sm-screen)`
+let maxImgWidth = `calc(lgScreenMaxImageWidth + smScreenMaxImageWidth)`
+let imgWidth = `calc(${img.width}px / ${var(--dpr)})`
+let style = `min(${imgWidth}px, ${maxImgWidth}px)`
+```
+
+Odd programming huh. Can't say I enjoyed it much, but the task was solved. No layout shift is happening here anymore.
+
+
+<!-- ----------------------------------------------------------------------- -->
+
+import {
+  note as Note,
+} from "markdown";
