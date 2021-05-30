@@ -17,8 +17,8 @@ let post = (~year: string, ~category: BlogPost.category, ~slug: string) =>
 let photo = "/photo"
 let me = "/me"
 
-let twitter = "https://twitter.com/AlexFedoseev"
-let github = "https://github.com/AlexFedoseev"
+let twitter = "https://twitter.com/alexfedoseev"
+let github = "https://github.com/alexfedoseev"
 let instagram = "https://www.instagram.com/alex.fedoseev.photo/"
 let facebook = "https://www.facebook.com/alex.fedoseev"
 

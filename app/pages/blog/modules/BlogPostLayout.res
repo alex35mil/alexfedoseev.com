@@ -13,6 +13,44 @@ module PhotoGalleryContext = {
   })
 }
 
+module Footer = {
+  @react.component
+  let make = (~prevPost: option<BlogPost.meta>, ~nextPost: option<BlogPost.meta>) => {
+    <div className=Css.footerRow>
+      <div className=Css.footerRowInner>
+        <div className=Css.prevPost>
+          {switch prevPost {
+          | Some({date, category, slug}) =>
+            <Link.Box
+              path={Route.post(~year=date->BlogPost.Date.year, ~category, ~slug)}
+              className=Css.footerNavLink>
+              <ChevronLeftIcon size=LG color=Faded />
+            </Link.Box>
+          | None => React.null
+          }}
+        </div>
+        <div className=Css.footerNote>
+          <A.Box href=Route.twitter target=Blank className=Css.footerNoteLink>
+            <span className=Css.footerNoteLinkText> {"Get the updates on"->React.string} </span>
+            <TwitterIcon size=SM color=Faded />
+          </A.Box>
+        </div>
+        <div className=Css.nextPost>
+          {switch nextPost {
+          | Some({date, category, slug}) =>
+            <Link.Box
+              path={Route.post(~year=date->BlogPost.Date.year, ~category, ~slug)}
+              className=Css.footerNavLink>
+              <ChevronRightIcon size=LG color=Faded />
+            </Link.Box>
+          | None => React.null
+          }}
+        </div>
+      </div>
+    </div>
+  }
+}
+
 module Row = {
   @react.component
   let make = (~className, ~children) => <div className={cx([Css.row, className])}> children </div>
@@ -534,7 +572,7 @@ module InlineImagePlacement = {
     | Fill
     | Bleed
 
-  let className = (placement, ~width, ~ident) =>
+  let styles = (placement, ~width, ~ident) =>
     switch placement {
     | "center" =>
       let style = {
@@ -564,7 +602,7 @@ module InlineImage = {
   @react.component
   let make = (~src: src, ~placement, ~caption=?) => {
     let (placementClassName, placementStyle) = React.useMemo1(
-      () => placement->InlineImagePlacement.className(~ident=src.fallback, ~width=src.width),
+      () => placement->InlineImagePlacement.styles(~ident=src.fallback, ~width=src.width),
       [placement],
     )
 
@@ -596,7 +634,7 @@ module AnimatedGif = {
   @react.component
   let make = (~img: Image.basic, ~placement, ~caption) => {
     let (placementClassName, placementStyle) = React.useMemo1(
-      () => placement->InlineImagePlacement.className(~ident=img.src, ~width=img.width),
+      () => placement->InlineImagePlacement.styles(~ident=img.src, ~width=img.width),
       [placement],
     )
 
@@ -1261,82 +1299,6 @@ module Expandable = {
   }
 }
 
-module Footer = {
-  @val
-  external encodeURIComponent: string => string = "encodeURIComponent"
-
-  @react.component
-  let make = (~title, ~prevPost: option<BlogPost.meta>, ~nextPost: option<BlogPost.meta>) => {
-    let shareOnTwitter = React.useCallback0(() => {
-      let username = Env.twitterHandle
-      let title = encodeURIComponent(j`"$title"`)
-      let url = encodeURIComponent({
-        open Web.Dom
-        window->Window.location->Location.href
-      })
-      Browser.openWindow(
-        ~url=j`https://twitter.com/intent/tweet?text=$(title)&url=$(url)&via=$(username)`,
-        ~name="Share on Twitter",
-        ~width=600,
-        ~height=600,
-      )
-    })
-
-    let shareOnFacebook = React.useCallback0(() => {
-      let facebookAppId = Env.facebookAppId
-      let url = encodeURIComponent({
-        open Web.Dom
-        window->Window.location->Location.href
-      })
-      Browser.openWindow(
-        ~url=j`https://www.facebook.com/dialog/share?app_id=$(facebookAppId)&display=popup&href=$(url)`,
-        ~name="Share on Facebook",
-        ~width=600,
-        ~height=600,
-      )
-    })
-
-    <div className=Css.footerRow>
-      <div className=Css.footerRowInner>
-        <div className=Css.prevPost>
-          {switch prevPost {
-          | Some({date, category, slug}) =>
-            <Link.Box
-              path={Route.post(~year=date->BlogPost.Date.year, ~category, ~slug)}
-              className=Css.footerLink>
-              <ChevronLeftIcon size=LG color=Faded />
-            </Link.Box>
-          | None => React.null
-          }}
-        </div>
-        <div className=Css.socialSharing>
-          <Control
-            className={cx([Css.socialSharingButton, Css.socialSharingButtonTwitter])}
-            onClick={_ => shareOnTwitter()}>
-            <TwitterShareIcon title="Share on Twitter" className=Css.socialSharingIcon />
-          </Control>
-          <Control
-            className={cx([Css.socialSharingButton, Css.socialSharingButtonFacebook])}
-            onClick={_ => shareOnFacebook()}>
-            <FacebookShareIcon title="Share on Facebook" className=Css.socialSharingIcon />
-          </Control>
-        </div>
-        <div className=Css.nextPost>
-          {switch nextPost {
-          | Some({date, category, slug}) =>
-            <Link.Box
-              path={Route.post(~year=date->BlogPost.Date.year, ~category, ~slug)}
-              className=Css.footerLink>
-              <ChevronRightIcon size=LG color=Faded />
-            </Link.Box>
-          | None => React.null
-          }}
-        </div>
-      </div>
-    </div>
-  }
-}
-
 @react.component
 let make = (
   ~title,
@@ -1365,7 +1327,7 @@ let make = (
           {date->BlogPost.Date.format->React.string}
         </div>
         <div className=Css.content> children </div>
-        <Footer title prevPost nextPost />
+        <Footer prevPost nextPost />
       </div>
       <Gallery ref=galleryContainer />
     </>}

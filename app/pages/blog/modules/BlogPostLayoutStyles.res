@@ -862,10 +862,10 @@ include %css(
     }
   `
 
-  let footerLinkSmallScreenHPad = LayoutParams.smallScreenHPad
-  let footerLinkLargeScreenHPad = 50
+  let footerNavLinkSmallScreenHPad = LayoutParams.smallScreenHPad
+  let footerNavLinkLargeScreenHPad = 50
 
-  let footerLink = css`
+  let footerNavLink = css`
     display: grid;
     grid-template-columns: max-content;
     grid-column-gap: 7px;
@@ -881,11 +881,11 @@ include %css(
     }
 
     @media ${Screen.small} {
-      padding: 18px ${footerLinkSmallScreenHPad}px;
+      padding: 18px ${footerNavLinkSmallScreenHPad}px;
     }
 
     @media ${Screen.large} {
-      padding: 14px ${footerLinkLargeScreenHPad}px;
+      padding: 14px ${footerNavLinkLargeScreenHPad}px;
     }
   `
 
@@ -895,7 +895,7 @@ include %css(
     justify-content: start;
 
     @media ${Screen.large} {
-      transform: translateX(-${footerLinkLargeScreenHPad}px);
+      transform: translateX(-${footerNavLinkLargeScreenHPad}px);
     }
   `
 
@@ -905,70 +905,27 @@ include %css(
     justify-content: end;
 
     @media ${Screen.large} {
-      transform: translateX(${footerLinkLargeScreenHPad}px);
+      transform: translateX(${footerNavLinkLargeScreenHPad}px);
     }
   `
 
-  let socialSharing = css`
-    display: grid;
-
-    @media ${Screen.small} {
-      grid-template-columns: max-content max-content;
-      grid-column-gap: 10px;
-      align-items: center;
-      justify-content: center;
-      justify-items: center;
-    }
-
-    @media ${Screen.large} {
-      grid-template-columns: max-content max-content;
-      grid-column-gap: 16px;
-      align-items: center;
-      justify-content: center;
-      justify-items: center;
-    }
+  let footerNote = css`
+    font-size: 14px;
   `
 
-  let socialSharingButton = css`
-    display: flex;
-    padding: 6px;
-    transition-property: background-color, transform;
-    transition-duration: ${Transition.fast};
-    transition-timing-function: ${Transition.timingFunction};
-    background-color: transparent;
-    border-radius: 50%;
-    transform: scale(1);
+  let footerNoteLink = css`
+    color: ${Theme.fadedTextColor};
 
     @media ${Screen.mouse} {
-      &:hover {
-        transform: scale(1.1);
-
-        & path {
-          fill: #fff !important;
-        }
+      &:focus path,
+      &:hover path {
+        fill: ${Color.twitter};
       }
     }
   `
 
-  let socialSharingButtonTwitter = css`
-    @media ${Screen.mouse} {
-      &:hover {
-        background-color: ${Color.twitter};
-      }
-    }
-  `
-
-  let socialSharingButtonFacebook = css`
-    @media ${Screen.mouse} {
-      &:hover {
-        background-color: ${Color.facebook};
-      }
-    }
-  `
-
-  let socialSharingIcon = css`
-    display: flex;
-    width: 32px;
-    height: 32px;
+  let footerNoteLinkText = css`
+    display: inline-block;
+    margin-right: 11px;
   `
 )
