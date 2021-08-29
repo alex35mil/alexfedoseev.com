@@ -20,6 +20,10 @@ let photo_20200919_DSC02304_thumb = photo_20200919_DSC02304_thumb
 let photo_20190527_DSC3298 = photo_20190527_DSC3298
 @module("images/gallery/20190527-DSC_3298.jpg?preset=galleryThumb") external photo_20190527_DSC3298_thumb: Image.responsive<Image.galleryThumb> = "default"
 let photo_20190527_DSC3298_thumb = photo_20190527_DSC3298_thumb
+@module("images/gallery/20210911-DSC05267.jpg?preset=photo") external photo_20210911_DSC05267: Image.responsive<Image.photo> = "default"
+let photo_20210911_DSC05267 = photo_20210911_DSC05267
+@module("images/gallery/20210911-DSC05267.jpg?preset=galleryThumb") external photo_20210911_DSC05267_thumb: Image.responsive<Image.galleryThumb> = "default"
+let photo_20210911_DSC05267_thumb = photo_20210911_DSC05267_thumb
 @module("images/gallery/20200125-DSC00371.jpg?preset=photo") external photo_20200125_DSC00371: Image.responsive<Image.photo> = "default"
 let photo_20200125_DSC00371 = photo_20200125_DSC00371
 @module("images/gallery/20200125-DSC00371.jpg?preset=galleryThumb") external photo_20200125_DSC00371_thumb: Image.responsive<Image.galleryThumb> = "default"
@@ -144,6 +148,10 @@ let photo_20180801_DSC0286_thumb = photo_20180801_DSC0286_thumb
 let photo_20180909_DSC1024 = photo_20180909_DSC1024
 @module("images/gallery/20180909-DSC_1024.jpg?preset=galleryThumb") external photo_20180909_DSC1024_thumb: Image.responsive<Image.galleryThumb> = "default"
 let photo_20180909_DSC1024_thumb = photo_20180909_DSC1024_thumb
+@module("images/gallery/20210322-DSC04469.jpg?preset=photo") external photo_20210322_DSC04469: Image.responsive<Image.photo> = "default"
+let photo_20210322_DSC04469 = photo_20210322_DSC04469
+@module("images/gallery/20210322-DSC04469.jpg?preset=galleryThumb") external photo_20210322_DSC04469_thumb: Image.responsive<Image.galleryThumb> = "default"
+let photo_20210322_DSC04469_thumb = photo_20210322_DSC04469_thumb
 @module("images/gallery/20200125-DSC00385.jpg?preset=photo") external photo_20200125_DSC00385: Image.responsive<Image.photo> = "default"
 let photo_20200125_DSC00385 = photo_20200125_DSC00385
 @module("images/gallery/20200125-DSC00385.jpg?preset=galleryThumb") external photo_20200125_DSC00385_thumb: Image.responsive<Image.galleryThumb> = "default"
@@ -156,6 +164,10 @@ let photo_20190310_DSC2819_thumb = photo_20190310_DSC2819_thumb
 let photo_20180926_DSC1483 = photo_20180926_DSC1483
 @module("images/gallery/20180926-DSC_1483.jpg?preset=galleryThumb") external photo_20180926_DSC1483_thumb: Image.responsive<Image.galleryThumb> = "default"
 let photo_20180926_DSC1483_thumb = photo_20180926_DSC1483_thumb
+@module("images/gallery/20210323-DSC04524.jpg?preset=photo") external photo_20210323_DSC04524: Image.responsive<Image.photo> = "default"
+let photo_20210323_DSC04524 = photo_20210323_DSC04524
+@module("images/gallery/20210323-DSC04524.jpg?preset=galleryThumb") external photo_20210323_DSC04524_thumb: Image.responsive<Image.galleryThumb> = "default"
+let photo_20210323_DSC04524_thumb = photo_20210323_DSC04524_thumb
 @module("images/gallery/20180926-DSC_1451.jpg?preset=photo") external photo_20180926_DSC1451: Image.responsive<Image.photo> = "default"
 let photo_20180926_DSC1451 = photo_20180926_DSC1451
 @module("images/gallery/20180926-DSC_1451.jpg?preset=galleryThumb") external photo_20180926_DSC1451_thumb: Image.responsive<Image.galleryThumb> = "default"
@@ -187,6 +199,7 @@ let all = [
   ("20190310_DSC2794"->Image.Id.pack, photo_20190310_DSC2794, photo_20190310_DSC2794_thumb),
   ("20200919_DSC02304"->Image.Id.pack, photo_20200919_DSC02304, photo_20200919_DSC02304_thumb),
   ("20190527_DSC3298"->Image.Id.pack, photo_20190527_DSC3298, photo_20190527_DSC3298_thumb),
+  ("20210911_DSC05267"->Image.Id.pack, photo_20210911_DSC05267, photo_20210911_DSC05267_thumb),
   ("20200125_DSC00371"->Image.Id.pack, photo_20200125_DSC00371, photo_20200125_DSC00371_thumb),
   ("20180929_DSC1636"->Image.Id.pack, photo_20180929_DSC1636, photo_20180929_DSC1636_thumb),
   ("20190311_DSC2838"->Image.Id.pack, photo_20190311_DSC2838, photo_20190311_DSC2838_thumb),
@@ -218,9 +231,11 @@ let all = [
   ("20200709_DSC01709"->Image.Id.pack, photo_20200709_DSC01709, photo_20200709_DSC01709_thumb),
   ("20180801_DSC0286"->Image.Id.pack, photo_20180801_DSC0286, photo_20180801_DSC0286_thumb),
   ("20180909_DSC1024"->Image.Id.pack, photo_20180909_DSC1024, photo_20180909_DSC1024_thumb),
+  ("20210322_DSC04469"->Image.Id.pack, photo_20210322_DSC04469, photo_20210322_DSC04469_thumb),
   ("20200125_DSC00385"->Image.Id.pack, photo_20200125_DSC00385, photo_20200125_DSC00385_thumb),
   ("20190310_DSC2819"->Image.Id.pack, photo_20190310_DSC2819, photo_20190310_DSC2819_thumb),
   ("20180926_DSC1483"->Image.Id.pack, photo_20180926_DSC1483, photo_20180926_DSC1483_thumb),
+  ("20210323_DSC04524"->Image.Id.pack, photo_20210323_DSC04524, photo_20210323_DSC04524_thumb),
   ("20180926_DSC1451"->Image.Id.pack, photo_20180926_DSC1451, photo_20180926_DSC1451_thumb),
   ("20190314_DSC3089"->Image.Id.pack, photo_20190314_DSC3089, photo_20190314_DSC3089_thumb),
   ("20200726_DSC01910"->Image.Id.pack, photo_20200726_DSC01910, photo_20200726_DSC01910_thumb),
