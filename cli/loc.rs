@@ -3,7 +3,6 @@ use std::{
     path::{Path, PathBuf},
 };
 
-use pathdiff;
 use steward::Location;
 
 #[derive(Clone, Debug)]

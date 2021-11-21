@@ -44,12 +44,12 @@ pub mod placeholder {
     pub async fn render(input: &PlaceholderInput) -> Output {
         let file = CachableFile::new(Loc::image_file(&input.file));
         match Cache::fetch::<ImageCache>(&file).await? {
-            CacheResult::Hit(cache) => Ok(Done::Output(cache.placeholder.into())),
+            CacheResult::Hit(cache) => Ok(Done::Output(cache.placeholder)),
             CacheResult::Miss(data) => {
                 let placeholder = generate(&data.loc, input).await?;
                 let image_cache = ImageCache::new(&data.hash, placeholder.to_owned());
                 Cache::write(file, image_cache).await?;
-                Ok(Done::Output(placeholder.into()))
+                Ok(Done::Output(placeholder))
             }
         }
     }

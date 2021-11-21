@@ -47,7 +47,7 @@ impl Cache {
         T: CacheEntry + DeserializeOwned,
     {
         let data = FileData::try_read(file.source.to_owned()).await?;
-        match Cache::try_read::<T>(&file).await {
+        match Cache::try_read::<T>(file).await {
             Some(cache) if cache.hash() == data.hash() => Ok(CacheResult::Hit(cache)),
             Some(_) | None => Ok(CacheResult::Miss(data)),
         }

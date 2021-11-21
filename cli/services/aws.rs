@@ -55,7 +55,7 @@ impl S3 {
 
     pub async fn setup_local_bucket(&self) -> Output {
         if self.local_bucket_exists().await {
-            return Err(SetupLocalBucketError::BucketAlreadyExists)?;
+            return Err(SetupLocalBucketError::BucketAlreadyExists.into());
         }
 
         self.client
@@ -89,11 +89,11 @@ impl S3 {
         let local_files = Self::read_local_files().await?;
         let bucket_objects = self.get_bucket_objects().await?;
 
-        for (key, _) in &local_files {
+        for key in local_files.keys() {
             keys.insert(key.to_owned());
         }
 
-        for (key, _) in &bucket_objects {
+        for key in bucket_objects.keys() {
             keys.insert(key.to_owned());
         }
 
@@ -193,7 +193,7 @@ impl S3 {
             objects.sort();
             objects.join("\n")
         };
-        Ok(Done::Output(output.into()))
+        Ok(Done::Output(output))
     }
 
     async fn local_bucket_exists(&self) -> bool {

@@ -286,7 +286,7 @@ impl Cli {
             Cli::Img(ImgCli::SignUrl(input)) => {
                 let config = Config::from(&input.env);
                 let url = img::url::sign(&input, &config).await?;
-                Ok(Done::Output(url.into()))
+                Ok(Done::Output(url))
             }
 
             Cli::Img(ImgCli::RenderPlaceholder(input)) => img::placeholder::render(&input).await,

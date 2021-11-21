@@ -1,6 +1,6 @@
 use crate::{Cmd, CmdEnv, Loc};
 
-const PRIMITIVE_VERSION: &'static str = "0373c21";
+const PRIMITIVE_VERSION: &str = "0373c21";
 
 pub fn vendor_primitive_cmd() -> Cmd {
     cmd! {

@@ -64,27 +64,27 @@ fn check_mkcert_cmd() -> Cmd {
 }
 
 pub async fn ensure_prerequisites() -> Output {
-    if let Err(_) = check_node_cmd().run().await {
+    if check_node_cmd().run().await.is_err() {
         bail!("Node is not installed. Install it from https://nodejs.org");
     }
-    if let Err(_) = check_npm_cmd().run().await {
+    if check_npm_cmd().run().await.is_err() {
         bail!("NPM is not installed. Install it from https://www.npmjs.com");
     }
-    if let Err(_) = check_cargo_watch_cmd().run().await {
+    if check_cargo_watch_cmd().run().await.is_err() {
         bail!(
             "Cargo watch is not installed. Install it from https://github.com/passcod/cargo-watch"
         );
     }
-    if let Err(_) = check_docker_cmd().run().await {
+    if check_docker_cmd().run().await.is_err() {
         bail!("Docker is not installed. Install it from https://docs.docker.com/get-docker");
     }
-    if let Err(_) = check_docker_compose_cmd().run().await {
+    if check_docker_compose_cmd().run().await.is_err() {
         bail!("Docker Compose is not installed. Install it from https://docs.docker.com/compose/install/");
     }
-    if let Err(_) = check_go_cmd().run().await {
+    if check_go_cmd().run().await.is_err() {
         bail!("Go is not installed. Install it from https://golang.org/doc/install");
     }
-    if let Err(_) = check_mkcert_cmd().run().await {
+    if check_mkcert_cmd().run().await.is_err() {
         bail!("mkcert is not installed. Install it from https://github.com/FiloSottile/mkcert");
     }
 

@@ -1,4 +1,4 @@
-use std::{convert::TryFrom, ffi::OsStr, io};
+use std::{convert::TryFrom, ffi::OsStr, fmt, io};
 
 use md5::Digest;
 use tokio::{
@@ -15,15 +15,17 @@ impl FileHash {
     pub fn bytes(&self) -> [u8; 16] {
         self.0 .0
     }
-
-    pub fn to_string(&self) -> String {
-        format!("{:x}", self.0)
-    }
 }
 
 impl From<Digest> for FileHash {
     fn from(digest: Digest) -> Self {
         Self(digest)
+    }
+}
+
+impl fmt::Display for FileHash {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:x}", self.0)
     }
 }
 
