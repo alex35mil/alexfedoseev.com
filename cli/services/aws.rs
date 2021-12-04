@@ -9,79 +9,29 @@ use std::{
 use async_recursion::async_recursion;
 use rusoto_core::{region::Region, RusotoError};
 use rusoto_s3::{
-    CreateBucketError, CreateBucketRequest, DeleteBucketError, DeleteBucketRequest,
-    DeleteObjectError, DeleteObjectRequest, HeadBucketRequest, ListObjectsV2Error,
+    DeleteObjectError, DeleteObjectRequest, HeadBucketError, HeadBucketRequest, ListObjectsV2Error,
     ListObjectsV2Request, Object, PutObjectRequest, S3Client, S3 as S3Trait,
 };
 use thiserror::Error;
 use tokio::fs;
 
-use crate::{CmdEnv, Config, Done, Env, FileData, FileFormat, Loc, Output};
+use crate::{Config, Done, FileData, FileFormat, Loc, Output};
 
 pub struct S3 {
-    bucket: String,
     client: S3Client,
-    endpoint: Option<String>,
+    bucket: String,
 }
 
 impl S3 {
-    pub fn new(config: Config) -> Self {
+    pub fn new(config: &Config) -> Self {
         std::env::set_var("AWS_ACCESS_KEY_ID", config.AWS_ACCESS_KEY_ID());
         std::env::set_var("AWS_SECRET_ACCESS_KEY", config.AWS_SECRET_ACCESS_KEY());
 
-        let endpoint = config.AWS_ENDPOINT();
-        let region = match endpoint {
-            None => Region::from_str(config.AWS_REGION()).expect("Unexpected AWS region"),
-            Some(endpoint) => Region::Custom {
-                name: config.AWS_REGION().to_owned(),
-                endpoint: endpoint.to_owned(),
-            },
-        };
-
+        let region = Region::from_str(config.AWS_REGION()).expect("Unexpected AWS region");
         Self {
-            endpoint: endpoint.map(ToOwned::to_owned),
-            bucket: config.AWS_S3_BUCKET().to_owned(),
             client: S3Client::new(region),
+            bucket: config.AWS_S3_BUCKET().to_owned(),
         }
-    }
-
-    pub fn local() -> Self {
-        Self::new(Config::local())
-    }
-
-    pub fn remote() -> Self {
-        Self::new(Config::remote())
-    }
-
-    pub async fn setup_local_bucket(&self) -> Output {
-        if self.local_bucket_exists().await {
-            return Err(SetupLocalBucketError::BucketAlreadyExists.into());
-        }
-
-        self.client
-            .create_bucket(CreateBucketRequest {
-                bucket: self.bucket.to_owned(),
-                ..Default::default()
-            })
-            .await?;
-
-        Ok(Done::Bye)
-    }
-
-    pub async fn reset_local_bucket(&self) -> Output {
-        if self.local_bucket_exists().await {
-            let objects = self.get_bucket_objects().await?;
-
-            for (key, _) in objects {
-                self.delete_file_from_bucket(&key).await?;
-            }
-
-            self.delete_bucket().await?;
-        }
-        self.delete_localstack_recorded_api_calls().await?;
-        self.setup_local_bucket().await?;
-        self.sync().await?;
-        Ok(Done::Bye)
     }
 
     pub async fn sync(&self) -> Output {
@@ -182,12 +132,7 @@ impl S3 {
                 objects
                     .into_iter()
                     .fold(Vec::with_capacity(total), |mut acc, (key, _)| {
-                        match &self.endpoint {
-                            Some(endpoint) => {
-                                acc.push(format!("{}/{}/{}", endpoint, self.bucket, key))
-                            }
-                            None => acc.push(key),
-                        }
+                        acc.push(key);
                         acc
                     });
             objects.sort();
@@ -196,7 +141,28 @@ impl S3 {
         Ok(Done::Output(output))
     }
 
-    async fn local_bucket_exists(&self) -> bool {
+    pub async fn reset_bucket(&self) -> Output {
+        if self.bucket_exists().await? {
+            let objects = self.get_bucket_objects().await?;
+            for (key, _) in objects {
+                self.delete_file_from_bucket(&key).await?;
+            }
+        }
+        self.sync().await?;
+        Ok(Done::Bye)
+    }
+
+    pub async fn empty_bucket(&self) -> Output {
+        if self.bucket_exists().await? {
+            let objects = self.get_bucket_objects().await?;
+            for (key, _) in objects {
+                self.delete_file_from_bucket(&key).await?;
+            }
+        }
+        Ok(Done::Bye)
+    }
+
+    async fn bucket_exists(&self) -> Result<bool, RusotoError<HeadBucketError>> {
         match self
             .client
             .head_bucket(HeadBucketRequest {
@@ -205,8 +171,9 @@ impl S3 {
             })
             .await
         {
-            Ok(()) => true,
-            Err(_) => false,
+            Ok(()) => Ok(true),
+            Err(RusotoError::Service(HeadBucketError::NoSuchBucket(_))) => Ok(false),
+            Err(err) => Err(err),
         }
     }
 
@@ -238,15 +205,6 @@ impl S3 {
                 )
             })
             .unwrap_or_else(|| HashMap::with_capacity(0)))
-    }
-
-    async fn delete_bucket(&self) -> Result<(), RusotoError<DeleteBucketError>> {
-        self.client
-            .delete_bucket(DeleteBucketRequest {
-                bucket: self.bucket.to_owned(),
-                expected_bucket_owner: None,
-            })
-            .await
     }
 
     async fn read_local_files() -> Result<HashMap<String, File>, ReadLocalFilesError> {
@@ -314,26 +272,6 @@ impl S3 {
             .await?;
         Ok(())
     }
-
-    async fn delete_localstack_recorded_api_calls(&self) -> steward::Result<()> {
-        cmd!(
-            exe: format!("rm -rf {}", Loc::localstack_recorded_api_calls()),
-            env: CmdEnv::empty(),
-            pwd: Loc::root(),
-            msg: "Removing localstack recorded api calls",
-        )
-        .silent()
-        .await
-    }
-}
-
-impl From<Env> for S3 {
-    fn from(env: Env) -> Self {
-        match env {
-            Env::Local => Self::local(),
-            Env::Remote => Self::remote(),
-        }
-    }
 }
 
 #[derive(Debug)]
@@ -358,49 +296,6 @@ impl File {
                 Err(()) => Err(ReadLocalFilesError::UnexpectedFileType(key)),
             },
         }
-    }
-}
-
-#[derive(Error, Debug)]
-pub enum SetupLocalBucketError {
-    #[error("Failed to create local S3 bucket: {0}")]
-    CreateBucketError(RusotoError<CreateBucketError>),
-    #[error("Local S3 bucket already exists")]
-    BucketAlreadyExists,
-}
-
-impl From<RusotoError<CreateBucketError>> for SetupLocalBucketError {
-    fn from(err: RusotoError<CreateBucketError>) -> Self {
-        Self::CreateBucketError(err)
-    }
-}
-
-#[derive(Error, Debug)]
-pub enum ResetLocalBucketError {
-    #[error("Failed to create local S3 bucket: {0}")]
-    CreateBucketError(RusotoError<CreateBucketError>),
-    #[error("Failed to delete local S3 bucket: {0}")]
-    DeleteBucketError(RusotoError<DeleteBucketError>),
-}
-
-impl From<SetupLocalBucketError> for ResetLocalBucketError {
-    fn from(err: SetupLocalBucketError) -> Self {
-        match err {
-            SetupLocalBucketError::CreateBucketError(err) => Self::CreateBucketError(err),
-            SetupLocalBucketError::BucketAlreadyExists => panic!("Impossible case: S3 bucket exists but it should have been removed on the previous step")
-        }
-    }
-}
-
-impl From<RusotoError<CreateBucketError>> for ResetLocalBucketError {
-    fn from(err: RusotoError<CreateBucketError>) -> Self {
-        Self::CreateBucketError(err)
-    }
-}
-
-impl From<RusotoError<DeleteBucketError>> for ResetLocalBucketError {
-    fn from(err: RusotoError<DeleteBucketError>) -> Self {
-        Self::DeleteBucketError(err)
     }
 }
 

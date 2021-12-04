@@ -1,3 +1,5 @@
+#![allow(clippy::enum_variant_names)]
+
 #[macro_use]
 extern crate anyhow;
 #[macro_use]
@@ -8,7 +10,6 @@ extern crate indoc;
 extern crate lazy_static;
 
 mod cli;
-mod config;
 mod env;
 mod file;
 mod loc;
@@ -20,8 +21,7 @@ use std::process;
 
 use crate::{
     cli::Cli,
-    config::Config,
-    env::Env,
+    env::{Config, Env},
     file::{FileData, FileFormat, FileHash},
     loc::Loc,
     result::{Done, Output},

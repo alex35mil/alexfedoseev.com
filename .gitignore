@@ -2,7 +2,6 @@ node_modules/
 log/
 .cache/
 .linaria-cache/
-.aws/
 .next/
 .vercel/
 .cached
@@ -18,5 +17,6 @@ report.*.json
 /tmp/
 /images/
 /vendor/
-/env/local/certs/
-/env/remote/.env
+/env/dev/certs/
+/env/dev/.env
+/env/prod/.env

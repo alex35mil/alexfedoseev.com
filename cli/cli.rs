@@ -6,7 +6,7 @@ use crate::{
     services::{
         aws::S3,
         cache::Cache,
-        docker, go,
+        cargo, docker, go,
         img::{self, placeholder::PlaceholderInput, url::ImgUrlInput},
         next, npm, rescript, ssl, sys, vercel,
     },
@@ -25,8 +25,10 @@ pub enum Cli {
     Setup,
     #[clap(about = "Resets local environment")]
     Reset,
+    #[clap(about = "Updates this CLI")]
+    Update,
     #[clap(about = "Runs local app")]
-    Run(RunCli),
+    Run(Env),
     #[clap(about = "Deploys the app")]
     Deploy,
     #[clap(name = "rescript", about = "ReScript commands")]
@@ -113,21 +115,21 @@ pub enum ImgCli {
 #[derive(Clap, Debug)]
 #[clap(setting = AppSettings::SubcommandRequiredElseHelp)]
 pub enum S3Cli {
-    #[clap(alias = "setup", about = "Sets up local S3 bucket")]
-    SetupLocalBucket,
-    #[clap(alias = "reset", about = "Resets local S3 bucket")]
-    ResetLocalBucket,
     #[clap(about = "Syncs files with S3 bucket", setting = AppSettings::SubcommandRequiredElseHelp)]
     Sync(Env),
     #[clap(alias = "ls", about = "Lists files in S3 bucket")]
     List {
+        env: Env,
         #[clap(
             long,
             about = "If set, lists full S3 objects. Otherwise, prints links to images."
         )]
         detailed: bool,
-        env: Env,
     },
+    #[clap(alias = "reset-dev", about = "Resets development S3 bucket")]
+    ResetDevelopmentBucket,
+    #[clap(alias = "empty-dev", about = "Empties development S3 bucket")]
+    EmptyDevelopmentBucket,
 }
 
 #[derive(Clap, Debug)]
@@ -143,7 +145,7 @@ impl Cli {
 
         match cli {
             Cli::Setup => {
-                let config = Config::local();
+                let config = Config::from(Env::Dev);
 
                 sys::ensure_prerequisites().await?;
                 ssl::generate_certs(&config).await?;
@@ -155,7 +157,7 @@ impl Cli {
             }
 
             Cli::Reset => {
-                let config = Config::local();
+                let config = Config::from(Env::Dev);
 
                 sys::ensure_prerequisites().await?;
                 ssl::generate_certs(&config).await?;
@@ -163,13 +165,18 @@ impl Cli {
                 npm::install().run().await?;
                 docker::compose::build().run().await?;
                 go::vendor_primitive_cmd().run().await?;
-                S3::local().reset_local_bucket().await?; // TODO: Handle by steward
+                S3::new(&config).sync().await?; // TODO: Handle by steward
 
                 Ok(Done::Bye)
             }
 
-            Cli::Run(RunCli::Development) => {
-                let env = Env::Local;
+            Cli::Update => {
+                cargo::install().run().await?;
+                Ok(Done::Bye)
+            }
+
+            Cli::Run(Env::Dev) => {
+                let env = Env::Dev;
 
                 next::validate_cache(&env).await?;
                 rescript::build(&env).run().await?;
@@ -177,29 +184,30 @@ impl Cli {
                 Ok(Done::Bye)
             }
 
-            Cli::Run(RunCli::Production) => {
-                let env = Env::Local;
-                let config = Config::local();
+            Cli::Run(Env::Prod) => {
+                let env = Env::Dev;
+                let config = Config::from(&env);
 
                 rescript::build(&env).run().await?;
                 next::validate_cache(&env).await?;
                 next::build(&config).run().await?;
-                S3::from(env).sync().await?;
+                S3::new(&env.into()).sync().await?;
                 ProcessPool::run(vec![next::start()]).await?;
 
                 Ok(Done::Bye)
             }
 
             Cli::Deploy => {
-                let env = Env::Remote;
-                let config = Config::remote();
+                let env = Env::Prod;
+                let config = Config::from(&env);
 
+                img::gallery::genetrate_index(None).await?;
                 rescript::clean().run().await?;
                 next::validate_cache(&env).await?;
                 rescript::build(&env).run().await?;
                 next::build(&config).run().await?;
                 next::export(&config).run().await?;
-                S3::from(Env::Remote).sync().await?;
+                S3::new(&config).sync().await?;
                 vercel::deploy().run().await?;
                 // TODO: invalidate cloudfront cache for updated images
 
@@ -232,7 +240,7 @@ impl Cli {
             }
 
             Cli::Next(NextCli::Develop) => {
-                next::validate_cache(&Env::Local).await?;
+                next::validate_cache(&Env::Dev).await?;
                 next::dev().cmd().run().await?;
                 Ok(Done::Bye)
             }
@@ -247,8 +255,8 @@ impl Cli {
             }
 
             Cli::Next(NextCli::Start) => {
-                let env = Env::Local;
-                let config = Config::local();
+                let env = Env::Dev;
+                let config = Config::from(&env);
 
                 next::validate_cache(&env).await?;
                 next::build(&config).run().await?;
@@ -291,13 +299,17 @@ impl Cli {
 
             Cli::Img(ImgCli::RenderPlaceholder(input)) => img::placeholder::render(&input).await,
 
-            Cli::S3(S3Cli::SetupLocalBucket) => S3::local().setup_local_bucket().await,
+            Cli::S3(S3Cli::ResetDevelopmentBucket) => {
+                S3::new(&Env::Dev.into()).reset_bucket().await
+            }
 
-            Cli::S3(S3Cli::ResetLocalBucket) => S3::local().reset_local_bucket().await,
+            Cli::S3(S3Cli::EmptyDevelopmentBucket) => {
+                S3::new(&Env::Dev.into()).empty_bucket().await
+            }
 
-            Cli::S3(S3Cli::List { env, detailed }) => S3::from(env).list(detailed).await,
+            Cli::S3(S3Cli::List { env, detailed }) => S3::new(&env.into()).list(detailed).await,
 
-            Cli::S3(S3Cli::Sync(env)) => S3::from(env).sync().await,
+            Cli::S3(S3Cli::Sync(env)) => S3::new(&env.into()).sync().await,
 
             Cli::Cache(CacheCli::Clear) => {
                 Cache::clear().await?;

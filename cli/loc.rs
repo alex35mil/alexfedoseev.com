@@ -45,40 +45,28 @@ impl Loc {
         ROOT.join("env")
     }
 
-    pub fn local_env() -> Self {
-        Loc::env().join("local")
+    pub fn dev_env() -> Self {
+        Loc::env().join("dev")
     }
 
-    pub fn local_docker_compose() -> Self {
-        Loc::local_env().join("docker-compose.yml")
+    pub fn dev_docker_compose() -> Self {
+        Loc::dev_env().join("docker-compose.yml")
     }
 
-    pub fn local_ssl_certs() -> Self {
-        Loc::local_env().join("certs")
+    pub fn dev_ssl_certs() -> Self {
+        Loc::dev_env().join("certs")
     }
 
-    pub fn local_env_file() -> Self {
-        Loc::local_env().join(".env")
+    pub fn dev_env_file() -> Self {
+        Loc::dev_env().join(".env")
     }
 
-    pub fn localstack_dir() -> Self {
-        Loc::local_env().join(".aws")
+    pub fn prod_env() -> Self {
+        Loc::env().join("prod")
     }
 
-    pub fn localstack_data_dir() -> Self {
-        Loc::localstack_dir().join("data")
-    }
-
-    pub fn localstack_recorded_api_calls() -> Self {
-        Loc::localstack_data_dir().join("recorded_api_calls.json")
-    }
-
-    pub fn remote_env() -> Self {
-        Loc::env().join("remote")
-    }
-
-    pub fn remote_env_file() -> Self {
-        Loc::remote_env().join(".env")
+    pub fn prod_env_file() -> Self {
+        Loc::prod_env().join(".env")
     }
 
     pub fn images() -> Self {

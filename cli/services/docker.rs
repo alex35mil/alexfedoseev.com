@@ -39,7 +39,7 @@ pub mod compose {
         cmd! {
             exe: "docker-compose build",
             env: env(),
-            pwd: Loc::local_env(),
+            pwd: Loc::dev_env(),
             msg: "Building Docker Compose services",
         }
     }
@@ -50,7 +50,7 @@ pub mod compose {
             cmd: cmd! {
                 exe: "docker-compose up --build",
                 env: env(),
-                pwd: Loc::local_env(),
+                pwd: Loc::dev_env(),
                 msg: "Running Docker Compose services",
             },
             timeout: Duration::from_secs(20),

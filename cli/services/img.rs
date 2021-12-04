@@ -190,11 +190,11 @@ pub mod gallery {
 }
 
 pub mod url {
-    use std::{io, path::PathBuf};
+    use std::io;
 
     use clap::Clap;
-    use hex::FromHexError;
     use hmac::{Hmac, Mac, NewMac};
+    use serde::Serialize;
     use sha2::Sha256;
     use thiserror::Error;
 
@@ -217,76 +217,98 @@ pub mod url {
         pub env: Env,
     }
 
-    #[derive(Error, Debug)]
-    pub enum ImgProxySignUrlError {
-        #[error("Failed to decode IMGPROXY_KEY hex value: {0}")]
-        InvalidKey(FromHexError),
-        #[error("Failed to decode IMGPROXY_SALT hex value: {0}")]
-        InvalidSalt(FromHexError),
-        #[error("Failed to read hash of the source file: {0}")]
-        FailedToComputeHash(io::Error),
+    #[derive(Serialize, Debug)]
+    struct ImgUrl {
+        bucket: String,
+        key: String,
+        #[serde(skip_serializing_if = "Option::is_none")]
+        edits: Option<ImgEdits>,
+        #[serde(skip)]
+        secret: String,
     }
 
-    impl From<io::Error> for ImgProxySignUrlError {
-        fn from(err: io::Error) -> Self {
-            Self::FailedToComputeHash(err)
+    #[derive(Serialize, Debug)]
+    struct ImgEdits {
+        resize: ImgResize,
+    }
+
+    #[derive(Serialize, Debug)]
+    struct ImgResize {
+        width: u32,
+        height: u32,
+        fit: ImgFit,
+    }
+
+    #[derive(Serialize, Debug)]
+    #[serde(rename_all = "lowercase")]
+    #[allow(dead_code)]
+    enum ImgFit {
+        Cover,
+        Contain,
+        Fill,
+        Inside,
+        Outside,
+    }
+
+    impl ImgUrl {
+        pub fn new(input: &ImgUrlInput, config: &Config) -> Self {
+            Self {
+                bucket: config.AWS_S3_BUCKET().to_owned(),
+                key: input.file.to_owned(),
+                edits: if input.file.ends_with(".gif") {
+                    None
+                } else {
+                    Some(ImgEdits {
+                        resize: ImgResize {
+                            width: input.width,
+                            height: input.height,
+                            fit: ImgFit::Cover,
+                        },
+                    })
+                },
+                secret: config.AWS_IMG_SECRET().to_owned(),
+            }
+        }
+
+        pub async fn sign(self, config: &Config) -> Result<String, ImgSignUrlError> {
+            let params = json::to_vec(&self)?;
+            let path = base64::encode_config(&params, base64::URL_SAFE);
+
+            let mut mac = HmacSha256::new_from_slice(config.AWS_IMG_SECRET().as_bytes())
+                .expect("HMAC can take key of any size");
+            mac.update(format!("/{}", path).as_bytes());
+            let signature = hex::encode(mac.finalize().into_bytes());
+
+            let hash = {
+                let file = CachableFile::new(Loc::image_file(&self.key));
+                match Cache::fetch::<ImageCache>(&file).await? {
+                    CacheResult::Hit(cache) => cache.hash,
+                    CacheResult::Miss(data) => data.hash(),
+                }
+            };
+
+            let url = format!(
+                "https://{domain}/{path}?signature={signature}&version={version}",
+                domain = config.IMAGES_DOMAIN(),
+                path = path,
+                signature = signature,
+                version = hash
+            );
+
+            Ok(url)
         }
     }
 
-    pub async fn sign(
-        input: &ImgUrlInput,
-        config: &Config,
-    ) -> Result<String, ImgProxySignUrlError> {
-        let src = format!(
-            "s3://{s3_bucket}/{file}",
-            s3_bucket = config.AWS_S3_BUCKET(),
-            file = input.file,
-        );
-        let ext = {
-            let path = PathBuf::from(&input.file);
-            let ext = path.extension().unwrap().to_str().unwrap();
-            match ext {
-                "gif" => "gif", // animated gifs
-                _ => "webp",
-            }
-        };
-        let path = format!(
-            "/rs:{resize_type}:{width}:{height}:{enlarge}:{extend}/{src}.{ext}",
-            resize_type = "auto",
-            width = input.width,
-            height = input.height,
-            enlarge = 0,
-            extend = 0,
-            src = base64::encode_config(src.as_bytes(), base64::URL_SAFE_NO_PAD),
-            ext = ext,
-        );
-        let decoded_key = match hex::decode(config.IMGPROXY_KEY()) {
-            Ok(key) => key,
-            Err(err) => return Err(ImgProxySignUrlError::InvalidKey(err)),
-        };
-        let decoded_salt = match hex::decode(config.IMGPROXY_SALT()) {
-            Ok(salt) => salt,
-            Err(err) => return Err(ImgProxySignUrlError::InvalidSalt(err)),
-        };
-        let mut hmac = HmacSha256::new_varkey(&decoded_key).unwrap();
-        hmac.update(&decoded_salt);
-        hmac.update(path.as_bytes());
-        let signature = hmac.finalize().into_bytes();
-        let signature = base64::encode_config(signature.as_slice(), base64::URL_SAFE_NO_PAD);
-        let hash = {
-            let file = CachableFile::new(Loc::image_file(&input.file));
-            match Cache::fetch::<ImageCache>(&file).await? {
-                CacheResult::Hit(cache) => cache.hash,
-                CacheResult::Miss(data) => data.hash(),
-            }
-        };
-        let url = format!(
-            "https://{domain}/{signature}{path}?v={version}",
-            domain = config.IMAGES_DOMAIN(),
-            signature = signature,
-            path = path,
-            version = hash
-        );
+    #[derive(Error, Debug)]
+    pub enum ImgSignUrlError {
+        #[error("Failed to serialize image params. {0}")]
+        FailedToSerializeImgParams(#[from] json::Error),
+        #[error("Failed to read hash of the source file: {0}")]
+        FailedToComputeHash(#[from] io::Error),
+    }
+
+    pub async fn sign(input: &ImgUrlInput, config: &Config) -> Result<String, ImgSignUrlError> {
+        let url = ImgUrl::new(input, config).sign(config).await?;
         Ok(url)
     }
 }

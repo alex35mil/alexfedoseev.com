@@ -8,8 +8,8 @@ pub fn build(env: &Env) -> Cmd {
     cmd! {
         exe: "rescript build",
         env: match env {
-            Env::Local => cmd_env(),
-            Env::Remote => cmd_env().insert("OCAMLPARAM", "_,warn-error=+a"),
+            Env::Dev => cmd_env(),
+            Env::Prod => cmd_env().insert("OCAMLPARAM", "_,warn-error=+a"),
         },
         pwd: Loc::root(),
         msg: "Building ReScript app",

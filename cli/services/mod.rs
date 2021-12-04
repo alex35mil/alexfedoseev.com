@@ -1,5 +1,6 @@
 pub mod aws;
 pub mod cache;
+pub mod cargo;
 pub mod docker;
 pub mod go;
 pub mod img;
