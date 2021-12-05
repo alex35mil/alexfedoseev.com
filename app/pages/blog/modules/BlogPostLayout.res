@@ -20,10 +20,8 @@ module Footer = {
       <div className=Css.footerRowInner>
         <div className=Css.prevPost>
           {switch prevPost {
-          | Some({date, category, slug}) =>
-            <Link.Box
-              path={Route.post(~year=date->BlogPost.Date.year, ~category, ~slug)}
-              className=Css.footerNavLink>
+          | Some({slug}) =>
+            <Link.Box path={Route.post(~slug)} className=Css.footerNavLink>
               <ChevronLeftIcon size=LG color=Faded />
             </Link.Box>
           | None => React.null
@@ -37,10 +35,8 @@ module Footer = {
         </div>
         <div className=Css.nextPost>
           {switch nextPost {
-          | Some({date, category, slug}) =>
-            <Link.Box
-              path={Route.post(~year=date->BlogPost.Date.year, ~category, ~slug)}
-              className=Css.footerNavLink>
+          | Some({slug}) =>
+            <Link.Box path={Route.post(~slug)} className=Css.footerNavLink>
               <ChevronRightIcon size=LG color=Faded />
             </Link.Box>
           | None => React.null
@@ -1302,7 +1298,7 @@ module Expandable = {
 @react.component
 let make = (
   ~title,
-  ~category,
+  ~tags,
   ~cover: option<BlogPost.cover>,
   ~date,
   ~prevPost,
@@ -1319,12 +1315,21 @@ let make = (
         | Some(cover) => <CoverImage src=cover.src credit=cover.credit title />
         }}
         <div className=Css.details>
-          {"Posted in "->React.string}
-          <Link path={category->Route.blogCategory} underline=Always className=Css.categoryLink>
-            {category->BlogPost.Category.format->React.string}
-          </Link>
-          {` · `->React.string}
           {date->BlogPost.Date.format->React.string}
+          {` · `->React.string}
+          <span className=Css.tags>
+            {tags
+            ->Array.map(tag => {
+              <Link
+                key={tag->BlogPost.Tag.toString}
+                path={tag->Route.blogTag}
+                underline=WhenInteracted
+                className=Css.tagLink>
+                {tag->BlogPost.Tag.format->React.string}
+              </Link>
+            })
+            ->React.array}
+          </span>
         </div>
         <div className=Css.content> children </div>
         <Footer prevPost nextPost />

@@ -10,10 +10,8 @@ let isMe = x => x->Js.String2.startsWith("/me")
 
 let main = "/"
 let blog = "/blog"
-let blogCategory = (category: BlogPost.category) =>
-  "/blog/" ++ category->BlogPost.Category.formatForUrl
-let post = (~year: string, ~category: BlogPost.category, ~slug: string) =>
-  `/blog/${category->BlogPost.Category.formatForUrl}/${year}/${slug}`
+let blogTag = tag => "/blog/tag/" ++ tag->BlogPost.Tag.toString
+let post = (~slug) => `/blog/post/${slug}`
 let photo = "/photo"
 let me = "/me"
 

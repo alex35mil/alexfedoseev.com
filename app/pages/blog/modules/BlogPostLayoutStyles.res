@@ -16,8 +16,17 @@ include %css(
     font-size: 0.8em;
   `
 
-  let categoryLink = css`
+  let tags = css`
+    display: inline-block;
+  `
+  let tagLink = css`
+    display: inline-block;
+    margin-right: 10px;
     color: ${Theme.fadedTextColor};
+
+    &:last-child {
+      margin-right: 0;
+    }
   `
 
   let content = css`

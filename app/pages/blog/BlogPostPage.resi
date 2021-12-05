@@ -4,11 +4,7 @@ type props = {
   nextPost: Js.null<BlogPost.meta>,
 }
 
-type params = {
-  year: string,
-  slug: string,
-  category: string,
-}
+type params = {slug: string}
 
 let getStaticProps: Next.GetStaticProps.t<props, params, unit>
 let getStaticPaths: Next.GetStaticPaths.t<params>

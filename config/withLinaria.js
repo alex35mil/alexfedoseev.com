@@ -39,6 +39,7 @@ module.exports = (nextConfig = {}) => {
             loader: require.resolve('@linaria/webpack-loader'),
             options: {
               sourceMap: process.env.NODE_ENV !== 'production',
+              displayName: process.env.NODE_ENV !== 'production',
               ...(nextConfig.linaria || {}),
               extension: LINARIA_EXTENSION,
             },

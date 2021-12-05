@@ -10,8 +10,8 @@ let isMe: t => bool
 
 let main: t
 let blog: t
-let blogCategory: BlogPost.category => t
-let post: (~year: string, ~category: BlogPost.category, ~slug: string) => t
+let blogTag: BlogPost.tag => t
+let post: (~slug: string) => t
 let photo: t
 let me: t
 

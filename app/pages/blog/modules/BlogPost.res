@@ -67,46 +67,48 @@ module Date: {
 
 type date = Date.t
 
-module Category = {
+module Tag = {
   type t =
     | Dev
+    | Rust
+    | ReScript
+    | Js
+    | Css
+    | React
     | Travel
     | Productivity
 
-  let all = [Dev, Travel, Productivity]
+  let all = [Dev, Rust, ReScript, Js, Css, React, Travel, Productivity]
 
-  let format = x =>
-    switch x {
-    | Dev => "Dev"
-    | Travel => "Travel"
-    | Productivity => "Productivity"
-    }
-
-  let formatForUrl = x =>
-    switch x {
-    | Dev => "dev"
-    | Travel => "travel"
-    | Productivity => "productivity"
-    }
-
-  let fromFormatted = x =>
-    switch x {
-    | "Dev" => Ok(Dev)
-    | "Travel" => Ok(Travel)
-    | "Productivity" => Ok(Productivity)
-    | _ => Error()
-    }
-
-  let fromUrl = x =>
+  let fromString = x =>
     switch x {
     | "dev" => Ok(Dev)
+    | "rust" => Ok(Rust)
+    | "rescript" => Ok(ReScript)
+    | "js" => Ok(Js)
+    | "css" => Ok(Css)
+    | "react" => Ok(React)
     | "travel" => Ok(Travel)
     | "productivity" => Ok(Productivity)
     | _ => Error()
     }
+
+  let toString = x =>
+    switch x {
+    | Dev => "dev"
+    | Rust => "rust"
+    | ReScript => "rescript"
+    | Js => "js"
+    | Css => "css"
+    | React => "react"
+    | Travel => "travel"
+    | Productivity => "productivity"
+    }
+
+  let format = x => `#${x->toString}`
 }
 
-type category = Category.t
+type tag = Tag.t
 
 module Cover = {
   type rec t = {
@@ -122,11 +124,11 @@ module Cover = {
 type cover = Cover.t
 
 module Meta = {
-  type rec t = {
+  type t = {
     title: string,
     description: string,
     slug: string,
-    category: Category.t,
+    tags: array<Tag.t>,
     date: Date.t,
     key: string,
   }

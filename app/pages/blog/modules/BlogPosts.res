@@ -249,7 +249,7 @@ let dependencies: Js.Dict.t<Dependency.t> = {
 
 // TODO: Make async
 let read = (): array<Meta.t> => {
-  let posts = Node.Fs.readdirSync(Env.blogPostsDir)->SortArray.stableSortBy((a, b) =>
+  let files = Node.Fs.readdirSync(Env.blogPostsDir)->SortArray.stableSortBy((a, b) =>
     if a > b {
       -1
     } else if a < b {
@@ -259,47 +259,51 @@ let read = (): array<Meta.t> => {
     }
   )
 
-  posts->Array.map(post => {
-    let name = post->Node.Path.basename_ext(".mdx")
-    let path = `${Env.blogPostsDir}/${post}`
+  let posts = files->Array.map(file => {
+    let name = file->Node.Path.basename_ext(".mdx")
+    let path = `${Env.blogPostsDir}/${file}`
     let (date, slug) = switch name->Js.String2.split("--") {
     | [date, slug] => (date->Date.parse, slug)
     | _ => failwith(`Blog post at ${path}: Invalid file name.`)
     }
-    let (title, description, category) = {
+    let (title, description, tags) = {
       let mod = path->Node.Fs.readFileSync(#utf8)->GrayMatter.parse
       switch mod.data->Js.Json.decodeObject {
       | None => failwith(`Blog post at ${path}: meta data is not found.`)
       | Some(dict) => {
           let title = switch dict->Js.Dict.get("title") {
-          | None => failwith(`Blog post at ${path}: title is not set.`)
+          | None => failwith(`Blog post at ${path}: \`title\` property is not set.`)
           | Some(json) =>
             switch json->Js.Json.decodeString {
-            | None => failwith(`Blog post at ${path}: title is not a string.`)
+            | None => failwith(`Blog post at ${path}: \`title\` property is not a string.`)
             | Some(title) => title
             }
           }
-          let category = switch dict->Js.Dict.get("category") {
-          | None => failwith(`Blog post at ${path}: category is not set.`)
-          | Some(json) =>
-            switch json->Js.Json.decodeString {
-            | None => failwith(`Blog post at ${path}: category is not a string.`)
-            | Some(category) =>
-              switch category->Category.fromFormatted {
-              | Ok(category) => category
-              | Error() => failwith(`Blog post at ${path}: unexpected category "${category}"`)
-              }
-            }
-          }
           let description = switch dict->Js.Dict.get("description") {
-          | None => failwith(`Blog post at ${path}: seo.description is not set.`)
+          | None => failwith(`Blog post at ${path}: \`description\` property is not set.`)
           | Some(json) =>
             switch json->Js.Json.decodeString {
-            | None => failwith(`Blog post at ${path}: seo.description is not a string.`)
+            | None => failwith(`Blog post at ${path}: \`description\` property is not a string.`)
             | Some(description) => description
             }
           }
-          (title, description, category)
+          let tags = switch dict->Js.Dict.get("tags") {
+          | None => failwith(`Blog post at ${path}: \`tags\` property is not set.`)
+          | Some(json) =>
+            switch json->Js.Json.decodeString {
+            | None => failwith(`Blog post at ${path}: \`tags\` property is not a string.`)
+            | Some(tags) =>
+              tags
+              ->Js.String2.split(",")
+              ->Array.map(tag => {
+                switch tag->Js.String.trim->Tag.fromString {
+                | Ok(tag) => tag
+                | Error() => failwith(`Blog post at ${path}: unexpected tag "${tag}"`)
+                }
+              })
+            }
+          }
+          (title, description, tags)
         }
       }
     }
@@ -308,10 +312,21 @@ let read = (): array<Meta.t> => {
       description: description,
       slug: slug,
       date: date,
-      category: category,
+      tags: tags,
       key: name,
     }
   })
+
+  let buf: array<BlogPost.Meta.t> = []
+  posts->Js.Array2.forEach(post => {
+    let dup = buf->Array.getBy(post' => post'.slug == post.slug)
+    switch dup {
+    | None => buf->Js.Array2.push(post)->ignore
+    | Some(dup) => failwith(`Posts with the same slug: \`${dup.key}\` &  \`${post.key}\``)
+    }
+  })
+
+  posts
 }
 
 type byYear = array<(string, array<Meta.t>)>

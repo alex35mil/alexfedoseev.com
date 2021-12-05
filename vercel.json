@@ -7,6 +7,18 @@
     { "source": "/blog/dev/2018/eliminating-illegal-state-in-reasonml", "destination": "/blog/dev/2018/eliminating-illegal-state-in-rescript" },
     { "source": "/blog/dev/2020/safe-identifiers-in-reasonml", "destination": "/blog/dev/2020/safe-identifiers-in-rescript" },
     { "source": "/blog/dev/2020/safe-routing-in-reasonml", "destination": "/blog/dev/2020/safe-routing-in-rescript" },
-    { "source": "/blog/dev/2020/cool-things-you-can-do-with-first-class-modules-in-reason-react", "destination": "/blog/dev/2020/cool-things-you-can-do-with-first-class-modules-in-rescript-react" }
+    { "source": "/blog/dev/2020/cool-things-you-can-do-with-first-class-modules-in-reason-react", "destination": "/blog/dev/2020/cool-things-you-can-do-with-first-class-modules-in-rescript-react" },
+    { "source": "/blog/dev/2015/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/dev/2016/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/dev/2017/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/dev/2018/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/dev/2019/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/dev/2020/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/travel/2020/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/dev/2021/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/productivity/2021/:slug", "destination": "/blog/post/:slug" },
+    { "source": "/blog/dev", "destination": "/blog/tag/dev" },
+    { "source": "/blog/travel", "destination": "/blog/tag/travel" },
+    { "source": "/blog/productivity", "destination": "/blog/tag/productivity" }
   ]
 }

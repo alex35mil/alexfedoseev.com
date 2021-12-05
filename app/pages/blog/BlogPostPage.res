@@ -4,26 +4,16 @@ type props = {
   nextPost: Js.null<BlogPost.meta>,
 }
 
-type params = {
-  year: string,
-  slug: string,
-  category: string,
-}
+type params = {slug: string}
 
 let getStaticProps = ctx => {
   open Next.GetStaticProps
 
   let posts = BlogPosts.read()
-  let index =
-    posts->Js.Array2.findIndex(post =>
-      post.date->BlogPost.Date.year == ctx.params.year && post.slug == ctx.params.slug
-    )
+  let index = posts->Js.Array2.findIndex(post => post.slug == ctx.params.slug)
 
   switch index {
-  | -1 =>
-    failwith(
-      `Impossible case: post is not found. Category: ${ctx.params.category}. Year: ${ctx.params.year}. Slug: ${ctx.params.slug}.`,
-    )
+  | -1 => failwith(`Impossible case: post is not found. Slug: ${ctx.params.slug}.`)
   | index =>
     Promise.resolve({
       props: {
@@ -45,8 +35,6 @@ let getStaticPaths = () => {
   Promise.resolve({
     paths: posts->Array.map(post => {
       params: {
-        category: post.category->BlogPost.Category.formatForUrl,
-        year: post.date->BlogPost.Date.year,
         slug: post.slug,
       },
     }),
@@ -81,7 +69,7 @@ let default = (
         key=post.slug
         title=post.title
         date=post.date
-        category=post.category
+        tags=post.tags
         cover=dep.cover
         prevPost={prevPost->Js.Null.toOption}
         nextPost={nextPost->Js.Null.toOption}>
