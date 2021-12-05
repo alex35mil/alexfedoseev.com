@@ -5,7 +5,7 @@ import { script, gaMeasurementId as GA_MEASUREMENT_ID } from "app/modules/Ga.bs.
 export default class Doc extends Document {
   render() {
     return (
-      <Html>
+      <Html lang="en">
         <Head>
           <script
             async
