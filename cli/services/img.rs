@@ -230,6 +230,7 @@ pub mod url {
     #[derive(Serialize, Debug)]
     struct ImgEdits {
         resize: ImgResize,
+        jpeg: ImgJpeg,
     }
 
     #[derive(Serialize, Debug)]
@@ -237,6 +238,11 @@ pub mod url {
         width: u32,
         height: u32,
         fit: ImgFit,
+    }
+
+    #[derive(Serialize, Debug)]
+    struct ImgJpeg {
+        quality: u32,
     }
 
     #[derive(Serialize, Debug)]
@@ -263,6 +269,9 @@ pub mod url {
                             width: input.width,
                             height: input.height,
                             fit: ImgFit::Cover,
+                        },
+                        jpeg: ImgJpeg {
+                            quality: config.IMAGES_QUALITY(),
                         },
                     })
                 },

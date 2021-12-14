@@ -84,6 +84,21 @@ impl Config {
     }
 
     #[allow(non_snake_case)]
+    pub fn IMAGES_QUALITY(&self) -> u32 {
+        let q = self
+            .get("IMAGES_QUALITY")
+            .expect("IMAGES_QUALITY is not set")
+            .parse::<u32>()
+            .expect("IMAGES_QUALITY must be an integer between 1 and 100");
+
+        if !(1..=100).contains(&q) {
+            panic!("IMAGES_QUALITY must be an integer between 1 and 100");
+        }
+
+        q
+    }
+
+    #[allow(non_snake_case)]
     pub fn AWS_REGION(&self) -> &str {
         self.get("AWS_REGION").expect("AWS_REGION is not set")
     }
