@@ -92,7 +92,16 @@ pub fn export(config: &Config) -> Cmd {
     }
 }
 
-fn clear_cache() -> Cmd {
+pub fn clear_cached() -> Cmd {
+    cmd! {
+        exe: format!("rm -rf {}", Loc::cached_build().relative_to(Loc::root())),
+        env: CmdEnv::empty(),
+        pwd: Loc::root(),
+        msg: "Removing cached environment marker",
+    }
+}
+
+pub fn clear_cache() -> Cmd {
     cmd! {
         exe: format!("rm -rf {}", Loc::next_cache().relative_to(Loc::root())),
         env: CmdEnv::empty(),

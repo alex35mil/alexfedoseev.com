@@ -135,8 +135,19 @@ pub enum S3Cli {
 #[derive(Clap, Debug)]
 #[clap(setting = AppSettings::SubcommandRequiredElseHelp)]
 pub enum CacheCli {
-    #[clap(about = "Clears cache")]
-    Clear,
+    #[clap(about = "Clear cache commands")]
+    Clear(ClearCache),
+}
+
+#[derive(Clap, Debug)]
+#[clap(setting = AppSettings::SubcommandRequiredElseHelp)]
+pub enum ClearCache {
+    #[clap(about = "Clears images cache")]
+    Img,
+    #[clap(about = "Clears build cache")]
+    Build,
+    #[clap(about = "Clears all caches")]
+    All,
 }
 
 impl Cli {
@@ -311,8 +322,21 @@ impl Cli {
 
             Cli::S3(S3Cli::Sync(env)) => S3::new(&env.into()).sync().await,
 
-            Cli::Cache(CacheCli::Clear) => {
+            Cli::Cache(CacheCli::Clear(ClearCache::Img)) => {
                 Cache::clear().await?;
+                Ok(Done::Bye)
+            }
+
+            Cli::Cache(CacheCli::Clear(ClearCache::Build)) => {
+                next::clear_cache().run().await?;
+                next::clear_cached().run().await?;
+                Ok(Done::Bye)
+            }
+
+            Cli::Cache(CacheCli::Clear(ClearCache::All)) => {
+                Cache::clear().await?;
+                next::clear_cache().run().await?;
+                next::clear_cached().run().await?;
                 Ok(Done::Bye)
             }
         }
