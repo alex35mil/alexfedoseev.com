@@ -19,6 +19,7 @@
     { "source": "/blog/productivity/2021/:slug", "destination": "/blog/post/:slug" },
     { "source": "/blog/dev", "destination": "/blog/tag/dev" },
     { "source": "/blog/travel", "destination": "/blog/tag/travel" },
-    { "source": "/blog/productivity", "destination": "/blog/tag/productivity" }
+    { "source": "/blog/productivity", "destination": "/blog/tag/productivity" },
+    { "source": "/blog/post/turkey", "destination": "/blog/post/turkey-2020" }
   ]
 }

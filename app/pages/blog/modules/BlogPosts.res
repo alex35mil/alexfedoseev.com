@@ -100,9 +100,9 @@ let dependencies: Js.Dict.t<Dependency.t> = {
       },
     ),
     (
-      "2020-10-08--turkey",
+      "2020-10-08--turkey-2020",
       {
-        component: dynamic(() => Module.load("blog/posts/2020-10-08--turkey.mdx"), loading()),
+        component: dynamic(() => Module.load("blog/posts/2020-10-08--turkey-2020.mdx"), loading()),
         cover: Some({
           src: turkey_2020_10_08_cover,
           credit: None,

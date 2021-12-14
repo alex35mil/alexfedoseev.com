@@ -75,10 +75,12 @@ module Tag = {
     | Js
     | Css
     | React
+    | Photo
     | Travel
+    | Story
     | Productivity
 
-  let all = [Dev, Rust, ReScript, Js, Css, React, Travel, Productivity]
+  let all = [Dev, Rust, ReScript, Js, Css, React, Photo, Travel, Story, Productivity]
 
   let fromString = x =>
     switch x {
@@ -88,7 +90,9 @@ module Tag = {
     | "js" => Ok(Js)
     | "css" => Ok(Css)
     | "react" => Ok(React)
+    | "photo" => Ok(Photo)
     | "travel" => Ok(Travel)
+    | "story" => Ok(Story)
     | "productivity" => Ok(Productivity)
     | _ => Error()
     }
@@ -101,7 +105,9 @@ module Tag = {
     | Js => "js"
     | Css => "css"
     | React => "react"
+    | Photo => "photo"
     | Travel => "travel"
+    | Story => "story"
     | Productivity => "productivity"
     }
 
