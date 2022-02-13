@@ -5,6 +5,6 @@ pub fn install() -> Cmd {
         exe: "cargo install --locked --path .",
         env: CmdEnv::empty(),
         pwd: Loc::root(),
-        msg: "Updating the CLI",
+        msg: "Installing the CLI",
     }
 }

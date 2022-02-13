@@ -26,12 +26,7 @@ state:
     ...
 ```
 
-<Note>
-  The state tree is a combination of <C>branches</C> and <C>leaves</C>. A branch doesn’t hold any
-  state itself but is a grouping of leaves that each hold chunks of the application state. For
-  example, the branch <C>state.entities</C> groups the states of the <C>posts</C> leaf,{" "}
-  <C>comments</C> leaf, etc.
-</Note>
+<Note> The state tree is a combination of `branches` and `leaves`. A branch doesn’t hold any state itself but is a grouping of leaves that each hold chunks of the application state. For example, the branch `state.entities` groups the states of the `posts` leaf, `comments` leaf, etc. </Note>
 
 When a user interacts with the UI, the application changes its state in response. As opposed to a reducers-based model, state is a passive data container here. And interactions are the ones in charge.
 
@@ -91,9 +86,7 @@ The key point is that an interaction decides which part(s) of the state will be 
 
 ## Introducing redux-tree
 
-<Highlight>
-  <A href="https://github.com/shakacode/redux-tree">github.com/shakacode/redux-tree</A>
-</Highlight>
+<Highlight> [github.com/shakacode/redux-tree](https://github.com/shakacode/redux-tree) </Highlight>
 
 Under the hood, `redux-tree` is an alternative version of Redux’s `combineReducers`, which makes it possible to represent changes to the state as a sequence of functions. This allows describing interactions in a very concise and consistent manner.
 
@@ -109,10 +102,9 @@ Check out:
 And let me know how it works for you!
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
-  a as A,
   note as Note,
   inlineCode as C,
   highlight as Highlight,

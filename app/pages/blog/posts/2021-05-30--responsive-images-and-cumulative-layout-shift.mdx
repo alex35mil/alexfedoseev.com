@@ -95,9 +95,7 @@ The idea is that if an image is smaller than 90% of the layout's width, it shoul
 
 The first step in fixing it was to move `width` definition to `style` tag.
 
-<Note>
-  Note that ReScript code is simplified to reduce unrelated noise.
-</Note>
+<Note> Note that ReScript code is simplified to reduce unrelated noise. </Note>
 
 ```css
 .center {
@@ -186,7 +184,7 @@ let style = `min(${imgWidth}px, ${maxImgWidth}px)`
 Odd programming huh. Can't say I enjoyed it much, but the task was solved. No layout shift is happening here anymore.
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
   note as Note,

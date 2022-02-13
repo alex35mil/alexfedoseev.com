@@ -25,6 +25,8 @@ pub enum Cli {
     Setup,
     #[clap(about = "Resets local environment")]
     Reset,
+    #[clap(about = "Installs this CLI")]
+    Install,
     #[clap(about = "Updates this CLI")]
     Update,
     #[clap(about = "Runs local app")]
@@ -181,7 +183,7 @@ impl Cli {
                 Ok(Done::Bye)
             }
 
-            Cli::Update => {
+            Cli::Install | Cli::Update => {
                 cargo::install().run().await?;
                 Ok(Done::Bye)
             }

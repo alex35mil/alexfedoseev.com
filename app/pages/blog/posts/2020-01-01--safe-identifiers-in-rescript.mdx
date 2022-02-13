@@ -93,9 +93,7 @@ As you can see, we added `make` function to `Id` module which simply does nothin
 ## Making an implementation reusable
 Usually, apps have a bunch of different identifiers, and repeating such implementation for each kind of id is tedious. But we can abstract away this logic into a _functor_.
 
-<Note>
-  Functor is a function in a modules space. When you call a functor it returns a new module. More on functors in the <A href="https://rescript-lang.org/docs/manual/latest/module#module-functions-functors">official documentation</A>.
-</Note>
+<Note> Functor is a function in a modules space. When you call a functor it returns a new module. More on functors in the [official documentation](https://rescript-lang.org/docs/manual/latest/module#module-functions-functors). </Note>
 
 ```rescript
 @file: Id.res
@@ -125,16 +123,12 @@ module TodoListId = Id.Make()
 
 ---
 
-<CrossPostNote>
-  Cross-posted to{" "}
-  <A href="https://blog.minima.app/posts/2020/reasonml-safe-identifiers">blog.minima.app</A>
-</CrossPostNote>
+<CrossPostNote> Cross-posted to [blog.minima.app](https://blog.minima.app/posts/2020/reasonml-safe-identifiers) </CrossPostNote>
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
-  a as A,
   note as Note,
   crossPostNote as CrossPostNote,
 } from "markdown";

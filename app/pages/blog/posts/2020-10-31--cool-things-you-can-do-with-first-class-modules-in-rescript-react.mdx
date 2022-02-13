@@ -254,9 +254,7 @@ let make = (~children: module(MyChunk) => React.element) => {
 }
 ```
 
-<Note>
-  A note on Promises. In apps and articles, I use <A href="https://gist.github.com/alexfedoseev/99053e44b508ee5250a64ac7d99a7dcd">a slightly modified version of standard ReScript's Js.Promise module</A> due to standard one is being a bit awkward to use.
-</Note>
+<Note> A note on Promises. In apps and articles, I use [a slightly modified version of standard ReScript's `Js.Promise` module](https://gist.github.com/alexfedoseev/99053e44b508ee5250a64ac7d99a7dcd) due to standard one is being a bit awkward to use. </Note>
 
 Even though this implementation works for this specific use-case, it wouldn't compile for another component that expects props. To make it work with an abstract component let's start with extracting parts specific to `MyChunk` into a separate module: `MyChunk` module type and `loader` function.
 
@@ -399,9 +397,7 @@ Using this technique, it's possible to load not only ReScript or JS assets, but 
 external make: unit => React.element = "default"
 ```
 
-<Note>
-  You can find code examples in <A href="https://github.com/shakacode/rescript-first-class-modules-usage">this repository</A>.
-</Note>
+<Note> You can find code examples in [this repository](https://github.com/shakacode/rescript-first-class-modules-usage). </Note>
 
 ---
 
@@ -410,10 +406,9 @@ _This post is based on my work on the [Minima](https://minima.app) app._
 _The writing of this post was sponsored by [ShakaCode](https://www.shakacode.com)._
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
-  a as A,
   note as Note,
   crossPostNote as CrossPostNote,
 } from "markdown";

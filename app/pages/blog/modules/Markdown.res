@@ -13,7 +13,6 @@ let li = Li.make
 let hr = Hr.make
 let pre = Pre.make
 let code = Code.make
-let inlineCode = InlineCode.make
 
 let inlineImage = InlineImage.make
 let animatedGif = AnimatedGif.make
@@ -39,5 +38,4 @@ let components = {
   "hr": hr,
   "pre": pre,
   "code": code,
-  "inlineCode": inlineCode,
 }

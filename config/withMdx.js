@@ -6,7 +6,12 @@ module.exports = (nextConfig = {}) => {
         test: /\.mdx$/,
         use: [
           options.defaultLoaders.babel,
-          "@mdx-js/loader",
+          {
+            loader: "@mdx-js/loader",
+            options: {
+              providerImportSource: "@mdx-js/react",
+            }
+          },
           "mdx-loader",
         ],
       });

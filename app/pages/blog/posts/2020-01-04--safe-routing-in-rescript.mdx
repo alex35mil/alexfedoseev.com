@@ -172,12 +172,7 @@ This approach has one downside though. If you render a lot of links, you might n
 
 ### Using different types for matching and navigation
 
-<P>
-  This approach is similar to the one we discussed in{" "}
-  <InternalLink path="/blog/dev/2020/safe-identifiers-in-rescript">“Safe Identifiers”</InternalLink> post.
-  We can skip the serialization step and make it zero-cost. The trade-off is that we must introduce
-  a new type and handle packing/unpacking.
-</P>
+This approach is similar to the one we discussed in <InternalLink path="/blog/dev/2020/safe-identifiers-in-rescript">“Safe Identifiers”</InternalLink> post. We can skip the serialization step and make it zero-cost. The trade-off is that we must introduce a new type and handle packing/unpacking.
 
 ```rescript
 @file: Route.res
@@ -232,17 +227,12 @@ And that's pretty much it. Happy & safe coding!
 
 ---
 
-<CrossPostNote>
-  Cross-posted to{" "}
-  <A href="https://blog.minima.app/posts/2020/reasonml-safe-routing">blog.minima.app</A>
-</CrossPostNote>
+<CrossPostNote> Cross-posted to [blog.minima.app](https://blog.minima.app/posts/2020/reasonml-safe-routing) </CrossPostNote>
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
-  p as P,
-  a as A,
   crossPostNote as CrossPostNote,
   internalLink as InternalLink,
 } from "markdown";

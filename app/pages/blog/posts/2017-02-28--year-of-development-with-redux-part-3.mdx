@@ -16,9 +16,7 @@ The clarity of these points is the key to the long and happy development of any 
 
 When my interactions were split between the `actions.js` and `reducer.js` modules, in order to read or write code, I was having to constantly switch back and forth between the two. Things were even worse if multiple reducers were involved. I realized that I should reorganize the code around the interactions, because either implementing a new or working on an existing one, I’m always working **in the context of interaction**, not action creators or reducers.
 
-<P>
-  Based on this, I reorganized my folders into <InternalLink path="/blog/dev/2017/year-of-development-with-redux-part-2">UI units</InternalLink>, like this one:
-</P>
+Based on this, I reorganized my folders into <InternalLink path="/blog/dev/2017/year-of-development-with-redux-part-2">UI units</InternalLink>, like this one:
 
 ```
 |- components/                 # representation
@@ -91,9 +89,7 @@ export default createReducer(state, {
 });
 ```
 
-<Note>
-  Notice the <C>createReducer</C> helper from <A href="http://redux.js.org/docs/recipes/ReducingBoilerplate.html#generating-reducers">Redux’s recipes</A>. It makes it possible to have an exact mapping of a dispatched action from an action creator to the action handler in the reducer. It’ll be required for accurate flow typings.
-</Note>
+<Note> Notice the `createReducer` helper from [Redux’s recipes](http://redux.js.org/docs/recipes/ReducingBoilerplate.html#generating-reducers). It makes it possible to have an exact mapping of a dispatched action from an action creator to the action handler in the reducer. It’ll be required for accurate flow typings. </Note>
 
 ## Advanced case
 Let’s say you requested to `PATCH` an entity and the server responded with `200 OK`. At this point to respond on the single dispatch, you must apply 2 changes to the app state:
@@ -101,9 +97,7 @@ Let’s say you requested to `PATCH` an entity and the server responded with `20
 - reset UI unit store (turn off spinner, reset form state, etc.)
 - update the entity in the data store
 
-<Note>
-  UPDATE: To handle updates of the multiple stores in response to a single action use <A href="https://github.com/shakacode/redux-tree"><C>redux-tree</C></A>.
-</Note>
+<Note> UPDATE: To handle updates of the multiple stores in response to a single action use [`redux-tree`](https://github.com/shakacode/redux-tree). </Note>
 
 The main wins here:
 
@@ -121,9 +115,7 @@ One additional benefit here is the ability to accurately type Redux parts with F
 
 Here is the example app I’ll refer to during the rest of this post: [redux-interactions/flow](https://github.com/shakacode/redux-interactions/tree/master/examples/flow-interactions)
 
-<Note>
-  This is a dummy app, where you pick the blog post and edit its title. It uses thunks to handle asynchronicity and immutable <C>Records</C> as state containers. You can check out its <A href="http://redux-flow-interactions.surge.sh">live version</A>.
-</Note>
+<Note> This is a dummy app, where you pick the blog post and edit its title. It uses thunks to handle asynchronicity and immutable `Records` as state containers. You can check out its [live version](http://redux-flow-interactions.surge.sh). </Note>
 
 ### Building State type
 The whole `State` type consists of the many small parts:
@@ -197,14 +189,11 @@ There are some more limitations, see the [README](https://github.com/shakacode/r
 Thanks for reading this, more great stuff coming soon. Cheers!
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
-  p as P,
-  a as A,
   note as Note,
   internalLink as InternalLink,
-  inlineCode as C,
   highlight as Highlight,
   expandable as Expandable,
   animatedGif as AnimatedGif,

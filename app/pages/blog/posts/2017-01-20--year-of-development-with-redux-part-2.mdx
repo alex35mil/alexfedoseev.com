@@ -4,9 +4,7 @@ description: Our experience using Redux.js in production.
 tags: dev, js
 ---
 
-<P>
-  The <InternalLink path="/blog/dev/2017/year-of-development-with-redux-part-1">previous post</InternalLink> was about the composition of connected components and performance, but those changes introduced another kind of issues, that was solved by the second insight.
-</P>
+The <InternalLink path="/blog/dev/2017/year-of-development-with-redux-part-1">previous post</InternalLink> was about the composition of connected components and performance, but those changes introduced another kind of issues, that was solved by the second insight.
 
 ## Insight #2
 My next pain point was related to the way we structure Redux apps. If with a few reducers it was just uncomfortable, then with the changes, described in the previous post, it became a problem.
@@ -82,9 +80,7 @@ This unit encapsulates representation of this modal and logic of related interac
 Logic is decoupled from representation, but, at the same time, it exists in isolation in context of UI element.
 
 <Expandable label="Tip: Minimize amount of logic in your markup">
-  <P>
-    If you find yourself doing some complex conditions in your JSX, consider delegating it to selectors. This will make markup simple and readable.
-  </P>
+  If you find yourself doing some complex conditions in your JSX, consider delegating it to selectors. This will make markup simple and readable.
 </Expandable>
 
 Of course, you can split the modal and form itself into 2 UI units. It’s up to you. However, I prefer to keep them together for 2 reasons:
@@ -103,10 +99,9 @@ In the <InternalLink path="/blog/dev/2017/year-of-development-with-redux-part-3"
 Stay tuned!
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
-  p as P,
   ol as Ol,
   li as Li,
   inlineImage as InlineImage,

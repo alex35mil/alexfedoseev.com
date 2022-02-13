@@ -39,7 +39,9 @@ const config = {
     FACEBOOK_APP_ID: process.env.FACEBOOK_APP_ID,
     GA_MEASUREMENT_ID: process.env.GA_MEASUREMENT_ID,
   },
-  future: {webpack5: true},
+  images: {
+    disableStaticImages: true,
+  },
   webpack: (config, options) => {
     const { isServer } = options;
 
@@ -47,6 +49,7 @@ const config = {
       config.resolve.fallback = {
         fs: false,
         path: false,
+        process: false,
       };
     }
 

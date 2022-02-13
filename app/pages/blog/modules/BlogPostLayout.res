@@ -175,15 +175,14 @@ module Hr = {
   let make = () => <Row className=Css.hrRow> <hr className=Css.hr /> </Row>
 }
 
-module Pre = {
+module InlineCode = {
   @react.component
-  let make = (~children: React.element) => {
-    // `pre` tag is rendered by Code component
-    children
+  let make = (~children) => {
+    <code className=Css.inlineCode> children </code>
   }
 }
 
-module Code = {
+module Snippet = {
   let pragma = "@"
   let maxParams = 2
   let filePragma = `${pragma}file:`
@@ -193,23 +192,28 @@ module Code = {
   let indexOfFirstHighlightChar = highlightPragma->Js.String2.indexOf(":") + 1
   let languageRegExp = %re("/language-/")
 
+  type language = {
+    id: string,
+    label: string,
+  }
+
   type meta = {
     file: option<string>,
     highlight: option<array<int>>,
   }
 
   @react.component
-  let make = (~className, ~children as source) => {
+  let make = (~className=?, ~children as source) => {
     let language = React.useMemo0(() =>
       className->Option.map(cn => {
         let label = cn->Js.String.replaceByRe(languageRegExp, "", _)
-        let language = switch label {
+        let id = switch label {
         | "sh" => "shell"
         // Looks like Reason syntax works pretty well
         | "rescript" => "reason"
         | _ => label
         }
-        (language, label)
+        {id: id, label: label}
       })
     )
 
@@ -339,89 +343,47 @@ module Code = {
       }
     })
 
-    <ExpandedRow className=Css.codeRow>
-      <pre className=Css.pre>
-        {switch (language, meta) {
-        | (Some((_, label)), None)
-        | (Some((_, label)), Some({file: None})) =>
-          <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithoutFile])}>
-            <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
-          </div>
-        | (Some((_, label)), Some({file: Some(file)})) =>
-          <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
-            <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
-            <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
-          </div>
-        | (None, Some({file: Some(file)})) =>
-          <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
-            <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
-          </div>
-        | (None, Some({file: None}))
-        | (None, None) => React.null
-        }}
-        <code className=Css.code>
-          {switch language {
-          | Some((language, _)) =>
-            <Prism.Highlight code language>
-              {({tokens, getTokenProps}) => {
-                switch meta {
-                | None
-                | Some({highlight: None | Some([])}) =>
-                  tokens->Array.mapWithIndex((idx, line) => {
-                    <div key={idx->Int.toString} className=Css.codeLine>
-                      <div className=Css.codeLineContents>
-                        {line
-                        ->Array.mapWithIndex((idx, token) => {
-                          let {className, children} = getTokenProps({token: token, key: idx})
-                          <span key={idx->Int.toString} className> {children} </span>
-                        })
-                        ->React.array}
-                      </div>
-                    </div>
-                  })
-                | Some({highlight: Some(lines)}) =>
-                  tokens->Array.mapWithIndex((idx, line) => {
-                    <div
-                      key={idx->Int.toString}
-                      className={cx([
-                        Css.codeLine,
-                        lines->Js.Array2.includes(idx + 1)
-                          ? Css.codeLineHighlighted
-                          : Css.codeLineFaded,
-                      ])}>
-                      <div className=Css.codeLineContents>
-                        {line
-                        ->Array.mapWithIndex((idx, token) => {
-                          let {className, children} = getTokenProps({token: token, key: idx})
-                          <span key={idx->Int.toString} className> {children} </span>
-                        })
-                        ->React.array}
-                      </div>
-                    </div>
-                  })
-                }->React.array
-              }}
-            </Prism.Highlight>
-          | None => {
-              let code = code->Js.String2.split("\n")
-
+    <>
+      {switch (language, meta) {
+      | (Some({label, _}), None)
+      | (Some({label, _}), Some({file: None})) =>
+        <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithoutFile])}>
+          <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
+        </div>
+      | (Some({label, _}), Some({file: Some(file)})) =>
+        <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
+          <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
+          <div className={cx([Css.codeLabel, Css.languageLabel])}> {label->React.string} </div>
+        </div>
+      | (None, Some({file: Some(file)})) =>
+        <div className={cx([Css.codeLabelsRow, Css.codeLabelsRowWithFile])}>
+          <div className={cx([Css.codeLabel, Css.fileLabel])}> {file->React.string} </div>
+        </div>
+      | (None, Some({file: None}))
+      | (None, None) => React.null
+      }}
+      <code className=Css.code>
+        {switch language {
+        | Some({id: language, _}) =>
+          <Prism.Highlight code language>
+            {({tokens, getTokenProps}) => {
               switch meta {
               | None
               | Some({highlight: None | Some([])}) =>
-                code->Array.mapWithIndex((idx, line) => {
+                tokens->Array.mapWithIndex((idx, line) => {
                   <div key={idx->Int.toString} className=Css.codeLine>
                     <div className=Css.codeLineContents>
-                      <span>
-                        {switch line {
-                        | "" => "\n"->React.string
-                        | _ => line->React.string
-                        }}
-                      </span>
+                      {line
+                      ->Array.mapWithIndex((idx, token) => {
+                        let {className, children} = getTokenProps({token: token, key: idx})
+                        <span key={idx->Int.toString} className> {children} </span>
+                      })
+                      ->React.array}
                     </div>
                   </div>
                 })
               | Some({highlight: Some(lines)}) =>
-                code->Array.mapWithIndex((idx, line) => {
+                tokens->Array.mapWithIndex((idx, line) => {
                   <div
                     key={idx->Int.toString}
                     className={cx([
@@ -431,27 +393,87 @@ module Code = {
                         : Css.codeLineFaded,
                     ])}>
                     <div className=Css.codeLineContents>
-                      <span>
-                        {switch line {
-                        | "" => "\n"->React.string
-                        | _ => line->React.string
-                        }}
-                      </span>
+                      {line
+                      ->Array.mapWithIndex((idx, token) => {
+                        let {className, children} = getTokenProps({token: token, key: idx})
+                        <span key={idx->Int.toString} className> {children} </span>
+                      })
+                      ->React.array}
                     </div>
                   </div>
                 })
               }->React.array
-            }
-          }}
-        </code>
-      </pre>
-    </ExpandedRow>
+            }}
+          </Prism.Highlight>
+        | None => {
+            let code = code->Js.String2.split("\n")
+
+            switch meta {
+            | None
+            | Some({highlight: None | Some([])}) =>
+              code->Array.mapWithIndex((idx, line) => {
+                <div key={idx->Int.toString} className=Css.codeLine>
+                  <div className=Css.codeLineContents>
+                    <span>
+                      {switch line {
+                      | "" => "\n"->React.string
+                      | _ => line->React.string
+                      }}
+                    </span>
+                  </div>
+                </div>
+              })
+            | Some({highlight: Some(lines)}) =>
+              code->Array.mapWithIndex((idx, line) => {
+                <div
+                  key={idx->Int.toString}
+                  className={cx([
+                    Css.codeLine,
+                    lines->Js.Array2.includes(idx + 1)
+                      ? Css.codeLineHighlighted
+                      : Css.codeLineFaded,
+                  ])}>
+                  <div className=Css.codeLineContents>
+                    <span>
+                      {switch line {
+                      | "" => "\n"->React.string
+                      | _ => line->React.string
+                      }}
+                    </span>
+                  </div>
+                </div>
+              })
+            }->React.array
+          }
+        }}
+      </code>
+    </>
   }
 }
 
-module InlineCode = {
+module Code = {
+  type kind =
+    | Inline
+    | Snippet
+
   @react.component
-  let make = (~children) => <code className=Css.inlineCode> children </code>
+  let make = (~kind: option<kind>=?, ~className=?, ~children) => {
+    switch kind {
+    | None
+    | Some(Inline) =>
+      <InlineCode> {children->React.string} </InlineCode>
+    | Some(Snippet) => <Snippet ?className> children </Snippet>
+    }
+  }
+}
+
+module Pre = {
+  @react.component
+  let make = (~children) => {
+    <ExpandedRow className=Css.codeRow>
+      <pre className=Css.pre> {React.cloneElement(children, {"kind": Some(Code.Snippet)})} </pre>
+    </ExpandedRow>
+  }
 }
 
 module Note = {

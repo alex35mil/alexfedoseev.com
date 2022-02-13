@@ -67,17 +67,10 @@ const dataStore = Map({
 ```
 
 <Expandable label="Tip: Normalize your ids">
-  <P>
-    If you use <C>Immutable</C>, <C>normalizr</C> and integer server ids, then make the type of these ids consistent across the client side app to deal only with numeric values.
-  </P>
-  <Ol>
-    <Li>
-      In selectors, convert stringified id (from url params) to int. Thus, the view layer will receive numeric values.
-    </Li>
-    <Li>
-      Create a wrapper for the normalize() method, which converts stringified keys of immutable Map to ints. Thus, you can safely use <C>state.getIn(['entities', entityId])</C> where entityId is an int.
-    </Li>
-  </Ol>
+  If you use `Immutable`, `normalizr` and integer server ids, then make the type of these ids consistent across the client side app to deal only with numeric values.
+  
+  1. In selectors, convert stringified id (from url params) to int. Thus, the view layer will receive numeric values.
+  1. Create a wrapper for the normalize() method, which converts stringified keys of immutable Map to ints. Thus, you can safely use `state.getIn(['entities', entityId])` where entityId is an int.
 </Expandable>
 
 For each interactive element in the UI we created its own reducer, selectors and / or set of action creators. And finally, this element was placed in its own container, where it connects to Redux store.
@@ -96,13 +89,9 @@ This change greatly improved a performance of the app but introduced some new is
 Stay tuned!
 
 
-<!-- ----------------------------------------------------------------------- -->
+{/* ----------------------------------------------------------------------- */}
 
 import {
-  p as P,
-  ol as Ol,
-  li as Li,
-  inlineCode as C,
   inlineImage as InlineImage,
   internalLink as InternalLink,
   expandable as Expandable,
