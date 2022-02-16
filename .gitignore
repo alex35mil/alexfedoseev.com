@@ -1,9 +1,10 @@
 node_modules/
 log/
+target/
 .cache/
-.linaria-cache/
 .next/
 .vercel/
+.direnv/
 .cached
 *.log
 .DS_Store
