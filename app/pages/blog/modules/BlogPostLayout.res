@@ -132,10 +132,7 @@ module H3 = {
 
 module H4 = {
   @react.component
-  let make = (~children) =>
-    <RowWithSidenoteText text="####" className=Css.h4Row smallScreenVisibility=Hidden>
-      <h4 className=Css.h4> children </h4>
-    </RowWithSidenoteText>
+  let make = (~children) => <Row className=Css.h4Row> <h4 className=Css.h4> children </h4> </Row>
 }
 
 module P = {

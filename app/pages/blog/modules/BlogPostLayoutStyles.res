@@ -140,8 +140,13 @@ include %css(
     }
   `
 
+  let hLine = `
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid ${Theme.lineColor};
+  `
+
   let h2Row = css`
-    margin: ${vGap}px 0 0;
+    margin: ${vGap}px 0 ${vGap + 4}px 0;
   `
 
   let h2 = css`
@@ -153,10 +158,11 @@ include %css(
     transition-property: color;
     transition-duration: ${Transition.moderate};
     transition-timing-function: ${Transition.timingFunction};
+    ${hLine}
   `
 
   let h3Row = css`
-    margin: ${vGap}px 0 0;
+    margin: ${vGap}px 0 ${vGap + 4}px 0;
   `
 
   let h3 = css`
@@ -167,6 +173,7 @@ include %css(
     transition-property: color;
     transition-duration: ${Transition.moderate};
     transition-timing-function: ${Transition.timingFunction};
+    ${hLine}
   `
 
   let h4Row = css`
@@ -189,6 +196,10 @@ include %css(
     .${h2Row} + &,
     .${h3Row} + & {
       margin-top: 8px;
+    }
+
+    .${h4Row} + & {
+      margin-top: 0px;
     }
   `
 
