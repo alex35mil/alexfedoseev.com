@@ -9,6 +9,6 @@ mkShell {
   ];
 
   shellHook = ''
-    export PATH="$PWD/node_modules/.bin/:$PATH";
+    export PATH="$PWD/node_modules/.bin:$PATH";
   '';
 }
