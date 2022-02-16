@@ -128,7 +128,7 @@ home.file = {
 
 It will symlink such files to your `~`.
 
-Check out its [documentation](https://nix-community.github.io/home-manager/options.html) for all the options. There are many.
+Check out its [documentation](https://nix-community.github.io/home-manager/options.html) for all the options. There are many. Also, here are my [dotfiles](https://github.com/alexfedoseev/dotfiles) with Home Manager based setup.
 
 <Note> There’s another third-party tool called [`nix-darwin`](https://github.com/LnL7/nix-darwin) for managing operating system via Nix. While Home Manager is for your home directory, `nix-darwin` is for your macOS. Home Manager can be integrated with it. Personally, I don’t use it. But letting know here that it exists. </Note>
 
@@ -277,7 +277,7 @@ Don't use Github search. It's unreliable. Pull the repo and execute a search aga
 
 Example of my `shell.nix` for PPX development:
 
-```
+```nix
 @file: shell.nix
 ---
 
@@ -370,7 +370,7 @@ If you rely on this channel, you get frequent updates. That's the point of using
 #### Shell aliases
 I find myself using those most of the time:
 
-```sh
+```nix
 # applies Home Manager config
 xx = "home-manager switch";
 
