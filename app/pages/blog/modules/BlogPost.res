@@ -71,6 +71,7 @@ module Tag = {
   type t =
     | Dev
     | Rust
+    | Nix
     | ReScript
     | Js
     | Css
@@ -80,12 +81,13 @@ module Tag = {
     | Story
     | Productivity
 
-  let all = [Dev, Rust, ReScript, Js, Css, React, Photo, Travel, Story, Productivity]
+  let all = [Dev, Rust, Nix, ReScript, Js, Css, React, Photo, Travel, Story, Productivity]
 
   let fromString = x =>
     switch x {
     | "dev" => Ok(Dev)
     | "rust" => Ok(Rust)
+    | "nix" => Ok(Nix)
     | "rescript" => Ok(ReScript)
     | "js" => Ok(Js)
     | "css" => Ok(Css)
@@ -101,6 +103,7 @@ module Tag = {
     switch x {
     | Dev => "dev"
     | Rust => "rust"
+    | Nix => "nix"
     | ReScript => "rescript"
     | Js => "js"
     | Css => "css"

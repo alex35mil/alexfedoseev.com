@@ -23,6 +23,13 @@ let dependencies: Js.Dict.t<Dependency.t> = {
 
   Js.Dict.fromArray([
     (
+      "2022-02-16--nix-time",
+      {
+        component: dynamic(() => Module.load("blog/posts/2022-02-16--nix-time.mdx"), loading()),
+        cover: None,
+      },
+    ),
+    (
       "2021-12-11--reconsidered",
       {
         component: dynamic(() => Module.load("blog/posts/2021-12-11--reconsidered.mdx"), loading()),

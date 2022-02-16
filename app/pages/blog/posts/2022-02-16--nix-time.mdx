@@ -1,0 +1,399 @@
+---
+title: Nix time
+description: A quick summary of why and how I use the Nix package manager.
+tags: dev, nix
+---
+
+Recently, I received my new MacBook Pro with M1 chip, and it was a good time to tackle a long-standing to-do: try out the [Nix package manager](https://nixos.org).
+
+It's not a deep-dive style post (I'm not qualified), but a quick summary of why and how I use Nix in my day-to-day activity.
+
+## Why
+I'll start with what I want from a package manager:
+- **Management of globally installed packages.**  
+  Basically, what Homebrew does.
+- **Isolated environments.**  
+  Some projects have global dependencies that might mess up either system or other projects. Or they might require a specific version of a package. Developing apps in Docker is not an option because it's slow and awkward.
+- **Installation of specific versions of packages.**  
+  Not all projects run on the latests.
+
+With some degree of success, Nix addresses all of these points.
+
+## Installation
+At the moment of writing, I had to run a single command, and it went smoothly:
+
+```sh
+sh <(curl -L https://nixos.org/nix/install)
+```
+
+Check the [official docs](https://nixos.org/manual/nix/stable/installation/installing-binary.html) since this post might be dated at the moment of reading.
+
+## Usage
+Nix uses a store — disk partition on macOS — for storing its stuff: packages, generations, etc. It is immutable. The state of the system is called `generation`. If greatly simplified, it describes how to symlink packages from the store to your system. When you change something in your system via Nix, it creates a new `generation` instead of mutating the previous one. Thus, if you messed something up, you can rollback to the previous state. With that in mind, let's proceed to the practical parts.
+
+<Note> Caution: I don’t use `flakes` or any other Nix feature that is unstable. I have enough bleeding edge in my life. Also, I don’t use profiles (explicitly). As far as I understand, if I haven’t touched this feature, Nix implicitly uses a single default profile. It works for me. </Note>
+
+### Managing global packages
+There are two ways you can manage globally installed packages with Nix:
+1. [nix-env](https://nixos.org/manual/nix/stable/command-ref/nix-env.html): imperative.
+2. [Home Manager](https://nixos.wiki/wiki/Home_Manager): declarative.
+
+#### nix-env
+`nix-env` is built-in. It is similar to how you handle packages with `brew`. You run one command to install packages. You run another command to update or uninstall packages.
+
+```sh
+# checking if `tree` package is available
+nix-env -qaP tree
+
+# installing `tree`
+nix-env -i tree
+
+# updating `tree`
+nix-env -u tree
+
+# uninstalling `tree`
+nix-env -e tree
+```
+
+<Note> Nix uses [channels](https://nixos.wiki/wiki/Nix_channels) as a source of packages. The official registry is [Nixpkgs](https://github.com/nixos/nixpkgs). You can use its branches as channels. By default, it is `nixpkgs-unstable`. And this is what I'm using. </Note>
+
+#### Home Manager
+Another option is the [Home Manager](https://nixos.wiki/wiki/Home_Manager). One of its features is package management via the configuration file. To install a package, you need to add it to the config:
+
+```nix
+home.packages = [
+  pkgs.htop
+  pkgs.tree
+];
+```
+
+And run the command:
+
+```sh
+home-manager switch
+``` 
+
+To uninstall a package, remove it from the config, and run the same command. Don't forget to `switch` after changing the config.
+
+Home Manager is not only about managing installed packages. This tool allows handling your dotfiles, too.
+
+For example, you can configure your shell:
+
+```nix
+programs.zsh = {
+  enable = true;
+
+  autocd = true;
+
+  sessionVariables = {
+    EDITOR = "nvim";
+  };
+
+  shellAliases = {
+    g = "git ";
+    v = "nvim ";
+  };
+
+  initExtra = ''
+    source "$HOME/.cargo/env"
+  '';
+};
+```
+
+Or Git:
+
+```nix
+programs.git = {
+  enable = true;
+
+  userName = "John Doe";
+  userEmail = "john@doe.mx";
+
+  extraConfig = {
+    core = {
+      editor = "nvim";
+      ignorecase = false;
+    };
+  };
+};
+```
+
+If you need to apply some dotfiles that Home Manager doesn't handle, you can use raw `file`:
+
+```nix
+home.file = {
+  ".editorconfig".source = ./path/to/.editorconfig;
+};
+```
+
+It will symlink such files to your `~`.
+
+Check out its [documentation](https://nix-community.github.io/home-manager/options.html) for all the options. There are many.
+
+<Note> There’s another third-party tool called [`nix-darwin`](https://github.com/LnL7/nix-darwin) for managing operating system via Nix. While Home Manager is for your home directory, `nix-darwin` is for your macOS. Home Manager can be integrated with it. Personally, I don’t use it. But letting know here that it exists. </Note>
+
+### Isolated environments
+One of my primary motivators to learn Nix is the ability to configure shell on a per-project basis without polluting global space. For example, if a project needs a specific C compiler, I wouldn’t need to install it globally. Instead, I would ask Nix to make it available within an isolated shell only for this specific project. And it would prepare such shell for me. Also, it can replace such tools as `fnm`, `nvm`, `rvm`, `rbenv`, etc., since it’s possible to install a specific version of a package within this isolated environment. It’s a bit awkward, though. I will elaborate on it a bit later in this post.
+
+So, how my workflow looks from a usage perspective:
+- I `cd` into a project directory.
+- \*magic\*
+- My specially crafted shell is ready to use.
+
+Yeah, it’s that simple. Let's see how to configure it.
+
+Even though you can use a `nix-shell` command to enter a Nix shell, I prefer to autoload it on `cd`. [`direnv`](https://direnv.net) helps with it.
+
+First, enable it in the Home Manager configuration:
+
+```nix
+programs.direnv = {
+  enable = true;
+  nix-direnv.enable = true; # this is optional, see https://github.com/nix-community/nix-direnv
+  enableZshIntegration = true;
+};
+```
+
+If you manage your shell with Home Manager, you're good to go. Otherwise, check [`direnv`](https://direnv.net/#basic-installation) docs on how to hook it into your shell.
+
+Next, configure your project. 
+
+Place a file called `shell.nix` at the project's root directory:
+
+```nix
+@file: shell.nix
+---
+
+with (import <nixpkgs> {});
+
+mkShell {
+  buildInputs = [
+    ruby
+    nodejs
+  ];
+}
+```
+
+<Note> This file is written in nix language. Check out [nix pills](https://nixos.org/guides/nix-pills/) for the basics. </Note>
+
+When it’s done, you can test it by running a `nix-shell` command, which should take you into the shell, where all these packages are available. By default, it uses `bash`, but `direnv` is smart enough to take you to your shell of choice.
+
+To let `direnv` know that it should load Nix shell here, create the following `.envrc` file in the root of the project:
+
+```
+@file: .envrc
+---
+
+use nix
+```
+
+And run the command (you need to do this only once):
+
+```sh
+direnv allow .
+```
+
+Done. Now, every time you `cd` here, shell with `ruby` and `node` stuff will be loaded for you.
+
+### Installing a specific version of a package
+The good news is that it is possible with Nix. The bad news is that it's a bit awkward.
+
+First, you should check if a specific version is available under the corresponding name. For example, Node.js has the following packages:
+
+```
+$ nix-env -qaP nodejs
+
+nixpkgs.nodejs-10_x  nodejs-10.24.1
+nixpkgs.nodejs-12_x  nodejs-12.22.9
+nixpkgs.nodejs-14_x  nodejs-14.18.3
+nixpkgs.nodejs       nodejs-16.13.2
+nixpkgs.nodejs-16_x  nodejs-16.13.2
+nixpkgs.nodejs-17_x  nodejs-17.4.0
+```
+If `v12.22.9` is what you need, use `nodejs-12_x` as a package identifier. Otherwise, you have to fetch it from the git history of [Nixpkgs](https://github.com/nixos/nixpkgs) repo.
+
+To simplify this process, [Marcelo Lazaroni](http://lazamar.github.io/) created [this tool](https://lazamar.co.uk/nix-versions/). Let's say you need Node `v12.22.7`. Go to the URL and search for a `nodejs` package. In the results table, find `12.22.7`, and click on the commit sha to see the instructions.
+
+Using the code from the instructions, `shell.nix` would look like this:
+
+```nix
+@file: shell.nix
+---
+
+with (import <nixpkgs> {});
+
+let
+  pkgs = import (builtins.fetchTarball {
+    url = "https://github.com/NixOS/nixpkgs/archive/5e15d5da4abb74f0dd76967044735c70e94c5af1.tar.gz";
+  }) {};
+
+  nodejs-12_22_7 = pkgs.nodejs-12_x;
+in
+
+mkShell {
+  buildInputs = [
+    nodejs-12_22_7
+  ];
+}
+```
+
+If the version doesn’t exist, you can find build instructions of the closest version in the [Nixpkgs](https://github.com/nixos/nixpkgs) repo and modify it locally to build it in your shell. I never did that, but it should work.
+
+### Tips and caveats
+#### Cleaning
+Since the Nix store is immutable, it might grow over time. So it makes sense to clean things up from time to time.
+
+```sh
+nix-env --delete-generations old
+nix-store --gc
+```
+
+#### Shell hooks
+In `shell.nix`, you can define shell hooks. Useful to export environment variables or execute scripts. Unfortunately, aliases wouldn't work in `zsh`.
+
+```nix
+mkShell {
+  shellHook =''
+    export FOO="bar"
+  '' ;
+}
+```
+
+#### Bundles
+I don't think it's called bundles, but anyway. Besides top-level packages, Nixpkgs has additional top-level entries that bundle together a set of packages. For example, OCaml tools or Ruby gems. I use two of them at the moment: `ocamlPackages` and `vimPlugins`.
+
+You search for a specific package using the following command:
+
+```sh
+nix-env -f '<nixpkgs>' -qaP -A vimPlugins | rg nerdtree
+```
+
+It's useful to explore the Nixpkgs repository directly to figure out what bundles are available and at which paths. Some pointers:
+
+- [all-packages.nix](https://github.com/NixOS/nixpkgs/blob/nixpkgs-unstable/pkgs/top-level/all-packages.nix): all top-level packages.
+- [ocaml-packages.nix](https://github.com/NixOS/nixpkgs/blob/nixpkgs-unstable/pkgs/top-level/ocaml-packages.nix): `ocamlPackages` bundle.
+
+Don't use Github search. It's unreliable. Pull the repo and execute a search against your channel's branch.
+
+Example of my `shell.nix` for PPX development:
+
+```
+@file: shell.nix
+---
+
+with import <nixpkgs> {};
+with pkgs.ocaml-ng.ocamlPackages_4_12;
+
+mkShell {
+  buildInputs = [
+    ocaml
+    dune_2
+    findlib
+    ppxlib
+    reason
+    merlin
+  ];
+}
+```
+
+#### Overrides
+If you find that some dependency constraints don't meet, you can override dependencies of dependencies. For example, if your project has the following `package.json`, running `yarn` would fail due to nixpkgs's `yarn` having `nodejs` dependency, which is `v16_x` at the moment of writing, and which is used in the context of `yarn`.
+
+```json
+@file: package.json
+---
+
+"engines": {
+  "node": "14",
+  "yarn": "1.22"
+}
+```
+
+```nix
+@file: shell.nix
+---
+
+with (import <nixpkgs> {});
+
+mkShell {
+  buildInputs = [
+    nodejs-14_x
+    yarn # not gonna work
+  ];
+}
+```
+
+To fix it, you need to override `nodejs` of this package:
+
+```nix
+@file: shell.nix
+---
+
+with (import <nixpkgs> {});
+
+mkShell {
+  buildInputs = [
+    nodejs-14_x
+    (yarn.override { nodejs = nodejs-14_x; })
+  ];
+}
+```
+
+#### Apple frameworks
+Some dependencies might fail to build due to the following (or similar) error:
+
+```
+error: linking with `cc` failed: exit status: 1
+= note: ld: framework not found Security
+        clang-11: error: linker command failed with exit code 1 (use -v to see invocation)
+```
+
+It means that they rely on the Apple framework, which is unavailable. To fix this, you can add `darwin.apple_sdk.frameworks.<MISSING_FRAMEWORK>` to the `shell.nix`.
+
+```nix
+@file: shell.nix
+---
+
+with (import <nixpkgs> {});
+
+mkShell {
+  buildInputs = [
+    openssl
+    darwin.apple_sdk.frameworks.Security
+  ];
+}
+```
+
+#### nixpkgs-unstable
+If you rely on this channel, you get frequent updates. That's the point of using it. But as far as I understand, your unpinned dependencies might change their versions unexpectedly since no lock files exist (`flakes` should address that). Something to keep in mind.
+
+#### Shell aliases
+I find myself using those most of the time:
+
+```sh
+# applies Home Manager config
+xx = "home-manager switch";
+
+# searches for a top-level package
+xs = "nix-env --query --available --attr-path ";
+
+# searches within a specific bundle
+xsp = "nix-env --file '<nixpkgs>' --query --available --attr-path -A ";
+
+# updates the channel
+xup = "nix-channel --update";
+
+# cleans up store
+xc = "nix-env --delete-generations old && nix-store --gc";
+```
+
+---
+
+I'll try to add more notes here as I go.
+
+
+{/* ----------------------------------------------------------------------- */}
+
+import {
+  note as Note,
+} from "markdown";

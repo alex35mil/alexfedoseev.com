@@ -14,7 +14,8 @@
           "jsx",
           "css",
           "shell",
-          "nginx"
+          "nginx",
+          "nix"
         ],
         "css": false
       }
