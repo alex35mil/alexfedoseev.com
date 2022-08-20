@@ -1,5 +1,5 @@
 ---
-title: Nix time
+title: Nix Time
 description: A quick summary of why and how I use the Nix package manager.
 tags: dev, nix
 ---
@@ -10,11 +10,11 @@ It's not a deep-dive style post (I'm not qualified), but a quick summary of why 
 
 ## Why
 I'll start with what I want from a package manager:
-- **Management of globally installed packages.**  
+- **Management of globally installed packages.**
   Basically, what Homebrew does.
-- **Isolated environments.**  
+- **Isolated environments.**
   Some projects have global dependencies that might mess up either system or other projects. Or they might require a specific version of a package. Developing apps in Docker is not an option because it's slow and awkward.
-- **Installation of specific versions of packages.**  
+- **Installation of specific versions of packages.**
   Not all projects run on the latests.
 
 With some degree of success, Nix addresses all of these points.
@@ -71,7 +71,7 @@ And run the command:
 
 ```sh
 home-manager switch
-``` 
+```
 
 To uninstall a package, remove it from the config, and run the same command. Don't forget to `switch` after changing the config.
 
@@ -156,7 +156,7 @@ programs.direnv = {
 
 If you manage your shell with Home Manager, you're good to go. Otherwise, check [`direnv`](https://direnv.net/#basic-installation) docs on how to hook it into your shell.
 
-Next, configure your project. 
+Next, configure your project.
 
 Place a file called `shell.nix` at the project's root directory:
 
