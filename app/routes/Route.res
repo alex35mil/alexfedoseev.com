@@ -17,7 +17,7 @@ let me = "/me"
 
 let twitter = "https://twitter.com/alexfedoseev"
 let github = "https://github.com/alexfedoseev"
-let instagram = "https://www.instagram.com/alex.fedoseev.photography/"
+let instagram = "https://www.instagram.com/afpxls/"
 let facebook = "https://www.facebook.com/alex.fedoseev"
 
 let src = "https://github.com/alexfedoseev/alexfedoseev.com"
