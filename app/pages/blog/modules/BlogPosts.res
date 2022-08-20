@@ -23,6 +23,13 @@ let dependencies: Js.Dict.t<Dependency.t> = {
 
   Js.Dict.fromArray([
     (
+      "2022-08-20--fight-for-your-hotkeys",
+      {
+        component: dynamic(() => Module.load("blog/posts/2022-08-20--fight-for-your-hotkeys.mdx"), loading()),
+        cover: None,
+      },
+    ),
+    (
       "2022-02-16--nix-time",
       {
         component: dynamic(() => Module.load("blog/posts/2022-02-16--nix-time.mdx"), loading()),

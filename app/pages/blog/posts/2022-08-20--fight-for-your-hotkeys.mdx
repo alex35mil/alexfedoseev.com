@@ -1,0 +1,102 @@
+---
+title: Fight for Your Hotkeys
+description: How to win back a keybinding from the macOS.
+tags: dev, macos, xcode
+---
+
+Today I've been overhauling my Xcode setup, including hotkeys. When I attempted to assign `⌘ ⌃ D` to the “Show code review” action, I got a warning that the operating system already uses this combination, hence it wouldn't work. I checked, and indeed it was used to show the definition of the selected word.
+
+I navigated to the `System Preferences > Keyboard > Shortcuts` to reassign or disable this shortcut, but there was no such entry. Doh!
+
+I felt like insisting on using this hotkey for the diff view in the Xcode, so I started digging. After some googling, I found a `com.apple.symbolichotkeys.plist` property list that holds a subset of system shortcuts.
+
+Since `plist` files are binaries, it requires special tooling to inspect them. It can be  Xcode or `PlistBuddy` cli utility.
+
+```sh
+/usr/libexec/PlistBuddy -c "Print" ~/Library/Preferences/com.apple.symbolichotkeys.plist
+```
+
+The output was puzzling.
+
+```
+Dict {
+    AppleSymbolicHotKeys = Dict {
+        12 = Dict {
+            enabled = true
+            value = Dict {
+                type = standard
+                parameters = Array {
+                    65535
+                    122
+                    8650752
+                }
+            }
+        }
+        21 = Dict {
+            enabled = false
+            value = Dict {
+                type = standard
+                parameters = Array {
+                    56
+                    28
+                    1835008
+                }
+            }
+        }
+		// many more...
+    }
+}
+```
+
+[Further investigation](https://stackoverflow.com/questions/21878482/what-do-the-parameter-values-in-applesymbolichotkeys-plist-dict-represent) revealed that the entry of `AppleSymbolicHotKeys` dict contains:
+- `key`: an int identifier of an action performed on the provided keybinding.
+- Value struct:
+	- `enabled`: a bool flag that enables/disables a shortcut.
+	- `type`: no idea what it is, but I didn't care.
+	- `parameters`: an array that encodes a keybinding:
+		- #1: ASCII code of the character (or `65535` for non-ASCII characters).
+		- #2: the keyboard key code for the character.
+		- #3: the sum of the codes of the modifier keys (`⌘`, `⌃`, `⇧` and `⌥`):
+```
+0: No modifier
+1048576: Command
+262144: Control
+131072: Shift
+524288: Option
+393216: Shift + Control
+655360: Shift + Option
+1179648: Shift + Command
+786432: Control + Option
+1310720: Control + Command
+1572864: Option + Command
+917504: Shift + Control + Option
+1441792: Shift + Control + Command
+1703936: Shift + Option + Command
+1835008: Control + Option + Command
+1966080: Shift + Control + Option + Command
+```
+
+The [following gist](https://gist.github.com/jimratliff/227088cc936065598bedfd91c360334e) helps a lot with decoding `parameters` array.
+
+I hoped that if I find the entry with the `parameters` set to `Array {100 2 1310720}` which corresponds to `⌘ ⌃ D` hotkey and flip its `enabled` flag, it will do the trick. But nope, such entry didn't exist in this dict. Doh!
+
+Apparently, this hotkey comes from somewhere else, and at this point, I was supposed to give up, but one more idea crossed my mind. What if it is possible to add the corresponding action id to this `plist` and disable it? All I need is an identifier of this action. It was the hardest part. I still have no idea where these identifiers come from, but there is only one place on the internet where I found the mapping: a forum post that is long gone but stored in the [web archive](https://web.archive.org/web/20141112224103/http://hintsforums.macworld.com/showthread.php?t=114785). Someone posted a source of such `plist` with comments on what action corresponds to a specific id.
+
+So after inspecting it very closely, I found something similar:
+
+```
+// Dictionary MouseOver - Command, Shift, E
+70 = { enabled = 1; value = { parameters = ( 101, 2, 1179648 ); type = standard; }; };
+```
+
+And it was exactly what I was looking for. Running this command, I disabled the system shortcut.
+
+```sh
+defaults write com.apple.symbolichotkeys AppleSymbolicHotKeys -dict-add 70 '<dict><key>enabled</key><false/></dict>'
+```
+
+The last note is that changes to this file don't apply immediately. It would require a restart. But there is a command that applies changes right here right now:
+
+```sh
+/System/Library/PrivateFrameworks/SystemAdministration.framework/Resources/activateSettings -u
+```

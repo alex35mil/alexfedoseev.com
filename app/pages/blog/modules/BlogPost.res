@@ -71,6 +71,9 @@ module Tag = {
   type t =
     | Dev
     | Rust
+    | Swift
+    | MacOS
+    | Xcode
     | Nix
     | ReScript
     | Js
@@ -81,12 +84,15 @@ module Tag = {
     | Story
     | Productivity
 
-  let all = [Dev, Rust, Nix, ReScript, Js, Css, React, Photo, Travel, Story, Productivity]
+  let all = [Dev, Rust, Swift, MacOS, Xcode, Nix, ReScript, Js, Css, React, Photo, Travel, Story, Productivity]
 
   let fromString = x =>
     switch x {
     | "dev" => Ok(Dev)
     | "rust" => Ok(Rust)
+    | "swift" => Ok(Swift)
+    | "macos" => Ok(MacOS)
+    | "xcode" => Ok(Xcode)
     | "nix" => Ok(Nix)
     | "rescript" => Ok(ReScript)
     | "js" => Ok(Js)
@@ -103,6 +109,9 @@ module Tag = {
     switch x {
     | Dev => "dev"
     | Rust => "rust"
+    | Swift => "swift"
+    | MacOS => "macos"
+    | Xcode => "xcode"
     | Nix => "nix"
     | ReScript => "rescript"
     | Js => "js"
